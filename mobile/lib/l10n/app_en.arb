@@ -2462,5 +2462,6 @@
   "expenseItemsAddFirst": "Add items first, then pick who had what.",
   "quickSplitFromAction": "From a quick split",
   "quickSplitFromTitle": "Add a quick split",
-  "quickSplitNoneForTrip": "No quick split has only this trip's people."
+  "quickSplitNoneForTrip": "No quick split has only this trip's people.",
+  "expenseSplitAmountFirst": "Enter the amount first, or choose By item."
 }

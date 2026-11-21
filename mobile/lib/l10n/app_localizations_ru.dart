@@ -5606,4 +5606,7 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get quickSplitNoneForTrip => 'Нет Quick split только с людьми из этой поездки.';
+
+  @override
+  String get expenseSplitAmountFirst => 'Сначала введите сумму или выберите «По позициям».';
 }

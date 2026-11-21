@@ -5582,4 +5582,7 @@ class AppLocalizationsDa extends AppLocalizations {
 
   @override
   String get quickSplitNoneForTrip => 'Intet Quick split har kun personer fra denne rejse.';
+
+  @override
+  String get expenseSplitAmountFirst => 'Indtast først beløbet, eller vælg Efter vare.';
 }

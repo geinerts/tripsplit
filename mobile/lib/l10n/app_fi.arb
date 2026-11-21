@@ -2223,5 +2223,6 @@
   "expenseItemsAddFirst": "Lisää ensin rivit ja valitse sitten, kuka otti mitäkin.",
   "quickSplitFromAction": "Quick splitistä",
   "quickSplitFromTitle": "Lisää Quick split",
-  "quickSplitNoneForTrip": "Yhdessäkään Quick splitissä ei ole vain tämän matkan ihmisiä."
+  "quickSplitNoneForTrip": "Yhdessäkään Quick splitissä ei ole vain tämän matkan ihmisiä.",
+  "expenseSplitAmountFirst": "Syötä ensin summa tai valitse Riveittäin."
 }

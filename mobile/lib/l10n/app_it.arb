@@ -2223,5 +2223,6 @@
   "expenseItemsAddFirst": "Aggiungi prima le voci, poi scegli chi ha preso cosa.",
   "quickSplitFromAction": "Da un Quick split",
   "quickSplitFromTitle": "Aggiungi un Quick split",
-  "quickSplitNoneForTrip": "Nessun Quick split ha solo persone di questo viaggio."
+  "quickSplitNoneForTrip": "Nessun Quick split ha solo persone di questo viaggio.",
+  "expenseSplitAmountFirst": "Inserisci prima l’importo o scegli Per voce."
 }

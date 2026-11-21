@@ -295,22 +295,24 @@ class _ItemizedSplitEditorState extends State<_ItemizedSplitEditor> {
   Widget build(BuildContext context) {
     final t = context.l10n;
     final media = MediaQuery.of(context);
+    final page = _expenseEditorOnPage(context);
     return Padding(
       padding: EdgeInsets.only(bottom: media.viewInsets.bottom),
       child: ConstrainedBox(
         constraints: BoxConstraints(
-          maxHeight:
-              math.max(
-                0,
-                media.size.height -
-                    media.viewInsets.bottom -
-                    media.padding.top -
-                    40,
-              ) *
-              .9,
+          maxHeight: page
+              ? double.infinity
+              : math.max(
+                      0,
+                      media.size.height -
+                          media.viewInsets.bottom -
+                          media.padding.top -
+                          40,
+                    ) *
+                    .9,
         ),
         child: Column(
-          mainAxisSize: MainAxisSize.min,
+          mainAxisSize: page ? MainAxisSize.max : MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Padding(
@@ -323,18 +325,12 @@ class _ItemizedSplitEditorState extends State<_ItemizedSplitEditor> {
                       style: Theme.of(context).textTheme.titleLarge,
                     ),
                   ),
-                  IconButton(
-                    key: const ValueKey('expense-editor-close'),
-                    tooltip: MaterialLocalizations.of(
-                      context,
-                    ).closeButtonTooltip,
-                    onPressed: () => Navigator.pop(context),
-                    icon: const Icon(Icons.close),
-                  ),
+                  _expenseEditorCloseButton(context),
                 ],
               ),
             ),
             Flexible(
+              fit: page ? FlexFit.tight : FlexFit.loose,
               child: SingleChildScrollView(
                 padding: const EdgeInsets.fromLTRB(20, 0, 20, 12),
                 child: Column(

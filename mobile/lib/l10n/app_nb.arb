@@ -2223,5 +2223,6 @@
   "expenseItemsAddFirst": "Legg til varer først, og velg så hvem som hadde hva.",
   "quickSplitFromAction": "Fra et Quick split",
   "quickSplitFromTitle": "Legg til et Quick split",
-  "quickSplitNoneForTrip": "Ingen Quick split har bare personer fra denne reisen."
+  "quickSplitNoneForTrip": "Ingen Quick split har bare personer fra denne reisen.",
+  "expenseSplitAmountFirst": "Skriv inn beløpet først, eller velg Per vare."
 }

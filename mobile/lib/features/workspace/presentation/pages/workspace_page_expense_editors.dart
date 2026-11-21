@@ -14,6 +14,37 @@ class _ExpenseSplitDraft {
 }
 
 /// A bounded editor with a scrollable body and an always reachable action.
+/// A split method on its own page (from the form's method list), with room
+/// for long item lists and the keyboard. The editors adapt to it.
+class _ExpenseSplitPage extends StatelessWidget {
+  const _ExpenseSplitPage({required this.child});
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) => Scaffold(
+    // The editors add the keyboard inset themselves.
+    resizeToAvoidBottomInset: false,
+    body: SafeArea(child: child),
+  );
+}
+
+/// True when the editor is shown on its own page rather than in a sheet.
+bool _expenseEditorOnPage(BuildContext context) =>
+    ModalRoute.of(context) is PageRoute;
+
+/// Back on a page, close in a sheet.
+Widget _expenseEditorCloseButton(BuildContext context) {
+  final page = _expenseEditorOnPage(context);
+  final labels = MaterialLocalizations.of(context);
+  return IconButton(
+    key: const ValueKey('expense-editor-close'),
+    tooltip: page ? labels.backButtonTooltip : labels.closeButtonTooltip,
+    onPressed: () => Navigator.pop(context),
+    icon: Icon(page ? Icons.arrow_back_rounded : Icons.close),
+  );
+}
+
 class _ExpenseEditorSurface extends StatelessWidget {
   const _ExpenseEditorSurface({
     required this.title,
@@ -27,6 +58,55 @@ class _ExpenseEditorSurface extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final media = MediaQuery.of(context);
+    final page = _expenseEditorOnPage(context);
+    final header = Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Expanded(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 10),
+            child: Text(title, style: Theme.of(context).textTheme.titleLarge),
+          ),
+        ),
+        _expenseEditorCloseButton(context),
+      ],
+    );
+    final done = Padding(
+      padding: const EdgeInsets.fromLTRB(20, 8, 20, 12),
+      child: SizedBox(
+        width: double.infinity,
+        child: ElevatedButton(
+          key: const ValueKey('expense-editor-done'),
+          onPressed: onDone,
+          child: Text(context.l10n.doneStatus),
+        ),
+      ),
+    );
+    // On a page the title and back stay at the top while the rest scrolls.
+    if (page) {
+      return Padding(
+        padding: EdgeInsets.only(bottom: media.viewInsets.bottom),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(20, 4, 20, 0),
+              child: header,
+            ),
+            Expanded(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.fromLTRB(20, 0, 20, 16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: children,
+                ),
+              ),
+            ),
+            done,
+          ],
+        ),
+      );
+    }
     return Padding(
       padding: EdgeInsets.only(bottom: media.viewInsets.bottom),
       child: ConstrainedBox(
@@ -49,45 +129,11 @@ class _ExpenseEditorSurface extends StatelessWidget {
                 padding: const EdgeInsets.fromLTRB(20, 4, 20, 16),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 10),
-                            child: Text(
-                              title,
-                              style: Theme.of(context).textTheme.titleLarge,
-                            ),
-                          ),
-                        ),
-                        IconButton(
-                          key: const ValueKey('expense-editor-close'),
-                          tooltip: MaterialLocalizations.of(
-                            context,
-                          ).closeButtonTooltip,
-                          onPressed: () => Navigator.pop(context),
-                          icon: const Icon(Icons.close),
-                        ),
-                      ],
-                    ),
-                    ...children,
-                  ],
+                  children: [header, ...children],
                 ),
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(20, 8, 20, 12),
-              child: SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  key: const ValueKey('expense-editor-done'),
-                  onPressed: onDone,
-                  child: Text(context.l10n.doneStatus),
-                ),
-              ),
-            ),
+            done,
           ],
         ),
       ),

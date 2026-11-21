@@ -2223,5 +2223,6 @@
   "expenseItemsAddFirst": "Ajoute d’abord des articles, puis choisis qui a pris quoi.",
   "quickSplitFromAction": "Depuis un Quick split",
   "quickSplitFromTitle": "Ajouter un Quick split",
-  "quickSplitNoneForTrip": "Aucun Quick split n’a que des personnes de ce voyage."
+  "quickSplitNoneForTrip": "Aucun Quick split n’a que des personnes de ce voyage.",
+  "expenseSplitAmountFirst": "Saisis d’abord le montant ou choisis Par article."
 }

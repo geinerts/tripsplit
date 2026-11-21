@@ -5596,4 +5596,7 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get quickSplitNoneForTrip => 'Žádný Quick split nemá jen lidi z tohoto výletu.';
+
+  @override
+  String get expenseSplitAmountFirst => 'Nejdřív zadej částku, nebo zvol Podle položek.';
 }

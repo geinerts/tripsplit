@@ -5606,4 +5606,7 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get quickSplitNoneForTrip => 'Немає Quick split лише з людьми з цієї подорожі.';
+
+  @override
+  String get expenseSplitAmountFirst => 'Спершу введіть суму або виберіть «За позиціями».';
 }

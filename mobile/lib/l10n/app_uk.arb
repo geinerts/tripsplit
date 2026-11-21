@@ -2223,5 +2223,6 @@
   "expenseItemsAddFirst": "Спершу додайте позиції, потім виберіть, хто що брав.",
   "quickSplitFromAction": "З Quick split",
   "quickSplitFromTitle": "Додати Quick split",
-  "quickSplitNoneForTrip": "Немає Quick split лише з людьми з цієї подорожі."
+  "quickSplitNoneForTrip": "Немає Quick split лише з людьми з цієї подорожі.",
+  "expenseSplitAmountFirst": "Спершу введіть суму або виберіть «За позиціями»."
 }

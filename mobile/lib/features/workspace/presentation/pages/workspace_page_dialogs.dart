@@ -624,7 +624,7 @@ Future<_ExpenseFormResult?> _showExpenseFormPage(
                 );
               }
 
-              Future<void> editSplit() async {
+              Future<void> editSplit([String? startMode]) async {
                 final amount = _parseAmount(amountController.text);
                 if (activeUsers.isEmpty) {
                   setDialogState(() {
@@ -633,43 +633,48 @@ Future<_ExpenseFormResult?> _showExpenseFormPage(
                   return;
                 }
                 FocusScope.of(context).unfocus();
-                final result = await showAppBottomSheet<_ExpenseSplitDraft>(
-                  context: context,
-                  builder: (_) => _ExpenseSplitEditor(
-                    users: activeUsers,
-                    amount: amount,
-                    currencyCode: selectedCurrencyCode,
-                    // Opens on Exact amounts; Items only when already chosen.
-                    initialMode: splitMode,
-                    initialItems: itemDrafts,
-                    initialExtra: extraDraft,
-                    initialValues: {
-                      for (final entry in splitControllers.entries)
-                        entry.key: entry.value.text,
-                    },
-                    avatarBuilder: memberAvatar,
-                    scanReceipt: setup.scanReceipt == null
-                        ? null
-                        : fillFromReceipt,
-                    addPerson: setup.addPerson == null
-                        ? null
-                        : () async {
-                            final person = await setup.addPerson!(
-                              context,
-                              users,
-                            );
-                            if (person == null || !context.mounted) {
-                              return null;
-                            }
-                            setDialogState(() {
-                              users.add(person);
-                              if (selected.isNotEmpty) selected.add(person.id);
-                              errorText = null;
-                            });
-                            return person;
-                          },
-                  ),
-                );
+                final result = await Navigator.of(context)
+                    .push<_ExpenseSplitDraft>(
+                      AppFormPageRoute<_ExpenseSplitDraft>(
+                        builder: (_) => _ExpenseSplitPage(
+                          child: _ExpenseSplitEditor(
+                            users: activeUsers,
+                            amount: amount,
+                            currencyCode: selectedCurrencyCode,
+                            initialMode: startMode ?? splitMode,
+                            initialItems: itemDrafts,
+                            initialExtra: extraDraft,
+                            initialValues: {
+                              for (final entry in splitControllers.entries)
+                                entry.key: entry.value.text,
+                            },
+                            avatarBuilder: memberAvatar,
+                            scanReceipt: setup.scanReceipt == null
+                                ? null
+                                : fillFromReceipt,
+                            addPerson: setup.addPerson == null
+                                ? null
+                                : () async {
+                                    final person = await setup.addPerson!(
+                                      context,
+                                      users,
+                                    );
+                                    if (person == null || !context.mounted) {
+                                      return null;
+                                    }
+                                    setDialogState(() {
+                                      users.add(person);
+                                      if (selected.isNotEmpty) {
+                                        selected.add(person.id);
+                                      }
+                                      errorText = null;
+                                    });
+                                    return person;
+                                  },
+                          ),
+                        ),
+                      ),
+                    );
                 if (!hostContext.mounted ||
                     !context.mounted ||
                     result == null) {
@@ -697,6 +702,48 @@ Future<_ExpenseFormResult?> _showExpenseFormPage(
                   }
                   errorText = null;
                 });
+              }
+
+              // The list of methods; Equal stays in the form, the others open
+              // on their own page. Only "By item" works out the amount
+              // itself, so the others need it first.
+              Future<void> chooseSplitMethod() async {
+                if (activeUsers.isEmpty) {
+                  setDialogState(() {
+                    errorText = t.pickAtLeastOneParticipant;
+                  });
+                  return;
+                }
+                FocusScope.of(context).unfocus();
+                final picked = await showAppBottomSheet<String>(
+                  context: context,
+                  builder: (_) => _ExpenseSplitModePicker(
+                    options: [
+                      (
+                        'equal',
+                        t.equalSplitLabel,
+                        t.splitHintEqual,
+                        Icons.balance_rounded,
+                      ),
+                      ..._ExpenseSplitEditorState._modeOptions(context),
+                    ],
+                    selected: splitMode,
+                  ),
+                );
+                if (picked == null || !context.mounted) return;
+                if (picked == 'equal') {
+                  setDialogState(() {
+                    splitMode = 'equal';
+                    errorText = null;
+                  });
+                  return;
+                }
+                if (picked != 'itemized' &&
+                    _parseAmount(amountController.text) <= 0) {
+                  setDialogState(() => errorText = t.expenseSplitAmountFirst);
+                  return;
+                }
+                await editSplit(picked);
               }
 
               return PopScope(
@@ -1169,100 +1216,46 @@ Future<_ExpenseFormResult?> _showExpenseFormPage(
                                       ),
                                     ),
                                     const SizedBox(height: 8),
-                                    Text(
-                                      t.splitModeLabel,
-                                      style: Theme.of(
-                                        context,
-                                      ).textTheme.bodySmall,
+                                    // One row: the method, then a list of
+                                    // methods; anything but Equal opens on
+                                    // its own page.
+                                    _ExpenseCompactTile(
+                                      key: const ValueKey(
+                                        'expense-custom-split',
+                                      ),
+                                      label: t.splitModeLabel,
+                                      value: splitModeLabel(splitMode),
+                                      icon: splitModeIcon(splitMode),
+                                      detail: splitMode == 'equal'
+                                          ? t.splitHintEqual
+                                          : splitMode == 'itemized'
+                                          ? itemDrafts
+                                                .map((item) => item.name)
+                                                .join(' · ')
+                                          : activeUsers
+                                                .map((user) {
+                                                  final raw =
+                                                      splitControllers[user.id]
+                                                          ?.text
+                                                          .trim() ??
+                                                      '';
+                                                  final value = raw.isEmpty
+                                                      ? '—'
+                                                      : splitMode == 'exact' ||
+                                                            splitMode ==
+                                                                'adjustment'
+                                                      ? _formatMoney(
+                                                          context,
+                                                          _parseAmount(raw),
+                                                          currencyCode:
+                                                              selectedCurrencyCode,
+                                                        )
+                                                      : '$raw${splitMode == 'percent' ? '%' : ' ${t.shareUnit}'}';
+                                                  return '${user.preferredName} $value';
+                                                })
+                                                .join(' · '),
+                                      onTap: chooseSplitMethod,
                                     ),
-                                    const SizedBox(height: 6),
-                                    Container(
-                                      padding: const EdgeInsets.all(3),
-                                      decoration: BoxDecoration(
-                                        color: AppDesign.isDark(context)
-                                            ? AppDesign.darkSurface
-                                            : AppDesign.lightSurfaceMuted,
-                                        borderRadius: BorderRadius.circular(12),
-                                      ),
-                                      child: Row(
-                                        children: [
-                                          Expanded(
-                                            child: _ExpenseSplitMethodButton(
-                                              label: t.equalSplitLabel,
-                                              icon: Icons.balance_rounded,
-                                              selected: splitMode == 'equal',
-                                              onTap: () => setDialogState(() {
-                                                splitMode = 'equal';
-                                                errorText = null;
-                                              }),
-                                            ),
-                                          ),
-                                          const SizedBox(width: 3),
-                                          Expanded(
-                                            child: _ExpenseSplitMethodButton(
-                                              key: const ValueKey(
-                                                'expense-custom-split',
-                                              ),
-                                              label: t.expenseCustomSplit,
-                                              icon: Icons.tune,
-                                              selected: splitMode != 'equal',
-                                              onTap: editSplit,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    const SizedBox(height: 10),
-                                    if (splitMode == 'equal')
-                                      Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                          vertical: 6,
-                                        ),
-                                        child: Text(
-                                          t.splitHintEqual,
-                                          style: Theme.of(
-                                            context,
-                                          ).textTheme.bodySmall,
-                                        ),
-                                      )
-                                    else
-                                      _ExpenseCompactTile(
-                                        key: const ValueKey(
-                                          'expense-split-summary',
-                                        ),
-                                        label: t.splitModeLabel,
-                                        value: splitModeLabel(splitMode),
-                                        icon: splitModeIcon(splitMode),
-                                        detail: splitMode == 'itemized'
-                                            ? itemDrafts
-                                                  .map((item) => item.name)
-                                                  .join(' · ')
-                                            : activeUsers
-                                                  .map((user) {
-                                                    final raw =
-                                                        splitControllers[user
-                                                                .id]
-                                                            ?.text
-                                                            .trim() ??
-                                                        '';
-                                                    final value = raw.isEmpty
-                                                        ? '—'
-                                                        : splitMode ==
-                                                                  'exact' ||
-                                                              splitMode ==
-                                                                  'adjustment'
-                                                        ? _formatMoney(
-                                                            context,
-                                                            _parseAmount(raw),
-                                                            currencyCode:
-                                                                selectedCurrencyCode,
-                                                          )
-                                                        : '$raw${splitMode == 'percent' ? '%' : ' ${t.shareUnit}'}';
-                                                    return '${user.preferredName} $value';
-                                                  })
-                                                  .join(' · '),
-                                        onTap: editSplit,
-                                      ),
                                     const SizedBox(height: 18),
                                     const Divider(height: 1),
                                   ],
@@ -1993,47 +1986,4 @@ class _ExpenseTypeButton extends StatelessWidget {
       ),
     );
   }
-}
-
-class _ExpenseSplitMethodButton extends StatelessWidget {
-  const _ExpenseSplitMethodButton({
-    super.key,
-    required this.label,
-    required this.icon,
-    required this.selected,
-    required this.onTap,
-  });
-  final String label;
-  final IconData icon;
-  final bool selected;
-  final VoidCallback onTap;
-  @override
-  Widget build(BuildContext context) => Semantics(
-    selected: selected,
-    child: TextButton(
-      onPressed: onTap,
-      style: TextButton.styleFrom(
-        minimumSize: const Size(0, 44),
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
-        foregroundColor: selected
-            ? Theme.of(context).colorScheme.primary
-            : AppDesign.mutedColor(context),
-        backgroundColor: selected
-            ? AppDesign.pageSurface(context)
-            : Colors.transparent,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(9)),
-        textStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
-          fontWeight: selected ? FontWeight.w600 : FontWeight.w400,
-        ),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(icon, size: 17),
-          const SizedBox(width: 5),
-          Flexible(child: Text(label, textAlign: TextAlign.center)),
-        ],
-      ),
-    ),
-  );
 }

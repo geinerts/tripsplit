@@ -5594,4 +5594,7 @@ class AppLocalizationsLv extends AppLocalizations {
 
   @override
   String get quickSplitNoneForTrip => 'Nav neviena Quick split tikai ar šī ceļojuma cilvēkiem.';
+
+  @override
+  String get expenseSplitAmountFirst => 'Vispirms ievadi summu vai izvēlies \"Pa pozīcijām\".';
 }

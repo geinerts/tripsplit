@@ -2223,5 +2223,6 @@
   "expenseItemsAddFirst": "Nejdřív přidej položky, pak vyber, kdo co měl.",
   "quickSplitFromAction": "Z Quick split",
   "quickSplitFromTitle": "Přidat Quick split",
-  "quickSplitNoneForTrip": "Žádný Quick split nemá jen lidi z tohoto výletu."
+  "quickSplitNoneForTrip": "Žádný Quick split nemá jen lidi z tohoto výletu.",
+  "expenseSplitAmountFirst": "Nejdřív zadej částku, nebo zvol Podle položek."
 }

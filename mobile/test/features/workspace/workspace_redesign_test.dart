@@ -941,7 +941,13 @@ Future<void> selectExpenseFood(WidgetTester tester) async {
 
 /// Opens the split method list and picks the method with this label.
 Future<void> pickSplitMode(WidgetTester tester, String label) async {
-  await visibleTap(tester, find.byKey(const ValueKey('expense-split-method')));
+  // The form's method list may already be open; otherwise the page's row.
+  if (find.byKey(const ValueKey('split-mode-exact')).evaluate().isEmpty) {
+    await visibleTap(
+      tester,
+      find.byKey(const ValueKey('expense-split-method')),
+    );
+  }
   await tester.tap(find.widgetWithText(ListTile, label).last);
   await tester.pumpAndSettle();
 }
@@ -1475,6 +1481,8 @@ void main() {
       tester,
       find.byKey(const ValueKey('expense-custom-split')),
     );
+    await tester.tap(find.byKey(const ValueKey('split-mode-exact')));
+    await tester.pumpAndSettle();
     expect(find.byKey(const ValueKey('split-input-7')), findsNothing);
     expect(
       tester
@@ -1576,8 +1584,6 @@ void main() {
       tester,
       find.byKey(const ValueKey('expense-custom-split')),
     );
-    await tester.tap(find.byKey(const ValueKey('expense-split-method')));
-    await tester.pumpAndSettle();
     expect(find.byKey(const ValueKey('split-mode-itemized')), findsOneWidget);
     await tester.tap(find.byKey(const ValueKey('split-mode-adjustment')));
     await tester.pumpAndSettle();
@@ -1853,6 +1859,50 @@ void main() {
     await disposePage(tester);
   });
 
+  testWidgets('split methods open from a list, on their own page', (
+    tester,
+  ) async {
+    final commands = WorkspacePageCommandController();
+    await _mount(tester, _Workspace(), commands: commands);
+    await tester.pumpAndSettle();
+    commands.requestOpenAddExpense();
+    await tester.pumpAndSettle();
+    final t = AppLocalizations.of(
+      tester.element(find.byKey(const ValueKey('expense-form-amount'))),
+    )!;
+    await selectExpenseFood(tester);
+    // Without an amount, only By item can open.
+    await visibleTap(
+      tester,
+      find.byKey(const ValueKey('expense-custom-split')),
+    );
+    await tester.tap(find.byKey(const ValueKey('split-mode-exact')));
+    await tester.pumpAndSettle();
+    expect(find.text(t.expenseSplitAmountFirst), findsOneWidget);
+    expect(find.byKey(const ValueKey('split-input-7')), findsNothing);
+    await visibleTap(
+      tester,
+      find.byKey(const ValueKey('expense-custom-split')),
+    );
+    await tester.tap(find.byKey(const ValueKey('split-mode-itemized')));
+    await tester.pumpAndSettle();
+    // A full page with a back button, not a sheet.
+    expect(find.byIcon(Icons.arrow_back_rounded), findsOneWidget);
+    expect(find.byKey(const ValueKey('expense-item-name-0')), findsOneWidget);
+    await tester.tap(find.byKey(const ValueKey('expense-editor-close')));
+    await tester.pumpAndSettle();
+    // Equal comes back from the same list.
+    await visibleTap(
+      tester,
+      find.byKey(const ValueKey('expense-custom-split')),
+    );
+    await tester.tap(find.byKey(const ValueKey('split-mode-equal')));
+    await tester.pumpAndSettle();
+    expect(find.text(t.splitHintEqual), findsOneWidget);
+    await disposePage(tester);
+    commands.dispose();
+  });
+
   testWidgets('items set the amount and decide who pays', (tester) async {
     final commands = WorkspacePageCommandController();
     final controller = _Workspace();
@@ -1865,10 +1915,6 @@ void main() {
       tester,
       find.byKey(const ValueKey('expense-custom-split')),
     );
-    // Custom split opens on Exact amounts; Items is picked from the list.
-    expect(find.byKey(const ValueKey('split-input-7')), findsOneWidget);
-    await tester.tap(find.byKey(const ValueKey('expense-split-method')));
-    await tester.pumpAndSettle();
     await tester.tap(find.byKey(const ValueKey('split-mode-itemized')));
     await tester.pumpAndSettle();
     final toPeople = find.byKey(const ValueKey('expense-items-tab-people'));
@@ -1944,6 +1990,8 @@ void main() {
       tester,
       find.byKey(const ValueKey('expense-custom-split')),
     );
+    await tester.tap(find.byKey(const ValueKey('split-mode-itemized')));
+    await tester.pumpAndSettle();
     expect(find.byKey(const ValueKey('expense-item-row-0')), findsOneWidget);
     expect(find.byKey(const ValueKey('expense-item-row-2')), findsNothing);
     expect(find.text('×2'), findsOneWidget);
@@ -1983,8 +2031,6 @@ void main() {
         tester,
         find.byKey(const ValueKey('expense-custom-split')),
       );
-      await tester.tap(find.byKey(const ValueKey('expense-split-method')));
-      await tester.pumpAndSettle();
       await tester.tap(find.byKey(const ValueKey('split-mode-itemized')));
       await tester.pumpAndSettle();
     }
@@ -2084,8 +2130,6 @@ void main() {
           tester,
           find.byKey(const ValueKey('expense-custom-split')),
         );
-        await tester.tap(find.byKey(const ValueKey('expense-split-method')));
-        await tester.pumpAndSettle();
         await tester.tap(find.byKey(const ValueKey('split-mode-itemized')));
         await tester.pumpAndSettle();
         Future<void> item(int index, String name, String price) async {
@@ -2191,6 +2235,8 @@ void main() {
         tester,
         find.byKey(const ValueKey('expense-custom-split')),
       );
+      await tester.tap(find.byKey(const ValueKey('split-mode-exact')));
+      await tester.pumpAndSettle();
       String text(int id) => tester
           .widget<TextField>(find.byKey(ValueKey('split-input-$id')))
           .controller!
@@ -2226,10 +2272,13 @@ void main() {
       await tester.pumpAndSettle();
       await tester.tap(find.byKey(const ValueKey('expense-editor-done')));
       await tester.pumpAndSettle();
+      // The method row opens the list; picking the same method edits it.
       await visibleTap(
         tester,
-        find.byKey(const ValueKey('expense-split-summary')),
+        find.byKey(const ValueKey('expense-custom-split')),
       );
+      await tester.tap(find.byKey(const ValueKey('split-mode-exact')));
+      await tester.pumpAndSettle();
       await tester.enterText(find.byKey(const ValueKey('split-input-7')), '1');
       await tester.pumpAndSettle();
       expect(text(8), '9.00');
@@ -2264,6 +2313,8 @@ void main() {
         tester,
         find.byKey(const ValueKey('expense-custom-split')),
       );
+      await tester.tap(find.byKey(const ValueKey('split-mode-exact')));
+      await tester.pumpAndSettle();
       expect(
         tester
             .widget<TextField>(find.byKey(const ValueKey('split-input-7')))
@@ -2384,6 +2435,8 @@ void main() {
             tester,
             find.byKey(const ValueKey('expense-custom-split')),
           );
+          await tester.tap(find.byKey(const ValueKey('split-mode-exact')));
+          await tester.pumpAndSettle();
           for (final e in [(7, '80'), (8, '60'), (9, '40')]) {
             await tester.enterText(
               find.byKey(ValueKey('split-input-${e.$1}')),
@@ -3009,7 +3062,7 @@ void main() {
           tester.element(find.byType(WorkspacePage, skipOffstage: false)),
         )!;
         await tester.scrollUntilVisible(
-          find.text(t.splitModeLabel),
+          find.byKey(const ValueKey('expense-custom-split')),
           200,
           scrollable: find.byType(Scrollable).last,
         );
@@ -4920,7 +4973,7 @@ void main() {
           t.sharesLabel,
         ]) {
           await tester.scrollUntilVisible(
-            find.text(t.splitModeLabel),
+            find.byKey(const ValueKey('expense-custom-split')),
             200,
             scrollable: find.byType(Scrollable).first,
           );
@@ -4928,7 +4981,8 @@ void main() {
             tester,
             find.byKey(const ValueKey('expense-custom-split')),
           );
-          final picker = find.byKey(const ValueKey('expense-editor-done'));
+          // The form's method list opens first.
+          final picker = find.byKey(const ValueKey('split-mode-exact'));
           expect(picker, findsOneWidget);
           await pickSplitMode(tester, label);
           for (final id in [7, 8]) {
@@ -4971,7 +5025,7 @@ void main() {
         'shares': t.sharesLabel,
       };
       await tester.scrollUntilVisible(
-        find.text(t.splitModeLabel),
+        find.byKey(const ValueKey('expense-custom-split')),
         200,
         scrollable: find.byType(Scrollable).last,
       );
@@ -6400,8 +6454,6 @@ void main() {
         tester,
         find.byKey(const ValueKey('expense-custom-split')),
       );
-      await tester.tap(find.byKey(const ValueKey('expense-split-method')));
-      await tester.pumpAndSettle();
       await tester.tap(find.byKey(const ValueKey('split-mode-itemized')));
       await tester.pumpAndSettle();
       await tester.tap(find.byKey(const ValueKey('expense-items-tab-people')));

@@ -2223,5 +2223,6 @@
   "expenseItemsAddFirst": "Füge zuerst Posten hinzu und wähle dann, wer was hatte.",
   "quickSplitFromAction": "Aus Quick Split",
   "quickSplitFromTitle": "Quick Split hinzufügen",
-  "quickSplitNoneForTrip": "Kein Quick Split hat nur Personen dieser Reise."
+  "quickSplitNoneForTrip": "Kein Quick Split hat nur Personen dieser Reise.",
+  "expenseSplitAmountFirst": "Gib zuerst den Betrag ein oder wähle Nach Posten."
 }

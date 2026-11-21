@@ -5582,4 +5582,7 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String get quickSplitNoneForTrip => 'Ingen Quick split har bara personer från den här resan.';
+
+  @override
+  String get expenseSplitAmountFirst => 'Ange beloppet först eller välj Per rad.';
 }

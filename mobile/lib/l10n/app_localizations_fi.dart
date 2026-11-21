@@ -5582,4 +5582,7 @@ class AppLocalizationsFi extends AppLocalizations {
 
   @override
   String get quickSplitNoneForTrip => 'Yhdessäkään Quick splitissä ei ole vain tämän matkan ihmisiä.';
+
+  @override
+  String get expenseSplitAmountFirst => 'Syötä ensin summa tai valitse Riveittäin.';
 }

@@ -10280,6 +10280,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No quick split has only this trip\'s people.'**
   String get quickSplitNoneForTrip;
+
+  /// No description provided for @expenseSplitAmountFirst.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter the amount first, or choose By item.'**
+  String get expenseSplitAmountFirst;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
