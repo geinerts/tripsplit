@@ -94,4 +94,89 @@ void main() {
     );
     expect(requests, 0);
   });
+
+  group('slow requests (AI receipt reading)', () {
+    LegacyApiClient client({
+      required void Function() onFailure,
+      required Future<http.Response> Function(http.Request) handler,
+    }) => LegacyApiClient(
+      baseUrl: 'https://example.test/',
+      tokenStore: _Device(),
+      authSessionStore: _Auth(),
+      enableVerboseLogs: false,
+      requestTimeout: const Duration(milliseconds: 20),
+      onNetworkFailure: onFailure,
+      httpClient: MockClient(handler),
+    );
+
+    test(
+      'a slow answer waits longer and never marks the app offline',
+      () async {
+        var marked = 0;
+        final api = client(
+          onFailure: () => marked++,
+          handler: (_) async {
+            await Future<void>.delayed(const Duration(milliseconds: 60));
+            return http.Response('{"ok":true,"scan":{}}', 200);
+          },
+        );
+        // 60 ms is past the normal 20 ms limit but inside the slow one.
+        final answer = await api.requestSlow(
+          path: 'api/api.php?action=scan_receipt',
+          method: HttpMethod.post,
+          timeout: const Duration(milliseconds: 200),
+          body: const {},
+        );
+        expect(answer['ok'], isTrue);
+        // Running out of the slow time is a timeout, still not "offline".
+        await expectLater(
+          api.requestSlow(
+            path: 'api/api.php?action=scan_receipt',
+            method: HttpMethod.post,
+            timeout: const Duration(milliseconds: 10),
+            body: const {},
+          ),
+          networkError,
+        );
+        expect(marked, 0);
+      },
+    );
+
+    test(
+      'a lost connection still marks offline, also for slow requests',
+      () async {
+        var marked = 0;
+        final api = client(
+          onFailure: () => marked++,
+          handler: (_) async => throw const SocketException('Offline'),
+        );
+        await expectLater(
+          api.requestSlow(
+            path: 'api/api.php?action=scan_receipt',
+            method: HttpMethod.post,
+            timeout: const Duration(seconds: 1),
+            body: const {},
+          ),
+          networkError,
+        );
+        expect(marked, 1);
+      },
+    );
+
+    test('a normal request that times out still marks offline', () async {
+      var marked = 0;
+      final api = client(
+        onFailure: () => marked++,
+        handler: (_) async {
+          await Future<void>.delayed(const Duration(milliseconds: 60));
+          return http.Response('{"ok":true}', 200);
+        },
+      );
+      await expectLater(
+        api.request(path: 'api/api.php?action=me', method: HttpMethod.get),
+        networkError,
+      );
+      expect(marked, 1);
+    });
+  });
 }

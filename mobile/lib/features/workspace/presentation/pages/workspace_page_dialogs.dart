@@ -1216,6 +1216,13 @@ Future<_ExpenseFormResult?> _showExpenseFormPage(
                                       ),
                                     ),
                                     const SizedBox(height: 8),
+                                    Text(
+                                      t.splitModeLabel,
+                                      style: Theme.of(
+                                        context,
+                                      ).textTheme.bodySmall,
+                                    ),
+                                    const SizedBox(height: 6),
                                     // One row: the method, then a list of
                                     // methods; anything but Equal opens on
                                     // its own page.

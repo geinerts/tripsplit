@@ -16,7 +16,7 @@ import 'api_client.dart';
 import 'api_endpoints.dart';
 import 'http_method.dart';
 
-class LegacyApiClient implements ApiClient {
+class LegacyApiClient implements SlowApiClient {
   LegacyApiClient({
     required String baseUrl,
     required DeviceTokenStore tokenStore,
@@ -80,6 +80,29 @@ class LegacyApiClient implements ApiClient {
   }
 
   @override
+  Future<Map<String, dynamic>> requestSlow({
+    required String path,
+    required HttpMethod method,
+    required Duration timeout,
+    Map<String, dynamic>? body,
+  }) async {
+    AccountDataSession.boundLease?.check();
+    if (await _isOffline?.call() == true) {
+      AccountDataSession.boundLease?.check();
+      throw const ApiException('Network unavailable.', isNetworkError: true);
+    }
+    AccountDataSession.boundLease?.check();
+    return _requestWithOptionalRefresh(
+      path: path,
+      method: method,
+      body: body,
+      allowRefreshRetry: true,
+      timeout: timeout,
+      timeoutMeansOffline: false,
+    );
+  }
+
+  @override
   Future<void> revokeCurrentSession() {
     return _revocationInFlight ??= _revokeCurrentSession().whenComplete(() {
       // Local logout remains a boundary even when remote revocation fails.
@@ -132,6 +155,8 @@ class LegacyApiClient implements ApiClient {
     Map<String, dynamic>? query,
     Map<String, dynamic>? body,
     Map<String, String>? headers,
+    Duration? timeout,
+    bool timeoutMeansOffline = true,
   }) async {
     final generation = _sessionGeneration;
     AccountDataSession.boundLease?.check();
@@ -161,6 +186,8 @@ class LegacyApiClient implements ApiClient {
         headers: headers,
         requestId: requestId,
         sessionGeneration: generation,
+        timeout: timeout,
+        timeoutMeansOffline: timeoutMeansOffline,
       );
       _checkSessionGeneration(generation);
       AccountDataSession.boundLease?.check();
@@ -193,6 +220,8 @@ class LegacyApiClient implements ApiClient {
               body: body,
               headers: headers,
               allowRefreshRetry: false,
+              timeout: timeout,
+              timeoutMeansOffline: timeoutMeansOffline,
             );
           }
           // A kept refresh token means a temporary failure, such as no network.
@@ -273,6 +302,8 @@ class LegacyApiClient implements ApiClient {
     Map<String, dynamic>? body,
     Map<String, String>? headers,
     int? sessionGeneration,
+    Duration? timeout,
+    bool timeoutMeansOffline = true,
   }) async {
     // A failed refresh may have just established that the network is down.
     if (await _isOffline?.call() == true) {
@@ -299,6 +330,7 @@ class LegacyApiClient implements ApiClient {
         method: method,
         headers: mergedHeaders,
         body: requestBody,
+        timeout: timeout,
       );
     } on SocketException {
       _onNetworkFailure?.call();
@@ -315,7 +347,7 @@ class LegacyApiClient implements ApiClient {
         requestId: requestId,
       );
     } on TimeoutException {
-      _onNetworkFailure?.call();
+      if (timeoutMeansOffline) _onNetworkFailure?.call();
       throw ApiException(
         'Network timeout.',
         isNetworkError: true,
@@ -613,6 +645,7 @@ class LegacyApiClient implements ApiClient {
     required HttpMethod method,
     required Map<String, String> headers,
     Object? body,
+    Duration? timeout,
   }) {
     late final Future<http.Response> request;
     switch (method) {
@@ -632,7 +665,7 @@ class LegacyApiClient implements ApiClient {
         request = _httpClient.delete(uri, headers: headers, body: body);
         break;
     }
-    return request.timeout(_requestTimeout);
+    return request.timeout(timeout ?? _requestTimeout);
   }
 
   static String _ensureTrailingSlash(String value) {

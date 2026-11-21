@@ -16,6 +16,10 @@ import '../../domain/entities/receipt_upload_payload.dart';
 import '../../domain/entities/uploaded_receipt.dart';
 import 'workspace_remote_parsers.dart';
 
+/// How long the app waits for one receipt reading: the AI call may take up to
+/// 30 s on the server (docs/api/receipt-scan.md), plus upload and checks.
+const receiptScanTimeout = Duration(seconds: 50);
+
 class WorkspaceRemoteMutationApi {
   const WorkspaceRemoteMutationApi(this._apiClient, this._receiptUploader);
 
@@ -282,14 +286,22 @@ class WorkspaceRemoteMutationApi {
     required String receiptPath,
     required String requestId,
   }) async {
-    final response = await _apiClient.request(
-      path: ApiEndpoints.legacyAction('scan_receipt'),
-      method: HttpMethod.post,
-      body: <String, dynamic>{
-        'receipt_path': receiptPath,
-        'request_id': requestId,
-      },
-    );
+    final path = ApiEndpoints.legacyAction('scan_receipt');
+    final body = <String, dynamic>{
+      'receipt_path': receiptPath,
+      'request_id': requestId,
+    };
+    // Reading takes up to 30 s on the server; waiting for it must not make
+    // the rest of the app think it is offline.
+    final client = _apiClient;
+    final response = client is SlowApiClient
+        ? await client.requestSlow(
+            path: path,
+            method: HttpMethod.post,
+            timeout: receiptScanTimeout,
+            body: body,
+          )
+        : await client.request(path: path, method: HttpMethod.post, body: body);
     final scan = response['scan'];
     if (scan is! Map) {
       throw const ApiException('Receipt reading failed.');
