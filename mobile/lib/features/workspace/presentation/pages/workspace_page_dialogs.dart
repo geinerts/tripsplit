@@ -458,12 +458,13 @@ Future<_ExpenseFormResult?> _showExpenseFormPage(
                   (seed?.hasSavedReceipt ?? false) &&
                   setup.loadSavedReceipt != null &&
                   !removeExistingReceipt;
-              Future<void> pickReceipt() async {
+              Future<void> pickReceipt({bool crop = true}) async {
                 FocusScope.of(context).unfocus();
                 setDialogState(() => isReceiptPicking = true);
                 final picked = await _pickReceiptPhoto(
                   context,
                   currentAccountId: setup.currentAccountId,
+                  crop: crop,
                 );
                 if (!context.mounted) return;
                 setDialogState(() => isReceiptPicking = false);
@@ -548,7 +549,7 @@ Future<_ExpenseFormResult?> _showExpenseFormPage(
                   await notice.markSeen(account);
                 }
                 if (preuploadedReceipt == null) {
-                  await pickReceipt();
+                  await pickReceipt(crop: false);
                   if (!stillHere()) return null;
                   if (preuploadedReceipt == null) {
                     final hint = receiptUploadHint;
