@@ -355,7 +355,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "/bin/sh \"$FLUTTER_ROOT/packages/flutter_tools/bin/xcode_backend.sh\" build";
+			shellScript = "/bin/sh \"$SRCROOT/Flutter/build_with_mapbox_check.sh\"";
 		};
 		D37EA90C1EDCC00969C6768A /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;

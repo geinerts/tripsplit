@@ -4329,6 +4329,24 @@ abstract class AppLocalizations {
   /// **'Adjust trip image'**
   String get imageCropperAdjustTripImage;
 
+  /// No description provided for @receiptCropHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Drag the edges to frame the whole receipt.'**
+  String get receiptCropHint;
+
+  /// No description provided for @imageCropRotate.
+  ///
+  /// In en, this message translates to:
+  /// **'Rotate photo'**
+  String get imageCropRotate;
+
+  /// No description provided for @imageCropReset.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset crop'**
+  String get imageCropReset;
+
   /// No description provided for @imageCropEditAction.
   ///
   /// In en, this message translates to:
@@ -10286,6 +10304,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Enter the amount first, or choose By item.'**
   String get expenseSplitAmountFirst;
+
+  /// No description provided for @tripExportPdfAfterFinish.
+  ///
+  /// In en, this message translates to:
+  /// **'PDF export is available after you finish the trip.'**
+  String get tripExportPdfAfterFinish;
+
+  /// No description provided for @yearSummarySeasonNotice.
+  ///
+  /// In en, this message translates to:
+  /// **'Your previous year’s summary is available from 1 January to 31 March.'**
+  String get yearSummarySeasonNotice;
+
+  /// No description provided for @expenseItemsClearAll.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear all items'**
+  String get expenseItemsClearAll;
+
+  /// No description provided for @receiptRetakePhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'Retake'**
+  String get receiptRetakePhoto;
+
+  /// No description provided for @receiptUsePhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'Use photo'**
+  String get receiptUsePhoto;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

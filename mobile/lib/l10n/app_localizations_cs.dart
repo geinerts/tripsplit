@@ -2358,6 +2358,15 @@ class AppLocalizationsCs extends AppLocalizations {
   String get imageCropperAdjustTripImage => 'Upravte obrázek výletu';
 
   @override
+  String get receiptCropHint => 'Přetáhněte okraje tak, aby byla v rámečku celá účtenka.';
+
+  @override
+  String get imageCropRotate => 'Otočit fotku';
+
+  @override
+  String get imageCropReset => 'Obnovit ořez';
+
+  @override
   String get imageCropEditAction => 'Upravit oříznutí';
 
   @override
@@ -5599,4 +5608,19 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get expenseSplitAmountFirst => 'Nejdřív zadej částku, nebo zvol Podle položek.';
+
+  @override
+  String get tripExportPdfAfterFinish => 'Export do PDF je dostupný po ukončení cesty.';
+
+  @override
+  String get yearSummarySeasonNotice => 'Souhrn předchozího roku je dostupný od 1. ledna do 31. března.';
+
+  @override
+  String get expenseItemsClearAll => 'Smazat všechny položky';
+
+  @override
+  String get receiptRetakePhoto => 'Vyfotit znovu';
+
+  @override
+  String get receiptUsePhoto => 'Použít fotku';
 }

@@ -1044,6 +1044,9 @@
   "profileEditRevolutMe": "Revolut.me",
   "imageCropperAdjustAvatar": "Justera avataren",
   "imageCropperAdjustTripImage": "Justera resebilden",
+  "receiptCropHint": "Dra i kanterna så att hela kvittot kommer med.",
+  "imageCropRotate": "Rotera foto",
+  "imageCropReset": "Återställ beskärning",
   "imageCropEditAction": "Redigera beskärning",
   "imageCropZoomIn": "Zooma in",
   "imageCropZoomOut": "Zooma ut",
@@ -2224,5 +2227,10 @@
   "quickSplitFromAction": "Från en Quick split",
   "quickSplitFromTitle": "Lägg till en Quick split",
   "quickSplitNoneForTrip": "Ingen Quick split har bara personer från den här resan.",
-  "expenseSplitAmountFirst": "Ange beloppet först eller välj Per rad."
+  "expenseSplitAmountFirst": "Ange beloppet först eller välj Per rad.",
+  "tripExportPdfAfterFinish": "PDF-export är tillgänglig när du har avslutat resan.",
+  "yearSummarySeasonNotice": "Din sammanfattning av föregående år är tillgänglig från 1 januari till 31 mars.",
+  "expenseItemsClearAll": "Ta bort alla poster",
+  "receiptRetakePhoto": "Ta om",
+  "receiptUsePhoto": "Använd bild"
 }

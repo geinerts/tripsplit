@@ -33,7 +33,8 @@ import '../../../../core/currency/app_currency.dart';
 import '../../../../core/media/app_image_cropper.dart';
 import '../../../../core/media/image_crop.dart';
 import '../../../../core/media/image_crop_flow.dart';
-import '../../../../core/media/receipt_image_preparer.dart';
+import '../../../../core/media/receipt_crop_flow.dart';
+import '../../../../core/media/receipt_camera_page.dart';
 import '../../../../core/monitoring/app_monitoring.dart';
 import '../../../../core/perf/perf_monitor.dart';
 import '../../../../core/ui/app_background.dart';
@@ -61,7 +62,6 @@ import '../utils/expense_math.dart';
 import '../utils/workspace_activity_icons.dart';
 import '../utils/workspace_member_short_names.dart';
 import '../../domain/entities/balance_item.dart';
-import '../../data/receipt_ai_notice_store.dart';
 import '../../domain/entities/receipt_scan.dart';
 import '../../domain/entities/comment_mention_text.dart';
 import '../../domain/entities/expense_comment.dart';
@@ -164,7 +164,7 @@ class WorkspacePage extends StatefulWidget {
   final VoidCallback? onExitRequested;
   final ValueChanged<Trip>? onTripUpdated;
   final Future<void> Function()? onTravelMapRequested;
-  final Future<void> Function()? onExportTripRequested;
+  final Future<void> Function(bool pdfAllowed)? onExportTripRequested;
   final LiveLocationController? liveLocationController;
 
   /// Fills the Add expense form that opens on start.

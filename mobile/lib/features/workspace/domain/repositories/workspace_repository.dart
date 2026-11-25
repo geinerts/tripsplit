@@ -67,6 +67,7 @@ abstract class WorkspaceRepository {
   Future<ReceiptScan> scanReceipt({
     required String receiptPath,
     required String requestId,
+    bool rescan = false,
   });
 
   Future<void> endTrip({required int tripId});

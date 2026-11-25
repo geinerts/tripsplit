@@ -1030,6 +1030,9 @@
   "profileEditRevolutMe": "Revolut.me",
   "imageCropperAdjustAvatar": "Pielāgot avataru",
   "imageCropperAdjustTripImage": "Pielāgot ceļojuma attēlu",
+  "receiptCropHint": "Pavelc malas, lai ietvertu visu čeku.",
+  "imageCropRotate": "Pagriezt attēlu",
+  "imageCropReset": "Atiestatīt apgriešanu",
   "imageCropEditAction": "Rediģēt kadrējumu",
   "imageCropZoomIn": "Pietuvināt",
   "imageCropZoomOut": "Attālināt",
@@ -2210,5 +2213,10 @@
   "quickSplitFromAction": "No Quick split",
   "quickSplitFromTitle": "Pievienot Quick split",
   "quickSplitNoneForTrip": "Nav neviena Quick split tikai ar šī ceļojuma cilvēkiem.",
-  "expenseSplitAmountFirst": "Vispirms ievadi summu vai izvēlies \"Pa pozīcijām\"."
+  "expenseSplitAmountFirst": "Vispirms ievadi summu vai izvēlies \"Pa pozīcijām\".",
+  "tripExportPdfAfterFinish": "PDF eksportēšana būs pieejama pēc ceļojuma pabeigšanas.",
+  "yearSummarySeasonNotice": "Iepriekšējā gada kopsavilkums ir pieejams no 1. janvāra līdz 31. martam.",
+  "expenseItemsClearAll": "Dzēst visas pozīcijas",
+  "receiptRetakePhoto": "Fotografēt vēlreiz",
+  "receiptUsePhoto": "Izmantot foto"
 }

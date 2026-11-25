@@ -12,6 +12,7 @@ class _Repository implements WorkspaceRepository {
   String? url =
       'https://splyto.eu/api/receipt-media.php?expires=123&signature=fresh';
   bool fail = false;
+  String? thumbnailUrl;
   final offsets = <int?>[];
   @override
   Future<TripExpensesPage> loadExpensesPage({
@@ -39,6 +40,7 @@ class _Repository implements WorkspaceRepository {
           paidById: 1,
           paidByNickname: '',
           receiptUrl: url,
+          receiptThumbUrl: thumbnailUrl,
           participants: const [],
         ),
       ],
@@ -81,6 +83,48 @@ class _Api implements ApiClient {
 }
 
 void main() {
+  test(
+    'preview refreshes and validates the thumbnail, with full-image fallback',
+    () async {
+      final repo = _Repository()
+        ..thumbnailUrl =
+            'https://splyto.eu/api/receipt-media.php?signature=thumb';
+      final controller = WorkspaceController(repo);
+      expect(
+        (await controller.loadReceiptUri(
+          tripId: 12,
+          expenseId: 7,
+          thumbnail: true,
+        ))?.queryParameters['signature'],
+        'thumb',
+      );
+      expect(
+        (await controller.loadReceiptUri(
+          tripId: 12,
+          expenseId: 7,
+        ))?.queryParameters['signature'],
+        'fresh',
+      );
+      repo.thumbnailUrl = 'https://evil.test/receipt';
+      expect(
+        await controller.loadReceiptUri(
+          tripId: 12,
+          expenseId: 7,
+          thumbnail: true,
+        ),
+        isNull,
+      );
+      repo.thumbnailUrl = null;
+      expect(
+        (await controller.loadReceiptUri(
+          tripId: 12,
+          expenseId: 7,
+          thumbnail: true,
+        ))?.queryParameters['signature'],
+        'fresh',
+      );
+    },
+  );
   test('receipt clicks fetch fresh pages, including older expenses', () async {
     final repo = _Repository();
     final controller = WorkspaceController(repo);

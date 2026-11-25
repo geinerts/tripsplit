@@ -50,6 +50,58 @@ void main() {
     expect(s.sumMatches, isTrue);
   });
 
+  test(
+    'reads optional category and accepts old or malformed responses safely',
+    () {
+      final base = {
+        'is_receipt': true,
+        'items': [item('Milk', 129)],
+        'total_cents': 129,
+      };
+      expect(
+        ReceiptScan.fromJson({...base, 'category': 'groceries'}).category,
+        'groceries',
+      );
+      expect(ReceiptScan.fromJson(base).category, isNull);
+      expect(
+        ReceiptScan.fromJson({...base, 'category': null}).category,
+        isNull,
+      );
+      expect(ReceiptScan.fromJson({...base, 'category': 123}).category, isNull);
+      expect(
+        ReceiptScan.fromJson({
+          ...base,
+          'category': ['groceries'],
+        }).category,
+        isNull,
+      );
+    },
+  );
+
+  test('reads optional subcategory and ignores absent or malformed values', () {
+    final base = {
+      'is_receipt': true,
+      'items': [item('Lunch', 129)],
+      'total_cents': 129,
+      'category': 'food',
+    };
+    expect(
+      ReceiptScan.fromJson({...base, 'subcategory': 'restaurant'}).subcategory,
+      'restaurant',
+    );
+    for (final value in [
+      null,
+      123,
+      ['restaurant'],
+    ]) {
+      expect(
+        ReceiptScan.fromJson({...base, 'subcategory': value}).subcategory,
+        isNull,
+      );
+    }
+    expect(ReceiptScan.fromJson(base).subcategory, isNull);
+  });
+
   test('without discounts the lines stay and tax, tip, service are extra', () {
     final draft = scan(
       [item('Pizza', 1200), item('Cola', 300)],
@@ -92,6 +144,38 @@ void main() {
     ], discount: 100).splitDraft()!.lines.single;
     expect((cut.qty, cut.unitCents, cut.cents), (1, 1250, 1250));
   });
+
+  for (final discount in [0, 1]) {
+    test(
+      'keeps separate deposits in receipt order with discount $discount',
+      () {
+        final draft = scan([
+          {
+            ...item('Non-alcoholic beer', 894),
+            'quantity': 6,
+            'unit_price_cents': 149,
+          },
+          {...item('Depozīts', 60), 'quantity': 6, 'unit_price_cents': 10},
+          item('Bread', 135),
+          item('Water', 49),
+          {...item('Depozīts', 10), 'quantity': 1, 'unit_price_cents': 10},
+        ], discount: discount).splitDraft()!;
+        expect(draft.lines.map((line) => line.name), [
+          'Non-alcoholic beer',
+          'Depozīts',
+          'Bread',
+          'Water',
+          'Depozīts',
+        ]);
+        expect(draft.lines[1].qty, 6);
+        expect(draft.lines[1].unitCents, 10);
+        expect(draft.lines[1].cents, 60);
+        expect(draft.lines[4].cents, 10);
+        expect(draft.extraCents, 0);
+        expect(draft.totalCents, 1148 - discount);
+      },
+    );
+  }
 
   test('nothing to fill when there are no lines or the discount eats them', () {
     expect(scan(const []).splitDraft(), isNull);

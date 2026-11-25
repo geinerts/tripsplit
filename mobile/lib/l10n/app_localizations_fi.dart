@@ -2352,6 +2352,15 @@ class AppLocalizationsFi extends AppLocalizations {
   String get imageCropperAdjustTripImage => 'Mukauta matkan kuvaa';
 
   @override
+  String get receiptCropHint => 'Vedä reunoja niin, että koko kuitti mahtuu rajaukseen.';
+
+  @override
+  String get imageCropRotate => 'Kierrä kuvaa';
+
+  @override
+  String get imageCropReset => 'Nollaa rajaus';
+
+  @override
   String get imageCropEditAction => 'Muokkaa rajausta';
 
   @override
@@ -5585,4 +5594,19 @@ class AppLocalizationsFi extends AppLocalizations {
 
   @override
   String get expenseSplitAmountFirst => 'Syötä ensin summa tai valitse Riveittäin.';
+
+  @override
+  String get tripExportPdfAfterFinish => 'PDF-vienti on käytettävissä, kun olet päättänyt matkan.';
+
+  @override
+  String get yearSummarySeasonNotice => 'Edellisen vuoden yhteenveto on saatavilla 1. tammikuuta–31. maaliskuuta.';
+
+  @override
+  String get expenseItemsClearAll => 'Poista kaikki rivit';
+
+  @override
+  String get receiptRetakePhoto => 'Ota uudelleen';
+
+  @override
+  String get receiptUsePhoto => 'Käytä kuvaa';
 }

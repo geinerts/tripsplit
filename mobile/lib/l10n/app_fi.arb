@@ -1044,6 +1044,9 @@
   "profileEditRevolutMe": "Revolut.me",
   "imageCropperAdjustAvatar": "Muokkaa avataria",
   "imageCropperAdjustTripImage": "Mukauta matkan kuvaa",
+  "receiptCropHint": "Vedä reunoja niin, että koko kuitti mahtuu rajaukseen.",
+  "imageCropRotate": "Kierrä kuvaa",
+  "imageCropReset": "Nollaa rajaus",
   "imageCropEditAction": "Muokkaa rajausta",
   "imageCropZoomIn": "Lähennä",
   "imageCropZoomOut": "Loitonna",
@@ -2224,5 +2227,10 @@
   "quickSplitFromAction": "Quick splitistä",
   "quickSplitFromTitle": "Lisää Quick split",
   "quickSplitNoneForTrip": "Yhdessäkään Quick splitissä ei ole vain tämän matkan ihmisiä.",
-  "expenseSplitAmountFirst": "Syötä ensin summa tai valitse Riveittäin."
+  "expenseSplitAmountFirst": "Syötä ensin summa tai valitse Riveittäin.",
+  "tripExportPdfAfterFinish": "PDF-vienti on käytettävissä, kun olet päättänyt matkan.",
+  "yearSummarySeasonNotice": "Edellisen vuoden yhteenveto on saatavilla 1. tammikuuta–31. maaliskuuta.",
+  "expenseItemsClearAll": "Poista kaikki rivit",
+  "receiptRetakePhoto": "Ota uudelleen",
+  "receiptUsePhoto": "Käytä kuvaa"
 }

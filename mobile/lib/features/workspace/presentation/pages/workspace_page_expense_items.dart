@@ -190,7 +190,7 @@ class _ItemizedSplitEditor extends StatefulWidget {
   final Widget modeTile;
 
   /// "Fill from receipt", above the item list; null when AI isn't available.
-  final Widget? receiptAction;
+  final Widget Function()? receiptAction;
 
   /// Adds a person from the People tab; null hides "+ Add".
   final Future<WorkspaceUser?> Function()? addPerson;
@@ -202,6 +202,7 @@ class _ItemizedSplitEditor extends StatefulWidget {
 class _ItemizedSplitEditorState extends State<_ItemizedSplitEditor> {
   bool _peopleTab = false;
   int? _editing;
+  bool _editingExisting = false;
   late int _person = widget.users.first.id;
 
   List<_ExpenseItemDraft> get _items => widget.items;
@@ -251,6 +252,17 @@ class _ItemizedSplitEditorState extends State<_ItemizedSplitEditor> {
     if (_items.length >= 100) return;
     _items.add(_ExpenseItemDraft());
     _editing = _items.length - 1;
+    _editingExisting = false;
+  }
+
+  void _saveItem() {
+    final index = _editing;
+    if (index == null || !_items[index].filled) return;
+    FocusScope.of(context).unfocus();
+    setState(() {
+      _editing = null;
+      _editingExisting = false;
+    });
   }
 
   void _nextItem() => setState(() {
@@ -426,7 +438,7 @@ class _ItemizedSplitEditorState extends State<_ItemizedSplitEditor> {
     );
     return [
       if (widget.receiptAction case final action?) ...[
-        action,
+        action(),
         const SizedBox(height: 16),
       ],
       Row(
@@ -474,11 +486,13 @@ class _ItemizedSplitEditorState extends State<_ItemizedSplitEditor> {
             children: [
               _iconTile(context, Icons.add_rounded, primary: true),
               const SizedBox(width: 12),
-              Text(
-                t.expenseAddItem,
-                style: theme.textTheme.bodyLarge?.copyWith(
-                  color: colors.primary,
-                  fontWeight: FontWeight.w600,
+              Expanded(
+                child: Text(
+                  t.expenseAddItem,
+                  style: theme.textTheme.bodyLarge?.copyWith(
+                    color: colors.primary,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
               ),
             ],
@@ -576,7 +590,10 @@ class _ItemizedSplitEditorState extends State<_ItemizedSplitEditor> {
     final name = item.name.text.trim();
     return InkWell(
       key: ValueKey('expense-item-row-$index'),
-      onTap: () => setState(() => _editing = index),
+      onTap: () => setState(() {
+        _editing = index;
+        _editingExisting = true;
+      }),
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 12),
         decoration: BoxDecoration(
@@ -847,7 +864,11 @@ class _ItemizedSplitEditorState extends State<_ItemizedSplitEditor> {
               ),
             ),
           ],
-          Row(
+          OverflowBar(
+            alignment: _items.length > 1
+                ? MainAxisAlignment.spaceBetween
+                : MainAxisAlignment.end,
+            overflowAlignment: OverflowBarAlignment.end,
             children: [
               if (_items.length > 1)
                 TextButton.icon(
@@ -859,14 +880,20 @@ class _ItemizedSplitEditorState extends State<_ItemizedSplitEditor> {
                     foregroundColor: colors.onSurfaceVariant,
                   ),
                 ),
-              const Spacer(),
-              TextButton(
-                key: const ValueKey('expense-next-item'),
-                onPressed: item.isBlank && index == _items.length - 1
-                    ? null
-                    : _nextItem,
-                child: Text('${t.expenseNextItem} ›'),
-              ),
+              if (_editingExisting)
+                TextButton(
+                  key: const ValueKey('expense-item-save'),
+                  onPressed: item.filled ? _saveItem : null,
+                  child: Text(t.saveAction),
+                )
+              else
+                TextButton(
+                  key: const ValueKey('expense-next-item'),
+                  onPressed: item.isBlank && index == _items.length - 1
+                      ? null
+                      : _nextItem,
+                  child: Text('${t.expenseNextItem} ›'),
+                ),
             ],
           ),
         ],
@@ -1091,6 +1118,8 @@ class _ItemizedSplitEditorState extends State<_ItemizedSplitEditor> {
     final colors = theme.colorScheme;
     final item = _items[index];
     final mine = item.taken[person] ?? 0;
+    // Include this person's selection, but never units held by someone else.
+    final available = mine + item.left;
     final others = item.taken.keys.where((id) => id != person).toList();
     final String? subtitle;
     final int cents;
@@ -1105,7 +1134,7 @@ class _ItemizedSplitEditorState extends State<_ItemizedSplitEditor> {
     } else {
       subtitle = mine > 0
           ? [
-              t.expenseItemsOfQty(mine, item.qty),
+              t.expenseItemsOfQty(mine, available),
               if (item.left > 0) t.expenseItemsLeft(item.left),
             ].join(' · ')
           : '${t.expenseItemsLeft(item.left)} · '
@@ -1143,7 +1172,7 @@ class _ItemizedSplitEditorState extends State<_ItemizedSplitEditor> {
                           style: theme.textTheme.bodyLarge,
                         ),
                       ),
-                      if (item.qty > 1) _qtyChip(context, item.qty),
+                      if (item.qty > 1) _qtyChip(context, available),
                     ],
                   ),
                   if (subtitle != null)
@@ -1249,7 +1278,7 @@ class _ItemizedSplitEditorState extends State<_ItemizedSplitEditor> {
           : receipt > 0 && diff < 0
           ? t.expenseItemsOver(_money(-diff))
           : _extraCents > 0
-          ? '${t.expenseItemsCheck(_money(itemsCents), _money(_extraCents), _money(entered))} ✓'
+          ? '${t.expenseItemsCheck(_money(itemsCents), _money(_extraCents), _money(entered))}${receipt > 0 ? ' ✓' : ''}'
           : t.expenseItemsTotal(_money(entered));
       status = Text(
         text,

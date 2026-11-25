@@ -71,9 +71,14 @@ class QuickSplitsController extends ChangeNotifier {
 
   /// A fresh, authorized link to the receipt photo, loaded on every open;
   /// only an https link on the API host is accepted, as for trip receipts.
-  Future<Uri?> loadReceiptUri(int id) async {
+  Future<Uri?> loadReceiptUri(int id, {bool thumbnail = false}) async {
     final split = await repository.get(id);
-    final uri = Uri.tryParse(split.receiptUrl ?? '');
+    final uri = Uri.tryParse(
+      (thumbnail
+              ? split.receiptThumbUrl ?? split.receiptUrl
+              : split.receiptUrl) ??
+          '',
+    );
     final base = Uri.parse(AppEnv.current.apiBaseUrl);
     if (uri == null ||
         uri.scheme != 'https' ||

@@ -2364,6 +2364,15 @@ class AppLocalizationsPl extends AppLocalizations {
   String get imageCropperAdjustTripImage => 'Dostosuj zdjęcie wycieczki';
 
   @override
+  String get receiptCropHint => 'Przeciągnij krawędzie, aby objąć cały paragon.';
+
+  @override
+  String get imageCropRotate => 'Obróć zdjęcie';
+
+  @override
+  String get imageCropReset => 'Resetuj kadrowanie';
+
+  @override
   String get imageCropEditAction => 'Edytuj kadrowanie';
 
   @override
@@ -5609,4 +5618,19 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get expenseSplitAmountFirst => 'Najpierw wpisz kwotę albo wybierz Według pozycji.';
+
+  @override
+  String get tripExportPdfAfterFinish => 'Eksport do PDF jest dostępny po zakończeniu podróży.';
+
+  @override
+  String get yearSummarySeasonNotice => 'Podsumowanie poprzedniego roku jest dostępne od 1 stycznia do 31 marca.';
+
+  @override
+  String get expenseItemsClearAll => 'Usuń wszystkie pozycje';
+
+  @override
+  String get receiptRetakePhoto => 'Zrób ponownie';
+
+  @override
+  String get receiptUsePhoto => 'Użyj zdjęcia';
 }

@@ -1,3 +1,4 @@
+import '../../support/receipt_camera_fake.dart';
 import 'package:tripsplit/features/live_location/presentation/live_location_controller.dart';
 import 'package:tripsplit/features/live_location/domain/live_location.dart';
 import 'package:tripsplit/features/workspace/data/datasources/workspace_remote_parsers.dart';
@@ -456,8 +457,9 @@ class _Workspace implements WorkspaceController {
   Future<Uri?> loadReceiptUri({
     required int tripId,
     required int expenseId,
+    bool thumbnail = false,
   }) async {
-    receiptCalls.add((tripId, expenseId));
+    if (!thumbnail) receiptCalls.add((tripId, expenseId));
     return null;
   }
 
@@ -482,12 +484,17 @@ class _Workspace implements WorkspaceController {
   }
 
   final scannedReceipts = <String>[];
+  final scanRescans = <bool>[];
+  Future<ReceiptScan>? pendingScan;
   @override
   Future<ReceiptScan> scanReceipt({
     required String receiptPath,
     required String requestId,
+    bool rescan = false,
   }) async {
     scannedReceipts.add(receiptPath);
+    scanRescans.add(rescan);
+    if (pendingScan case final pending?) return pending;
     return ReceiptScan.fromJson({
       'is_receipt': true,
       'merchant': 'Lido',
@@ -695,7 +702,7 @@ Future<void> _mount(
   WorkspacePageCommandController? commands,
   GlobalKey? boundary,
   Map<String, bool>? premiumFeatures,
-  Future<void> Function()? onExportTripRequested,
+  Future<void> Function(bool pdfAllowed)? onExportTripRequested,
   ExpenseDraft? initialExpenseDraft,
   Future<ExpenseTarget?> Function(BuildContext, Trip)? pickExpenseTarget,
   void Function(ExpenseTarget, ExpenseDraft)? onExpenseTargetChanged,
@@ -1343,7 +1350,12 @@ void main() {
         }, accountId: 7)!;
     final free = premium('free', features: {'trip_export': false});
     var exports = 0;
-    Future<void> export() async => exports++;
+    bool? lastPdfAllowed;
+    Future<void> export(bool pdfAllowed) async {
+      lastPdfAllowed = pdfAllowed;
+      exports++;
+    }
+
     for (final (name, auth, tripFeatures, callback, shown) in [
       (
         'no export flow',
@@ -1418,7 +1430,39 @@ void main() {
         await tester.tap(find.byKey(const ValueKey('trip-export')));
         await tester.pumpAndSettle();
         expect(exports, before + 1, reason: name);
+        expect(lastPdfAllowed, isFalse, reason: name);
       }
+      await disposePage(tester);
+      commands.dispose();
+    }
+  });
+
+  testWidgets('export uses the latest workspace status for PDF availability', (
+    tester,
+  ) async {
+    for (final status in ['active', 'settling', 'archived', 'unknown']) {
+      final commands = WorkspacePageCommandController();
+      bool? allowed;
+      await _mount(
+        tester,
+        _Workspace()..data = snapshot(status: status),
+        role: 'member',
+        commands: commands,
+        premiumFeatures: {'trip_export': true},
+        onExportTripRequested: (pdfAllowed) async {
+          allowed = pdfAllowed;
+        },
+      );
+      await tester.pumpAndSettle();
+      commands.requestOpenTripActions();
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const ValueKey('trip-export')));
+      await tester.pumpAndSettle();
+      expect(
+        allowed,
+        status == 'settling' || status == 'archived',
+        reason: status,
+      );
       await disposePage(tester);
       commands.dispose();
     }
@@ -2036,11 +2080,507 @@ void main() {
         tester,
         find.byKey(const ValueKey('expense-custom-split')),
       );
-      await tester.tap(find.byKey(const ValueKey('split-mode-itemized')));
+      await visibleTap(
+        tester,
+        find.byKey(const ValueKey('split-mode-itemized')),
+      );
       await tester.pumpAndSettle();
     }
 
-    testWidgets('By item reads the receipt after a one-time notice', (
+    testWidgets(
+      'receipt units show only the quantity available to each person',
+      (tester) async {
+        final controller = _Workspace()
+          ..pendingScan = Future.value(
+            ReceiptScan(
+              isReceipt: true,
+              items: const [
+                ReceiptScanItem(
+                  name: 'Cola',
+                  quantity: 2,
+                  unitPriceCents: 99,
+                  totalCents: 198,
+                ),
+                ReceiptScanItem(
+                  name: 'Deposit',
+                  quantity: 2,
+                  unitPriceCents: 10,
+                  totalCents: 20,
+                ),
+              ],
+              totalCents: 218,
+              currencyCode: 'EUR',
+              sumMatches: true,
+            ),
+          );
+        await _mount(
+          tester,
+          controller,
+          auth: _Auth(receiptAi: true),
+          openAddExpenseOnStart: true,
+          initialExpenseDraft: const ExpenseDraft(
+            category: 'groceries',
+            receipt: UploadedReceiptData(path: 'receipts/r_owner_ab.webp'),
+          ),
+        );
+        await openItems(tester);
+        await visibleTap(tester, find.byKey(const ValueKey('receipt-ai-fill')));
+        await visibleTap(
+          tester,
+          find.byKey(const ValueKey('expense-items-tab-people')),
+        );
+        expect(find.text('×2'), findsNWidgets(2));
+        for (var index = 0; index < 2; index++) {
+          await visibleTap(
+            tester,
+            find.byKey(ValueKey('expense-item-$index-person-7')),
+          );
+        }
+        await visibleTap(
+          tester,
+          find.byKey(const ValueKey('expense-person-8')),
+        );
+        expect(find.text('×1'), findsNWidgets(2));
+        expect(find.text('×2'), findsNothing);
+        for (var index = 0; index < 2; index++) {
+          await visibleTap(
+            tester,
+            find.byKey(ValueKey('expense-item-$index-person-8')),
+          );
+        }
+        expect(find.text('×1'), findsNWidgets(2));
+        // Returning one unit makes it available to the other person immediately.
+        await visibleTap(
+          tester,
+          find.byKey(const ValueKey('expense-person-7')),
+        );
+        expect(find.text('×1'), findsNWidgets(2));
+        await visibleTap(
+          tester,
+          find.byKey(const ValueKey('expense-item-0-person-7')),
+        );
+        await visibleTap(
+          tester,
+          find.byKey(const ValueKey('expense-person-8')),
+        );
+        expect(find.text('×2'), findsOneWidget);
+        expect(find.text('×1'), findsOneWidget);
+        await visibleTap(
+          tester,
+          find.byKey(const ValueKey('expense-person-7')),
+        );
+        await visibleTap(
+          tester,
+          find.byKey(const ValueKey('expense-item-0-person-7')),
+        );
+        // The receipt list still contains the original purchased quantities.
+        await visibleTap(
+          tester,
+          find.byKey(const ValueKey('expense-items-tab-items')),
+        );
+        expect(find.text('×2'), findsNWidgets(2));
+        await visibleTap(
+          tester,
+          find.byKey(const ValueKey('expense-items-tab-people')),
+        );
+        await visibleTap(
+          tester,
+          find.byKey(const ValueKey('expense-editor-done')),
+        );
+        await visibleTap(tester, find.widgetWithText(ElevatedButton, 'Add'));
+        expect(controller.savedAmount, 2.18);
+        expect(controller.savedItems!.map((item) => item.participantIds), [
+          [7],
+          [8],
+          [7],
+          [8],
+        ]);
+        expect(tester.takeException(), isNull);
+        await disposePage(tester);
+      },
+    );
+
+    for (final locale in ['en', 'lv']) {
+      testWidgets('editing a receipt item saves back to the list: $locale', (
+        tester,
+      ) async {
+        final controller = _Workspace();
+        await _mount(
+          tester,
+          controller,
+          auth: _Auth(receiptAi: true),
+          openAddExpenseOnStart: true,
+          locale: locale,
+          width: locale == 'lv' ? 320 : 390,
+          scale: locale == 'lv' ? 2 : 1,
+          initialExpenseDraft: const ExpenseDraft(
+            category: 'food',
+            receipt: UploadedReceiptData(path: 'receipts/r_owner_ab.webp'),
+          ),
+        );
+        await openItems(tester);
+        expect(find.byKey(const ValueKey('expense-next-item')), findsOneWidget);
+        await visibleTap(tester, find.byKey(const ValueKey('receipt-ai-fill')));
+        await visibleTap(
+          tester,
+          find.byKey(const ValueKey('expense-item-row-0')),
+        );
+        expect(find.byKey(const ValueKey('expense-next-item')), findsNothing);
+        await tester.enterText(
+          find.byKey(const ValueKey('expense-item-name-0')),
+          '',
+        );
+        await tester.pumpAndSettle();
+        expect(
+          tester
+              .widget<TextButton>(
+                find.byKey(const ValueKey('expense-item-save')),
+              )
+              .onPressed,
+          isNull,
+        );
+        await tester.enterText(
+          find.byKey(const ValueKey('expense-item-name-0')),
+          'Corrected pizza',
+        );
+        await tester.pumpAndSettle();
+        await visibleTap(
+          tester,
+          find.byKey(const ValueKey('expense-item-save')),
+        );
+        expect(
+          find.textContaining('Corrected pizza', findRichText: true),
+          findsWidgets,
+        );
+        expect(
+          find.byKey(const ValueKey('expense-item-row-0')),
+          findsOneWidget,
+        );
+        expect(
+          find.byKey(const ValueKey('expense-item-row-1')),
+          findsOneWidget,
+        );
+        expect(find.byKey(const ValueKey('expense-item-row-2')), findsNothing);
+        expect(find.byKey(const ValueKey('expense-item-name-0')), findsNothing);
+        expect(find.byKey(const ValueKey('expense-item-name-1')), findsNothing);
+        expect(find.byKey(const ValueKey('expense-item-save')), findsNothing);
+        expect(controller.scannedReceipts, hasLength(1));
+        expect(controller.saves, 0);
+        expect(tester.takeException(), isNull);
+        await disposePage(tester);
+      });
+    }
+
+    for (final example in [
+      (
+        category: 'food',
+        type: 'restaurant',
+        initial: '',
+        initialType: null,
+        label: 'Food · Restaurant',
+      ),
+      (
+        category: 'transport',
+        type: 'taxi',
+        initial: '',
+        initialType: null,
+        label: 'Transport · Taxi',
+      ),
+      (
+        category: 'accommodation',
+        type: 'hotel',
+        initial: '',
+        initialType: null,
+        label: 'Accommodation · Hotel',
+      ),
+      (
+        category: 'food',
+        type: null,
+        initial: '',
+        initialType: null,
+        label: 'Food',
+      ),
+      (
+        category: 'groceries',
+        type: 'restaurant',
+        initial: '',
+        initialType: null,
+        label: 'Groceries',
+      ),
+      (
+        category: 'food',
+        type: 'hotel',
+        initial: '',
+        initialType: null,
+        label: 'Food',
+      ),
+      (
+        category: 'food',
+        type: 'restaurant',
+        initial: 'transport',
+        initialType: null,
+        label: 'Transport',
+      ),
+      (
+        category: 'food',
+        type: 'restaurant',
+        initial: 'food',
+        initialType: 'cafe',
+        label: 'Food · Café',
+      ),
+      (
+        category: 'food',
+        type: 'restaurant',
+        initial: 'food',
+        initialType: 'Team lunch',
+        label: 'Food · Team lunch',
+      ),
+    ]) {
+      testWidgets(
+        'receipt type ${example.category}/${example.type} preserves ${example.initial}/${example.initialType}',
+        (tester) async {
+          final controller = _Workspace()
+            ..pendingScan = Future.value(
+              ReceiptScan(
+                isReceipt: true,
+                items: const [
+                  ReceiptScanItem(name: 'Receipt item', totalCents: 129),
+                ],
+                totalCents: 129,
+                category: example.category,
+                subcategory: example.type,
+                currencyCode: 'EUR',
+                sumMatches: true,
+              ),
+            );
+          await _mount(
+            tester,
+            controller,
+            auth: _Auth(receiptAi: true),
+            openAddExpenseOnStart: true,
+            initialExpenseDraft: ExpenseDraft(
+              category: example.initial,
+              subcategory: example.initialType,
+              receipt: const UploadedReceiptData(
+                path: 'receipts/r_owner_ab.webp',
+              ),
+            ),
+          );
+          Future<void> scanAndReturn() async {
+            await openItems(tester);
+            await visibleTap(
+              tester,
+              find.byKey(const ValueKey('receipt-ai-fill')),
+            );
+            await visibleTap(
+              tester,
+              find.byKey(const ValueKey('expense-editor-close')),
+            );
+          }
+
+          await scanAndReturn();
+          final categoryTile = find.byKey(const ValueKey('expense-category'));
+          expect(
+            find.descendant(
+              of: categoryTile,
+              matching: find.textContaining(example.label, findRichText: true),
+            ),
+            findsOneWidget,
+          );
+          if (example.category == 'food' &&
+              example.type == 'restaurant' &&
+              example.initial.isEmpty) {
+            await visibleTap(
+              tester,
+              find.byKey(const ValueKey('expense-type-edit')),
+            );
+            await visibleTap(
+              tester,
+              find.byKey(const ValueKey('expense-type-cafe')),
+            );
+            await scanAndReturn();
+            expect(
+              find.textContaining('Food · Café', findRichText: true),
+              findsOneWidget,
+            );
+            await visibleTap(
+              tester,
+              find.byKey(const ValueKey('expense-type-edit')),
+            );
+            await visibleTap(
+              tester,
+              find.byKey(const ValueKey('expense-type-none')),
+            );
+            await scanAndReturn();
+            expect(
+              find.byKey(const ValueKey('expense-type-edit')),
+              findsNothing,
+            );
+            expect(
+              find.byKey(const ValueKey('expense-type-add')),
+              findsOneWidget,
+            );
+          }
+          expect(controller.saves, 0);
+          expect(tester.takeException(), isNull);
+          await disposePage(tester);
+        },
+      );
+    }
+
+    for (final example in [
+      (suggestion: 'groceries', initial: '', expected: 'Groceries'),
+      (suggestion: null, initial: '', expected: 'Choose'),
+      (suggestion: 'unknown', initial: '', expected: 'Choose'),
+      (suggestion: 'other', initial: '', expected: 'Choose'),
+      (suggestion: 'groceries', initial: 'food', expected: 'Food'),
+      (
+        suggestion: 'groceries',
+        initial: 'Custom trip supplies',
+        expected: 'Custom trip supplies',
+      ),
+    ]) {
+      testWidgets(
+        'receipt category ${example.suggestion} preserves ${example.initial}',
+        (tester) async {
+          final controller = _Workspace()
+            ..pendingScan = Future.value(
+              ReceiptScan(
+                isReceipt: true,
+                items: const [ReceiptScanItem(name: 'Milk', totalCents: 129)],
+                totalCents: 129,
+                category: example.suggestion,
+                currencyCode: 'EUR',
+                sumMatches: true,
+              ),
+            );
+          await _mount(
+            tester,
+            controller,
+            auth: _Auth(receiptAi: true),
+            openAddExpenseOnStart: true,
+            initialExpenseDraft: ExpenseDraft(
+              category: example.initial,
+              receipt: const UploadedReceiptData(
+                path: 'receipts/r_owner_ab.webp',
+              ),
+            ),
+          );
+          await openItems(tester);
+          await visibleTap(
+            tester,
+            find.byKey(const ValueKey('receipt-ai-fill')),
+          );
+          await visibleTap(
+            tester,
+            find.byKey(const ValueKey('expense-editor-close')),
+          );
+          final categoryTile = find.byKey(const ValueKey('expense-category'));
+          final t = AppLocalizations.of(tester.element(categoryTile))!;
+          expect(
+            find.descendant(
+              of: categoryTile,
+              matching: find.text(
+                example.expected == 'Choose'
+                    ? t.workspaceChooseCategory
+                    : example.expected,
+              ),
+            ),
+            findsOneWidget,
+          );
+          if (example.initial.isEmpty && example.suggestion == 'groceries') {
+            // The AI suggestion is an ordinary editable category. A later scan
+            // must not overwrite the user's correction.
+            await selectExpenseFood(tester);
+            await openItems(tester);
+            await visibleTap(
+              tester,
+              find.byKey(const ValueKey('receipt-ai-fill')),
+            );
+            await visibleTap(
+              tester,
+              find.byKey(const ValueKey('expense-editor-close')),
+            );
+            expect(
+              find.descendant(of: categoryTile, matching: find.text('Food')),
+              findsOneWidget,
+            );
+          }
+          expect(controller.saves, 0);
+          expect(tester.takeException(), isNull);
+          await disposePage(tester);
+        },
+      );
+    }
+
+    for (final example in [
+      (name: 'included VAT', items: 4597, tax: 0, total: 4597),
+      (name: 'duplicate VAT', items: 4597, tax: 723, total: 4597),
+      (name: 'added tax', items: 3874, tax: 723, total: 4597),
+      (name: 'unknown total', items: 4597, tax: 723, total: 0),
+    ]) {
+      testWidgets('compares ${example.name} with the printed receipt total', (
+        tester,
+      ) async {
+        final matches = example.items + example.tax == example.total;
+        final controller = _Workspace()
+          ..pendingScan = Future.value(
+            ReceiptScan(
+              isReceipt: true,
+              items: [
+                ReceiptScanItem(name: 'Groceries', totalCents: example.items),
+              ],
+              taxCents: example.tax,
+              totalCents: example.total,
+              currencyCode: 'EUR',
+              sumMatches: matches,
+            ),
+          );
+        await _mount(
+          tester,
+          controller,
+          auth: _Auth(receiptAi: true),
+          openAddExpenseOnStart: true,
+          initialExpenseDraft: const ExpenseDraft(
+            category: 'food',
+            receipt: UploadedReceiptData(path: 'receipts/r_owner_ab.webp'),
+          ),
+        );
+        await openItems(tester);
+        final t = AppLocalizations.of(
+          tester.element(find.byKey(const ValueKey('receipt-ai-fill'))),
+        )!;
+        await visibleTap(tester, find.byKey(const ValueKey('receipt-ai-fill')));
+        final status = tester
+            .widget<Text>(find.byKey(const ValueKey('expense-split-status')))
+            .data!;
+        if (example.name == 'duplicate VAT') {
+          expect(status, t.expenseItemsOver('€7.23'));
+          expect(
+            tester
+                .widget<Text>(
+                  find.byKey(const ValueKey('expense-items-entered')),
+                )
+                .data,
+            t.expenseItemsEnteredOf('€53.20', '€45.97'),
+          );
+        } else if (example.name == 'unknown total') {
+          expect(status, isNot(contains('✓')));
+          expect(status, contains('53.20'));
+        } else {
+          expect(status, contains('45.97'));
+          expect(find.text(t.receiptAiTotalsMismatch), findsNothing);
+        }
+        if (!matches) {
+          expect(find.text(t.receiptAiTotalsMismatch), findsOneWidget);
+        }
+        expect(controller.saves, 0);
+        expect(tester.takeException(), isNull);
+        await disposePage(tester);
+      });
+    }
+
+    testWidgets('By item reads the receipt directly on first use', (
       tester,
     ) async {
       final controller = _Workspace();
@@ -2058,19 +2598,12 @@ void main() {
       final t = AppLocalizations.of(
         tester.element(find.byKey(const ValueKey('receipt-ai-fill'))),
       )!;
-      // The button spins while the notice is open, so no settling here.
-      await visibleTap(
-        tester,
-        find.byKey(const ValueKey('receipt-ai-fill')),
-        settle: false,
-      );
-      // Nothing is sent before the user agrees.
-      expect(find.text(t.receiptAiNoticeTitle), findsOneWidget);
-      expect(controller.scannedReceipts, isEmpty);
-      await tester.tap(
+      await visibleTap(tester, find.byKey(const ValueKey('receipt-ai-fill')));
+      expect(find.text(t.receiptAiNoticeTitle), findsNothing);
+      expect(
         find.byKey(const ValueKey('receipt-ai-notice-continue')),
+        findsNothing,
       );
-      await tester.pumpAndSettle();
       expect(controller.scannedReceipts, ['receipts/r_owner_ab.webp']);
       expect(find.textContaining('Pizza', findRichText: true), findsWidgets);
       expect(find.textContaining('Beer', findRichText: true), findsWidgets);
@@ -2082,10 +2615,148 @@ void main() {
         contains('20.00'),
       );
 
-      // Asked again: no second notice.
+      // Existing rows must be explicitly cleared before another reading.
+      expect(
+        tester
+            .widget<OutlinedButton>(
+              find.byKey(const ValueKey('receipt-ai-fill')),
+            )
+            .onPressed,
+        isNull,
+      );
+      await visibleTap(
+        tester,
+        find.byKey(const ValueKey('expense-items-clear-all')),
+      );
+      expect(find.textContaining('Pizza', findRichText: true), findsNothing);
+      expect(find.textContaining('Beer', findRichText: true), findsNothing);
+      expect(find.text(t.receiptAiCheckItems), findsNothing);
+      expect(
+        find.byKey(const ValueKey('expense-items-clear-all')),
+        findsNothing,
+      );
+      expect(
+        tester
+            .widget<Text>(find.byKey(const ValueKey('expense-items-entered')))
+            .data,
+        contains('0.00'),
+      );
+      expect(
+        tester
+            .widget<TextField>(find.byKey(const ValueKey('expense-item-extra')))
+            .controller!
+            .text,
+        isEmpty,
+      );
+      expect(
+        tester
+            .widget<OutlinedButton>(
+              find.byKey(const ValueKey('receipt-ai-fill')),
+            )
+            .onPressed,
+        isNotNull,
+      );
       await visibleTap(tester, find.byKey(const ValueKey('receipt-ai-fill')));
       expect(find.text(t.receiptAiNoticeTitle), findsNothing);
       expect(controller.scannedReceipts, hasLength(2));
+      expect(controller.scanRescans, [false, true]);
+      expect(controller.receiptUploads, isEmpty);
+      expect(find.textContaining('Pizza', findRichText: true), findsWidgets);
+      expect(
+        tester
+            .widget<Text>(find.byKey(const ValueKey('expense-items-entered')))
+            .data,
+        contains('20.00'),
+      );
+      await disposePage(tester);
+    });
+
+    testWidgets(
+      'manual item input blocks scanning and can be cleared without leaving',
+      (tester) async {
+        final controller = _Workspace();
+        await _mount(
+          tester,
+          controller,
+          auth: _Auth(receiptAi: true),
+          openAddExpenseOnStart: true,
+          initialExpenseDraft: const ExpenseDraft(
+            category: 'food',
+            receipt: UploadedReceiptData(path: 'receipts/r_owner_ab.webp'),
+          ),
+        );
+        await openItems(tester);
+        await tester.enterText(
+          find.byKey(const ValueKey('expense-item-name-0')),
+          'Manual item',
+        );
+        await tester.pumpAndSettle();
+        expect(
+          tester
+              .widget<OutlinedButton>(
+                find.byKey(const ValueKey('receipt-ai-fill')),
+              )
+              .onPressed,
+          isNull,
+        );
+        expect(controller.scannedReceipts, isEmpty);
+        await visibleTap(
+          tester,
+          find.byKey(const ValueKey('expense-items-clear-all')),
+        );
+        expect(find.text('Manual item'), findsNothing);
+        await visibleTap(tester, find.byKey(const ValueKey('receipt-ai-fill')));
+        expect(controller.scanRescans, [true]);
+        await disposePage(tester);
+      },
+    );
+
+    testWidgets('a pending scan cannot overwrite input added while waiting', (
+      tester,
+    ) async {
+      final pending = Completer<ReceiptScan>();
+      final controller = _Workspace()..pendingScan = pending.future;
+      await _mount(
+        tester,
+        controller,
+        auth: _Auth(receiptAi: true),
+        openAddExpenseOnStart: true,
+        initialExpenseDraft: const ExpenseDraft(
+          category: 'food',
+          receipt: UploadedReceiptData(path: 'receipts/r_owner_ab.webp'),
+        ),
+      );
+      await openItems(tester);
+      await tester.tap(find.byKey(const ValueKey('receipt-ai-fill')));
+      await tester.pump();
+      await tester.enterText(
+        find.byKey(const ValueKey('expense-item-name-0')),
+        'Keep my edit',
+      );
+      await tester.pump();
+      expect(
+        tester
+            .widget<IconButton>(
+              find.byKey(const ValueKey('expense-items-clear-all')),
+            )
+            .onPressed,
+        isNull,
+      );
+      pending.complete(
+        ReceiptScan.fromJson({
+          'is_receipt': true,
+          'currency': 'EUR',
+          'items': [
+            {'name': 'Overwrite', 'total_cents': 100},
+          ],
+          'total_cents': 100,
+          'sum_matches': true,
+        }),
+      );
+      await tester.pumpAndSettle();
+      expect(find.text('Keep my edit'), findsOneWidget);
+      expect(find.text('Overwrite'), findsNothing);
+      expect(controller.scannedReceipts, hasLength(1));
       await disposePage(tester);
     });
 
@@ -4439,6 +5110,76 @@ void main() {
     await disposePage(tester);
   });
 
+  for (final mode in ['itemized', 'exact', 'percent', 'shares', 'adjustment']) {
+    testWidgets('expense detail preserves stored uneven $mode amounts', (
+      tester,
+    ) async {
+      final saved = WorkspaceRemoteParsers.parseExpense({
+        'id': 1,
+        'amount': 16.25,
+        'original_amount': 16.25,
+        'trip_currency_code': 'EUR',
+        'expense_currency_code': 'EUR',
+        'fx_rate_to_trip': 1,
+        'category': 'groceries',
+        'note': 'top',
+        'expense_date': '2026-11-22',
+        'split_mode': mode,
+        'paid_by_id': 7,
+        'paid_by_nickname': 'Old payer name',
+        'from_quick_split': true,
+        'participants': [
+          {
+            'id': 7,
+            'nickname': 'Old payer name',
+            'owed': 7.49,
+            'split_value': 7.49,
+          },
+          {
+            'id': 8,
+            'nickname': 'Old member name',
+            'owed': 8.76,
+            'split_value': 8.76,
+          },
+        ],
+        if (mode == 'itemized')
+          'items': [
+            {
+              'name': 'My groceries',
+              'amount': 7.49,
+              'participant_ids': [7],
+            },
+            {
+              'name': 'Other groceries',
+              'amount': 8.76,
+              'participant_ids': [8],
+            },
+          ],
+      });
+      await _mount(
+        tester,
+        _Workspace()..data = snapshot(expenses: [saved]),
+        initialFocus: const WorkspaceFocus.expense(1),
+      );
+      await tester.pumpAndSettle();
+      for (final (id, expected) in [(7, '€7.49'), (8, '€8.76')]) {
+        final amount = find.byKey(ValueKey('expense-share-amount-$id'));
+        await tester.scrollUntilVisible(
+          amount,
+          100,
+          scrollable: find.byType(Scrollable).last,
+        );
+        expect(tester.widget<Text>(amount).data, expected);
+      }
+      expect(find.text('€8.13'), findsNothing);
+      expect(find.text('€8.12'), findsNothing);
+      expect(find.text('Old payer name'), findsNothing);
+      expect(find.text('Old member name'), findsNothing);
+      expect(tester.takeException(), isNull);
+      await disposePage(tester);
+    });
+  }
+
   for (final mode in ['equal', 'exact', 'percent', 'shares']) {
     testWidgets('expense detail shows $mode icon and trailing share amounts', (
       tester,
@@ -4606,7 +5347,13 @@ void main() {
       }
     }
   }
-  for (final source in ['camera', 'gallery', 'files', 'remove']) {
+  for (final source in [
+    'camera',
+    'gallery',
+    'files',
+    'remove',
+    'cancel-crop',
+  ]) {
     testWidgets(
       'receipt source $source reaches upload and leaves the form alone',
       (tester) async {
@@ -4615,6 +5362,7 @@ void main() {
         final receiptBytes = await tester.runAsync(_receiptPreviewFixture);
         final file = File('${dir.path}/receipt.png')
           ..writeAsBytesSync(receiptBytes!);
+        final camera = ReceiptCameraFake(receiptBytes, dir)..install();
         const photoChannel = MethodChannel('plugins.flutter.io/image_picker');
         const fileChannel = MethodChannel(
           'miguelruivo.flutter.plugins.filepicker',
@@ -4693,6 +5441,59 @@ void main() {
             : t.chooseReceiptFile;
         await tester.tap(find.text(label));
         await tester.pump(const Duration(milliseconds: 400));
+        if (source == 'camera') {
+          await tester.pumpAndSettle();
+          expect(controller.receiptUploads, isEmpty);
+          await tester.tap(
+            find.byKey(const ValueKey('receipt-camera-capture')),
+          );
+        }
+        for (
+          var attempt = 0;
+          attempt < 1000 &&
+              find
+                  .byKey(const ValueKey('receipt-crop-save'))
+                  .evaluate()
+                  .isEmpty;
+          attempt++
+        ) {
+          await tester.runAsync(
+            () => Future<void>.delayed(const Duration(milliseconds: 10)),
+          );
+          await tester.pump();
+        }
+        await tester.pumpAndSettle();
+        expect(controller.receiptUploads, isEmpty);
+        expect(
+          find.byKey(const ValueKey('receipt-crop-frame')),
+          findsOneWidget,
+        );
+        if (source == 'cancel-crop') {
+          await tester.tap(find.byKey(const ValueKey('receipt-crop-cancel')));
+          await tester.pumpAndSettle();
+          expect(controller.receiptUploads, isEmpty);
+          expect(
+            find.byKey(const ValueKey('expense-form-amount')),
+            findsOneWidget,
+          );
+          expect(
+            find.byKey(const ValueKey('receipt-attachment-card')),
+            findsNothing,
+          );
+          expect(crops, 0);
+          expect(tester.takeException(), isNull);
+          await disposePage(tester);
+          commands.dispose();
+          return;
+        }
+        if (source == 'camera') {
+          await tester.drag(
+            find.byKey(const ValueKey('receipt-crop-handle-7')),
+            const Offset(40, 0),
+          );
+          await tester.pumpAndSettle();
+        }
+        await tester.tap(find.byKey(const ValueKey('receipt-crop-save')));
         // Reading and preparing the file take real time, which fake pumps cannot
         // advance. A slow CI machine needs far longer than a developer laptop.
         for (
@@ -4708,14 +5509,37 @@ void main() {
         expect(controller.receiptUploads, hasLength(1));
         await tester.pumpAndSettle();
         expect(controller.receiptUploads.single.tripId, 1);
-        expect(controller.receiptUploads.single.bytes, receiptBytes);
-        // Uncropped, the photo keeps its own small format.
+        if (source == 'camera') {
+          expect(controller.receiptUploads.single.bytes, isNot(receiptBytes));
+          await tester.runAsync(() async {
+            final originalCodec = await ui.instantiateImageCodec(receiptBytes);
+            final croppedCodec = await ui.instantiateImageCodec(
+              controller.receiptUploads.single.bytes,
+            );
+            final originalImage = (await originalCodec.getNextFrame()).image;
+            final croppedImage = (await croppedCodec.getNextFrame()).image;
+            expect(croppedImage.width, lessThan(originalImage.width));
+            expect(croppedImage.height, originalImage.height);
+            originalImage.dispose();
+            croppedImage.dispose();
+            originalCodec.dispose();
+            croppedCodec.dispose();
+          });
+        } else {
+          expect(controller.receiptUploads.single.bytes, receiptBytes);
+        }
+        // Saving the whole frame keeps the original small format.
         expect(controller.receiptUploads.single.fileName, 'receipt.png');
-        // Receipt photos are not cropped any more.
+        // The Flutter editor must never open the native crop controller.
         expect(crops, 0);
         expect(file.existsSync(), isTrue);
-        if (source == 'camera' || source == 'gallery') {
-          expect(photoArgs!['source'], source == 'camera' ? 0 : 1);
+        if (source == 'camera') {
+          expect(photoArgs, isNull);
+          expect(camera.captures, 1);
+          expect(camera.audio, [false]);
+          expect(camera.files.single.existsSync(), isFalse);
+        } else if (source == 'gallery') {
+          expect(photoArgs!['source'], 1);
         }
         expect(
           tester
@@ -4823,7 +5647,7 @@ void main() {
         final t = AppLocalizations.of(
           tester.element(find.byType(WorkspacePage, skipOffstage: false)),
         )!;
-        await tester.tap(find.text(t.takePhotoAction));
+        await tester.tap(find.text(t.chooseFromLibraryAction));
         await tester.pumpAndSettle();
         expect(controller.receiptUploads, isEmpty);
         expect(
@@ -6384,6 +7208,9 @@ void main() {
       bool dark = false,
       GlobalKey? boundary,
       ValueChanged<QuickSplit?>? onDone,
+      QuickSplit? existing,
+      Future<ExpenseTarget?> Function(BuildContext)? pickTarget,
+      void Function(ExpenseTarget, ExpenseDraft)? onTargetChanged,
     }) async {
       tester.view.physicalSize = const Size(390, 844);
       tester.view.devicePixelRatio = 1;
@@ -6411,8 +7238,9 @@ void main() {
                     friendsController: _Friends(),
                     workspaceController: _Workspace(),
                     save: save,
-                    pickTarget: (_) async => null,
-                    onTargetChanged: (_, _) {},
+                    existing: existing,
+                    pickTarget: pickTarget ?? (_) async => null,
+                    onTargetChanged: onTargetChanged ?? (_, _) {},
                   );
                   onDone?.call(saved);
                 },
@@ -6557,6 +7385,92 @@ void main() {
       expect(result?.id, 31);
       expect(tester.takeException(), isNull);
     });
+
+    testWidgets(
+      'switching Quick split form to a trip preserves item assignments and extra',
+      (tester) async {
+        ExpenseDraft? carried;
+        await mountHost(
+          tester,
+          save: (_) async => fixture(),
+          existing: QuickSplit.fromJson({
+            'id': 32,
+            'amount': 20,
+            'currency_code': 'EUR',
+            'category': 'food',
+            'note': 'Dinner',
+            'date': '2026-11-22',
+            'split_mode': 'itemized',
+            'extra_amount': 3,
+            'people': [
+              {
+                'id': 401,
+                'user_id': 7,
+                'name': 'Matiss',
+                'is_me': true,
+                'is_payer': true,
+                'amount': 7.06,
+              },
+              {'id': 402, 'user_id': 8, 'name': 'Anna', 'amount': 12.94},
+            ],
+            'items': [
+              {
+                'name': 'Coffee',
+                'amount': 6,
+                'person_ids': [401],
+              },
+              {
+                'name': 'Lunch',
+                'amount': 11,
+                'person_ids': [402],
+              },
+            ],
+          }),
+          pickTarget: (_) async => ExpenseTarget.trip(
+            TripModel.fromLegacyMap({
+              'id': 1,
+              'name': 'Lisbon',
+              'currency_code': 'EUR',
+              'trip_mode': 'group',
+            }),
+          ),
+          onTargetChanged: (_, draft) => carried = draft,
+        );
+        await tester.tap(find.byKey(const ValueKey('expense-target')));
+        await tester.pumpAndSettle();
+        expect(carried!.splitMode, 'itemized');
+        expect(carried!.payerUserId, 7);
+        expect(carried!.participantUserIds, [7, 8]);
+        expect(carried!.extraAmount, 3);
+        expect(carried!.items.map((item) => item.participantIds), [
+          [7],
+          [8],
+        ]);
+        final controller = _Workspace();
+        await _mount(
+          tester,
+          controller,
+          openAddExpenseOnStart: true,
+          initialExpenseDraft: carried,
+        );
+        await tester.pumpAndSettle();
+        final t = AppLocalizations.of(
+          tester.element(find.byKey(const ValueKey('expense-form-amount'))),
+        )!;
+        await visibleTap(
+          tester,
+          find.widgetWithText(ElevatedButton, t.addAction),
+        );
+        expect(controller.savedMode, 'itemized');
+        expect(controller.savedItems!.map((item) => item.amount), [6, 11]);
+        expect(controller.savedItems!.map((item) => item.participantIds), [
+          [7],
+          [8],
+        ]);
+        expect(controller.savedExtra, 3);
+        await disposePage(tester);
+      },
+    );
 
     testWidgets('a quick split fills the trip form and leaves after saving', (
       tester,

@@ -1044,6 +1044,9 @@
   "profileEditRevolutMe": "Revolut.me",
   "imageCropperAdjustAvatar": "Pas de avatar aan",
   "imageCropperAdjustTripImage": "Pas de reisfoto aan",
+  "receiptCropHint": "Sleep de randen om de hele bon in beeld te brengen.",
+  "imageCropRotate": "Foto draaien",
+  "imageCropReset": "Uitsnede herstellen",
   "imageCropEditAction": "Uitsnede bewerken",
   "imageCropZoomIn": "Inzoomen",
   "imageCropZoomOut": "Uitzoomen",
@@ -2224,5 +2227,10 @@
   "quickSplitFromAction": "Uit een Quick split",
   "quickSplitFromTitle": "Quick split toevoegen",
   "quickSplitNoneForTrip": "Geen Quick split heeft alleen mensen uit deze reis.",
-  "expenseSplitAmountFirst": "Vul eerst het bedrag in of kies Per item."
+  "expenseSplitAmountFirst": "Vul eerst het bedrag in of kies Per item.",
+  "tripExportPdfAfterFinish": "Exporteren naar PDF is beschikbaar nadat je de reis hebt afgerond.",
+  "yearSummarySeasonNotice": "Je overzicht van het voorgaande jaar is beschikbaar van 1 januari tot en met 31 maart.",
+  "expenseItemsClearAll": "Alle items verwijderen",
+  "receiptRetakePhoto": "Opnieuw nemen",
+  "receiptUsePhoto": "Foto gebruiken"
 }

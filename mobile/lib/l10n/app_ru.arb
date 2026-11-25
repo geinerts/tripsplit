@@ -1044,6 +1044,9 @@
   "profileEditRevolutMe": "Revolut.me",
   "imageCropperAdjustAvatar": "Настроить аватар",
   "imageCropperAdjustTripImage": "Настроить изображение поездки",
+  "receiptCropHint": "Перетащите края, чтобы весь чек попал в рамку.",
+  "imageCropRotate": "Повернуть фото",
+  "imageCropReset": "Сбросить обрезку",
   "imageCropEditAction": "Изменить кадрирование",
   "imageCropZoomIn": "Увеличить",
   "imageCropZoomOut": "Уменьшить",
@@ -2224,5 +2227,10 @@
   "quickSplitFromAction": "Из Quick split",
   "quickSplitFromTitle": "Добавить Quick split",
   "quickSplitNoneForTrip": "Нет Quick split только с людьми из этой поездки.",
-  "expenseSplitAmountFirst": "Сначала введите сумму или выберите «По позициям»."
+  "expenseSplitAmountFirst": "Сначала введите сумму или выберите «По позициям».",
+  "tripExportPdfAfterFinish": "Экспорт в PDF доступен после завершения поездки.",
+  "yearSummarySeasonNotice": "Итоги предыдущего года доступны с 1 января по 31 марта.",
+  "expenseItemsClearAll": "Удалить все позиции",
+  "receiptRetakePhoto": "Переснять",
+  "receiptUsePhoto": "Использовать фото"
 }

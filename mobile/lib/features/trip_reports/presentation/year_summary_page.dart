@@ -6,6 +6,7 @@ import 'package:flutter/rendering.dart';
 import 'package:share_plus/share_plus.dart';
 
 import '../../../app/theme/app_design.dart';
+import '../../../core/errors/api_exception.dart';
 import '../../../core/expenses/expense_category_catalog.dart';
 import '../../../core/l10n/l10n.dart';
 import '../../../core/ui/app_formatters.dart';
@@ -29,6 +30,7 @@ class _YearSummaryPageState extends State<YearSummaryPage> {
   YearSummary? _summary;
   int? _year;
   bool _failed = false;
+  bool _outOfSeason = false;
   bool _sharing = false;
   int _request = 0;
 
@@ -41,6 +43,7 @@ class _YearSummaryPageState extends State<YearSummaryPage> {
   Future<void> _load({int? year}) {
     setState(() {
       _failed = false;
+      _outOfSeason = false;
       _year = year ?? _year;
       _summary = null;
     });
@@ -53,9 +56,13 @@ class _YearSummaryPageState extends State<YearSummaryPage> {
       final summary = await widget.repository.loadYearSummary(year: _year);
       if (!mounted || request != _request) return;
       setState(() => _summary = summary);
-    } catch (_) {
+    } catch (error) {
       if (!mounted || request != _request) return;
-      setState(() => _failed = true);
+      setState(() {
+        _outOfSeason =
+            error is ApiException && error.code == 'year_summary_unavailable';
+        _failed = true;
+      });
     }
   }
 
@@ -128,12 +135,18 @@ class _YearSummaryPageState extends State<YearSummaryPage> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text(t.yearSummaryLoadFailed, textAlign: TextAlign.center),
-              const SizedBox(height: 12),
-              FilledButton(
-                onPressed: () => unawaited(_load()),
-                child: Text(t.yearSummaryRetry),
+              Text(
+                _outOfSeason
+                    ? t.yearSummarySeasonNotice
+                    : t.yearSummaryLoadFailed,
+                textAlign: TextAlign.center,
               ),
+              const SizedBox(height: 12),
+              if (!_outOfSeason)
+                FilledButton(
+                  onPressed: () => unawaited(_load()),
+                  child: Text(t.yearSummaryRetry),
+                ),
             ],
           ),
         ),

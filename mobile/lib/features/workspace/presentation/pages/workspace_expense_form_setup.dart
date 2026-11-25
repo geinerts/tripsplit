@@ -57,7 +57,11 @@ class _ExpenseFormSetup {
 
   /// Reads the uploaded receipt with AI; null hides "Fill from receipt".
   /// Only set where the account has `receipt_ai` (docs/api/receipt-scan.md).
-  final Future<ReceiptScan> Function(String receiptPath, String requestId)?
+  final Future<ReceiptScan> Function(
+    String receiptPath,
+    String requestId,
+    bool rescan,
+  )?
   scanReceipt;
 }
 
@@ -215,16 +219,16 @@ Future<_PickedFile?> _pickReceiptPhoto(
     )?.showSnackBar(SnackBar(content: Text(message)));
   }
 
-  // Receipt photos are used as taken: no crop screen. The native crop
-  // screen sometimes did not open right after the camera on iOS and left the
-  // form waiting forever; receipts and AI reading don't need cropping.
+  // Gallery/files use the same Flutter crop editor as our receipt camera.
   Future<_PickedFile?> prepare(String fileName, Uint8List bytes) async {
     try {
-      final prepared = await ReceiptImagePreparer.prepare(
+      final prepared = await cropReceiptImage(
+        context: pickerContext,
         bytes: bytes,
         fileName: fileName,
+        isCurrentAccount: stillHere,
       );
-      if (!stillHere()) return null;
+      if (!stillHere() || prepared == null) return null;
       return _PickedFile(fileName: prepared.fileName, bytes: prepared.bytes);
     } catch (_) {
       fail(t.receiptPickFailed);
@@ -255,7 +259,17 @@ Future<_PickedFile?> _pickReceiptPhoto(
         ),
       ],
     );
-    if (!stillHere() || source == null) return null;
+    if (!pickerContext.mounted || !stillHere() || source == null) return null;
+    if (source == _ReceiptSource.camera) {
+      final photo = await Navigator.of(pickerContext).push<ReceiptPhoto>(
+        MaterialPageRoute(
+          fullscreenDialog: true,
+          builder: (_) => ReceiptCameraPage(isCurrentAccount: stillHere),
+        ),
+      );
+      if (!stillHere() || photo == null) return null;
+      return _PickedFile(fileName: photo.fileName, bytes: photo.bytes);
+    }
     if (source == _ReceiptSource.files) {
       final result = await FilePicker.platform.pickFiles(
         type: FileType.custom,
@@ -286,9 +300,7 @@ Future<_PickedFile?> _pickReceiptPhoto(
       return prepare(name, bytes);
     }
     final photo = await ImagePicker().pickImage(
-      source: source == _ReceiptSource.camera
-          ? ImageSource.camera
-          : ImageSource.gallery,
+      source: ImageSource.gallery,
       imageQuality: 94,
       maxWidth: 4096,
       maxHeight: 4096,

@@ -15,7 +15,10 @@ flutter build ios --config-only --release --dart-define-from-file=config/env/tes
 ```
 
 Run the second command before archiving directly in Xcode so its generated build
-configuration includes the token. Builds without a public token retain OSM for
+configuration includes the token. Xcode Release/Profile builds check for the public
+Mapbox token before compiling and stop with the preparation command if it is missing.
+Flutter commands can regenerate `Generated.xcconfig`, so prepare it again immediately
+before archiving. Debug builds without a public token retain OSM for
 live locations and the bundled Natural Earth overview for private memories; native Mapbox rendering needs a token and an iOS/Android
 device or simulator.
 Light/dark appearance follows the app theme. Mapbox's attribution and telemetry

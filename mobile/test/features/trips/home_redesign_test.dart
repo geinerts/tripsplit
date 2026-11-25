@@ -1084,6 +1084,102 @@ void main() {
     }
   }
 
+  // Opt-in App Store iPad image: the real home page at the iPad 13" content
+  // page size (right of the rail, below the top bar), with demo data and photos:
+  // --dart-define=HOME_IPAD_PREVIEW=<folder with cover.jpg, a1.jpg, a2.jpg, a3.jpg>
+  const ipadAssets = String.fromEnvironment('HOME_IPAD_PREVIEW');
+  if (ipadAssets.isNotEmpty) {
+    testWidgets('iPad home preview', (tester) async {
+      final files = {
+        for (final file in ['cover.jpg', 'a1.jpg', 'a2.jpg', 'a3.jpg'])
+          file: File('$ipadAssets/$file').readAsBytesSync(),
+      };
+      HttpOverrides.global = _PreviewHttpOverrides(files);
+      addTearDown(() => HttpOverrides.global = null);
+      // The shell draws the rail outside the page, so the page is 928pt wide.
+      const size = Size(928, 1288);
+      tester.view.physicalSize = size;
+      tester.view.devicePixelRatio = 1;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+      final key = GlobalKey();
+      final trips = _Trips()
+        ..trips = [
+          TripModel.fromLegacyMap({
+            'id': 1,
+            'name': 'Albania',
+            'status': 'active',
+            'currency_code': 'EUR',
+            'my_owed_cents': 23021,
+            'members_count': 4,
+            'current_user_role': 'owner',
+            'date_from': '2026-11-06',
+            'date_to': '2026-11-13',
+            'image_url': 'https://example.invalid/cover.jpg',
+            'members_preview': [
+              {'id': 1, 'display_name': 'Matiss Geinerts'},
+              {
+                'id': 2,
+                'display_name': 'Marta',
+                'avatar_thumb_url': 'https://example.invalid/a2.jpg',
+              },
+              {
+                'id': 3,
+                'display_name': 'Alex',
+                'avatar_thumb_url': 'https://example.invalid/a1.jpg',
+              },
+              {
+                'id': 4,
+                'display_name': 'Sofia',
+                'avatar_thumb_url': 'https://example.invalid/a3.jpg',
+              },
+            ],
+          }),
+        ];
+      await tester.pumpWidget(
+        RepaintBoundary(
+          key: key,
+          child: MaterialApp(
+            debugShowCheckedModeBanner: false,
+            theme: AppTheme.light(),
+            locale: const Locale('en'),
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            home: Scaffold(
+              backgroundColor: Colors.white,
+              body: TripsPage(
+                controller: trips,
+                authController: _Auth(),
+                friendsController: _Friends(),
+                showInlineHeader: false,
+                showBottomNav: false,
+              ),
+            ),
+          ),
+        ),
+      );
+      for (var i = 0; i < 6; i++) {
+        await tester.runAsync(
+          () => Future<void>.delayed(const Duration(milliseconds: 60)),
+        );
+        await tester.pump();
+      }
+      await tester.pumpAndSettle();
+      expect(tester.takeException(), isNull);
+      await tester.runAsync(() async {
+        final image =
+            await (key.currentContext!.findRenderObject()
+                    as RenderRepaintBoundary)
+                .toImage(pixelRatio: 2);
+        final bytes = await image.toByteData(format: ui.ImageByteFormat.png);
+        final file = File('../output/design/marketing/ipad/home-content.png');
+        await file.parent.create(recursive: true);
+        await file.writeAsBytes(bytes!.buffer.asUint8List());
+        image.dispose();
+      });
+    });
+  }
+
   // Opt-in image generation/verification, using real production widgets and
   // fixture data only. Normal unit-test runs remain portable across platforms.
   if (const bool.fromEnvironment('HOME_GOLDENS')) {

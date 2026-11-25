@@ -2352,6 +2352,15 @@ class AppLocalizationsDa extends AppLocalizations {
   String get imageCropperAdjustTripImage => 'Juster rejsebilledet';
 
   @override
+  String get receiptCropHint => 'Træk i kanterne, så hele kvitteringen kommer med.';
+
+  @override
+  String get imageCropRotate => 'Drej billede';
+
+  @override
+  String get imageCropReset => 'Nulstil beskæring';
+
+  @override
   String get imageCropEditAction => 'Rediger beskæring';
 
   @override
@@ -5585,4 +5594,19 @@ class AppLocalizationsDa extends AppLocalizations {
 
   @override
   String get expenseSplitAmountFirst => 'Indtast først beløbet, eller vælg Efter vare.';
+
+  @override
+  String get tripExportPdfAfterFinish => 'PDF-eksport er tilgængelig, når du har afsluttet rejsen.';
+
+  @override
+  String get yearSummarySeasonNotice => 'Din oversigt over det foregående år er tilgængelig fra 1. januar til 31. marts.';
+
+  @override
+  String get expenseItemsClearAll => 'Slet alle poster';
+
+  @override
+  String get receiptRetakePhoto => 'Tag om';
+
+  @override
+  String get receiptUsePhoto => 'Brug foto';
 }

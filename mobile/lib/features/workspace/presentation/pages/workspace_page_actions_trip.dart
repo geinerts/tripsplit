@@ -725,7 +725,10 @@ extension _WorkspacePageTripActions on _WorkspacePageState {
       return;
     }
     if (choice == 'export') {
-      await widget.onExportTripRequested?.call();
+      final status = _snapshot?.tripStatus ?? widget.trip.status;
+      await widget.onExportTripRequested?.call(
+        status == 'settling' || status == 'archived',
+      );
       return;
     }
     if (choice == 'edit') {

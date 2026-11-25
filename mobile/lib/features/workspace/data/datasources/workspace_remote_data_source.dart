@@ -130,6 +130,7 @@ abstract class WorkspaceRemoteDataSource {
   Future<ReceiptScan> scanReceipt({
     required String receiptPath,
     required String requestId,
+    bool rescan = false,
   });
 
   Future<int?> addExpense({
@@ -529,10 +530,12 @@ class WorkspaceRemoteDataSourceImpl implements WorkspaceRemoteDataSource {
   Future<ReceiptScan> scanReceipt({
     required String receiptPath,
     required String requestId,
+    bool rescan = false,
   }) {
     return _mutationApi.scanReceipt(
       receiptPath: receiptPath,
       requestId: requestId,
+      rescan: rescan,
     );
   }
 

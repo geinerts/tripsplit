@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:share_plus/share_plus.dart';
 
+import '../../../core/errors/api_exception.dart';
 import '../../../core/l10n/l10n.dart';
 import '../../../core/ui/app_components.dart';
 import '../../../core/ui/app_sheet.dart';
@@ -13,6 +14,7 @@ Future<void> runTripExport(
   BuildContext context,
   TripReportsRepository repository, {
   required int tripId,
+  required bool pdfAllowed,
 }) async {
   final t = context.l10n;
   final format = await showAppBottomSheet<TripExportFormat>(
@@ -21,12 +23,18 @@ Future<void> runTripExport(
       key: const ValueKey('trip-export-sheet'),
       title: t.tripExportAction,
       children: [
-        AppPlainActionTile(
-          key: const ValueKey('trip-export-pdf'),
-          icon: Icons.picture_as_pdf_outlined,
-          title: t.tripExportPdf,
-          onTap: () => Navigator.of(sheetContext).pop(TripExportFormat.pdf),
-        ),
+        if (pdfAllowed)
+          AppPlainActionTile(
+            key: const ValueKey('trip-export-pdf'),
+            icon: Icons.picture_as_pdf_outlined,
+            title: t.tripExportPdf,
+            onTap: () => Navigator.of(sheetContext).pop(TripExportFormat.pdf),
+          ),
+        if (!pdfAllowed)
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
+            child: Text(t.tripExportPdfAfterFinish),
+          ),
         AppPlainActionTile(
           key: const ValueKey('trip-export-csv'),
           icon: Icons.table_chart_outlined,
@@ -83,9 +91,17 @@ Future<void> runTripExport(
         sharePositionOrigin: origin,
       ),
     );
-  } catch (_) {
+  } catch (error) {
     closeLoader();
     messenger.hideCurrentSnackBar();
-    messenger.showSnackBar(SnackBar(content: Text(failure)));
+    messenger.showSnackBar(
+      SnackBar(
+        content: Text(
+          error is ApiException && error.code == 'trip_not_finished'
+              ? t.tripExportPdfAfterFinish
+              : failure,
+        ),
+      ),
+    );
   }
 }

@@ -15,6 +15,8 @@ extension _WorkspacePageExpenseSheetActions on _WorkspacePageState {
                 id: person.id,
                 nickname:
                     usersById[person.id]?.preferredName ?? person.nickname,
+                owedAmount: person.owedAmount,
+                splitValue: person.splitValue,
               ),
           ]
         : snapshot.users
@@ -49,6 +51,11 @@ extension _WorkspacePageExpenseSheetActions on _WorkspacePageState {
     final note = expense.note.trim();
     final foreign = expense.expenseCurrencyCode != expense.tripCurrencyCode;
     final hasReceipt = expense.receiptUrl != null;
+    final receiptAccount = widget.authController.currentUser?.id;
+    bool isReceiptAccountCurrent() =>
+        mounted &&
+        receiptAccount != null &&
+        widget.authController.currentUser?.id == receiptAccount;
     await showAppBottomSheet<void>(
       context: context,
       isScrollControlled: true,
@@ -83,7 +90,14 @@ extension _WorkspacePageExpenseSheetActions on _WorkspacePageState {
           ),
         );
         Widget receiptChip() => ReceiptOpenAction(
+          key: ValueKey('receipt-$receiptAccount-${expense.id}'),
           compactLabel: context.l10n.expenseReceiptChip,
+          isCurrentAccount: isReceiptAccountCurrent,
+          loadPreview: () => widget.workspaceController.loadReceiptUri(
+            tripId: widget.trip.id,
+            expenseId: expense.id,
+            thumbnail: true,
+          ),
           load: () async {
             final userId = widget.authController.currentUser?.id;
             final uri = await widget.workspaceController.loadReceiptUri(

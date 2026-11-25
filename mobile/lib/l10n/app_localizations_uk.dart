@@ -2364,6 +2364,15 @@ class AppLocalizationsUk extends AppLocalizations {
   String get imageCropperAdjustTripImage => 'Налаштуйте зображення поїздки';
 
   @override
+  String get receiptCropHint => 'Перетягніть краї, щоб у рамку потрапив увесь чек.';
+
+  @override
+  String get imageCropRotate => 'Повернути фото';
+
+  @override
+  String get imageCropReset => 'Скинути обрізання';
+
+  @override
   String get imageCropEditAction => 'Редагувати кадрування';
 
   @override
@@ -5609,4 +5618,19 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get expenseSplitAmountFirst => 'Спершу введіть суму або виберіть «За позиціями».';
+
+  @override
+  String get tripExportPdfAfterFinish => 'Експорт у PDF доступний після завершення подорожі.';
+
+  @override
+  String get yearSummarySeasonNotice => 'Підсумок попереднього року доступний з 1 січня до 31 березня.';
+
+  @override
+  String get expenseItemsClearAll => 'Видалити всі позиції';
+
+  @override
+  String get receiptRetakePhoto => 'Перезняти';
+
+  @override
+  String get receiptUsePhoto => 'Використати фото';
 }

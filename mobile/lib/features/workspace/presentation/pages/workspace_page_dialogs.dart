@@ -55,8 +55,12 @@ extension _WorkspacePageDialogs on _WorkspacePageState {
         currentAccountId: () => widget.authController.currentUser?.id,
         // AI receipt reading in "By item", for accounts that have it.
         scanReceipt: widget.authController.currentUser?.receiptAi == true
-            ? (receiptPath, requestId) => widget.workspaceController
-                  .scanReceipt(receiptPath: receiptPath, requestId: requestId)
+            ? (receiptPath, requestId, rescan) =>
+                  widget.workspaceController.scanReceipt(
+                    receiptPath: receiptPath,
+                    requestId: requestId,
+                    rescan: rescan,
+                  )
             : null,
       ),
     );
@@ -165,6 +169,7 @@ Future<_ExpenseFormResult?> _showExpenseFormPage(
       !ExpenseCategoryCatalog.isBuiltInKey(initialCategory);
   var selectedCategory = isCustomCategoryMode ? '' : initialCategory;
   var selectedType = ExpenseTypeCatalog.clean(seed?.subcategory);
+  var typeWasChosen = selectedType != null;
   // The type menu opens right under the category field.
   final typeAnchorKey = GlobalKey();
   final customCategoryController = TextEditingController(
@@ -451,6 +456,19 @@ Future<_ExpenseFormResult?> _showExpenseFormPage(
                   subcategory: selectedType,
                   date: toIsoDate(selectedExpenseDate),
                   receipt: preuploadedReceipt,
+                  payerUserId: payerId,
+                  participantUserIds: activeUsers
+                      .map((user) => user.id)
+                      .toList(),
+                  splitMode: splitMode,
+                  splitValues: {
+                    for (final entry in splitControllers.entries)
+                      entry.key: entry.value.text.trim().isEmpty
+                          ? null
+                          : _parseAmount(entry.value.text),
+                  },
+                  items: splitMode == 'itemized' ? itemDrafts : const [],
+                  extraAmount: splitMode == 'itemized' ? extraDraft : 0,
                 );
               }
 
@@ -511,7 +529,7 @@ Future<_ExpenseFormResult?> _showExpenseFormPage(
               // first when there is none, reads it and sets currency, date
               // and note here; the editor fills its lines from the result.
               // Nothing is saved until the user saves the expense.
-              Future<_ReceiptFill?> fillFromReceipt() async {
+              Future<_ReceiptFill?> fillFromReceipt(bool rescan) async {
                 final scan = setup.scanReceipt;
                 final account = setup.currentAccountId();
                 if (scan == null || account == null || isReceiptReading) {
@@ -519,34 +537,6 @@ Future<_ExpenseFormResult?> _showExpenseFormPage(
                 }
                 bool stillHere() =>
                     context.mounted && setup.currentAccountId() == account;
-                const notice = ReceiptAiNoticeStore();
-                if (!await notice.isSeen(account)) {
-                  if (!context.mounted || !stillHere()) return null;
-                  final agreed = await showDialog<bool>(
-                    context: context,
-                    builder: (noticeContext) => AlertDialog(
-                      title: Text(t.receiptAiNoticeTitle),
-                      content: Text(t.receiptAiNoticeBody),
-                      actions: [
-                        TextButton(
-                          onPressed: () => Navigator.pop(noticeContext, false),
-                          child: Text(
-                            MaterialLocalizations.of(
-                              noticeContext,
-                            ).cancelButtonLabel,
-                          ),
-                        ),
-                        FilledButton(
-                          key: const ValueKey('receipt-ai-notice-continue'),
-                          onPressed: () => Navigator.pop(noticeContext, true),
-                          child: Text(t.receiptAiNoticeContinue),
-                        ),
-                      ],
-                    ),
-                  );
-                  if (agreed != true || !stillHere()) return null;
-                  await notice.markSeen(account);
-                }
                 if (preuploadedReceipt == null) {
                   await pickReceipt();
                   if (!stillHere()) return null;
@@ -568,7 +558,7 @@ Future<_ExpenseFormResult?> _showExpenseFormPage(
                 String? failure;
                 while (true) {
                   try {
-                    result = await scan(receipt.path, requestId);
+                    result = await scan(receipt.path, requestId, rescan);
                     break;
                   } on ApiException catch (error) {
                     final again =
@@ -607,6 +597,28 @@ Future<_ExpenseFormResult?> _showExpenseFormPage(
                   );
                   final date = parseExpenseDate(scanned.date);
                   if (date != null) selectedExpenseDate = date;
+                  final category = scanned.category?.trim() ?? '';
+                  if (!isCustomCategoryMode &&
+                      selectedCategory.isEmpty &&
+                      category.isNotEmpty &&
+                      category != 'other' &&
+                      ExpenseCategoryCatalog.builtIn.any(
+                        (option) => option.key == category,
+                      )) {
+                    selectedCategory = category;
+                    selectedType = null;
+                  }
+                  final type = scanned.subcategory;
+                  if (!isCustomCategoryMode &&
+                      selectedCategory == category &&
+                      selectedType == null &&
+                      !typeWasChosen &&
+                      type != null &&
+                      ExpenseTypeCatalog.forCategory(
+                        category,
+                      ).any((option) => option.key == type)) {
+                    selectedType = type;
+                  }
                   final merchant = scanned.merchant;
                   if (noteController.text.trim().isEmpty && merchant != null) {
                     noteController.text = merchant;
@@ -615,6 +627,7 @@ Future<_ExpenseFormResult?> _showExpenseFormPage(
                 });
                 return _ReceiptFill(
                   draft: draft,
+                  receiptTotalCents: scanned.totalCents,
                   currencyCode: selectedCurrencyCode,
                   message: !scanned.sumMatches
                       ? t.receiptAiTotalsMismatch
@@ -952,9 +965,10 @@ Future<_ExpenseFormResult?> _showExpenseFormPage(
                                             choice == null) {
                                           return;
                                         }
-                                        setDialogState(
-                                          () => selectedType = choice.type,
-                                        );
+                                        setDialogState(() {
+                                          selectedType = choice.type;
+                                          typeWasChosen = true;
+                                        });
                                       }
 
                                       final category = KeyedSubtree(
@@ -1001,6 +1015,7 @@ Future<_ExpenseFormResult?> _showExpenseFormPage(
                                               if (value != selectedCategory) {
                                                 // A type belongs to its category.
                                                 selectedType = null;
+                                                typeWasChosen = false;
                                               }
                                               selectedCategory =
                                                   isCustomCategoryMode

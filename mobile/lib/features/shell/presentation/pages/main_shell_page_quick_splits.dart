@@ -102,7 +102,14 @@ extension _MainShellPageQuickSplits on _MainShellPageState {
       canAddToTrip: fitting.isNotEmpty,
       receiptAction: hasReceipt
           ? ReceiptOpenAction(
+              key: ValueKey('quick-receipt-$account-${full.id}'),
               compactLabel: context.l10n.expenseReceiptChip,
+              isCurrentAccount: () =>
+                  mounted &&
+                  account != null &&
+                  widget.authController.currentUser?.id == account,
+              loadPreview: () =>
+                  controller.loadReceiptUri(full.id, thumbnail: true),
               load: () async {
                 final uri = await controller.loadReceiptUri(full.id);
                 if (!mounted ||

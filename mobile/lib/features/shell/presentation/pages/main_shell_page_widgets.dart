@@ -67,10 +67,11 @@ extension _MainShellPageWidgets on _MainShellPageState {
                   : () => _openTravelMap(tripId: _openedTrip!.id),
               onExportTripRequested: widget.tripReportsRepository == null
                   ? null
-                  : () => runTripExport(
+                  : (pdfAllowed) => runTripExport(
                       context,
                       widget.tripReportsRepository!,
                       tripId: _openedTrip!.id,
+                      pdfAllowed: pdfAllowed,
                     ),
               onTripUpdated: (trip) {
                 if (_openedTrip?.id == trip.id) {

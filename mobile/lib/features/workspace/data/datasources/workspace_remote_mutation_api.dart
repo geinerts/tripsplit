@@ -285,11 +285,13 @@ class WorkspaceRemoteMutationApi {
   Future<ReceiptScan> scanReceipt({
     required String receiptPath,
     required String requestId,
+    bool rescan = false,
   }) async {
     final path = ApiEndpoints.legacyAction('scan_receipt');
     final body = <String, dynamic>{
       'receipt_path': receiptPath,
       'request_id': requestId,
+      if (rescan) 'rescan': true,
     };
     // Reading takes up to 30 s on the server; waiting for it must not make
     // the rest of the app think it is offline.

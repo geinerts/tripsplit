@@ -1,8 +1,10 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tripsplit/app/theme/app_theme.dart';
+import 'package:tripsplit/core/errors/api_exception.dart';
 import 'package:tripsplit/core/network/api_client.dart';
 import 'package:tripsplit/core/network/http_method.dart';
 import 'package:tripsplit/features/auth/data/models/notification_preferences_model.dart';
@@ -11,6 +13,7 @@ import 'package:tripsplit/features/subscriptions/domain/entities/premium_access.
 import 'package:tripsplit/features/trip_reports/data/trip_reports_repository.dart';
 import 'package:tripsplit/features/trip_reports/domain/year_summary.dart';
 import 'package:tripsplit/features/trip_reports/presentation/year_summary_page.dart';
+import 'package:tripsplit/features/trip_reports/presentation/trip_export_flow.dart';
 import 'package:tripsplit/l10n/app_localizations.dart';
 
 class _Api implements ApiClient {
@@ -44,6 +47,8 @@ class _Repository implements TripReportsRepository {
 
   final Future<YearSummary> Function(int? year) load;
   final List<int?> requests = [];
+  final List<TripExportFormat> exports = [];
+  Object exportFailure = StateError('Export unavailable in test');
 
   @override
   Future<YearSummary> loadYearSummary({int? year}) {
@@ -56,7 +61,10 @@ class _Repository implements TripReportsRepository {
     required int tripId,
     required TripExportFormat format,
     required String locale,
-  }) => throw UnimplementedError();
+  }) async {
+    exports.add(format);
+    throw exportFailure;
+  }
 }
 
 Map<String, dynamic> _summaryMap({int year = 2026, int trips = 3}) => {
@@ -87,6 +95,114 @@ Widget _page(TripReportsRepository repository, {Locale? locale}) => MaterialApp(
 );
 
 void main() {
+  for (final pdfAllowed in [false, true]) {
+    testWidgets('export formats respect finished status: $pdfAllowed', (
+      tester,
+    ) async {
+      final repository = _Repository(
+        (_) async => YearSummary.fromMap(_summaryMap()),
+      );
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: AppTheme.light(),
+          locale: const Locale('en'),
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: Builder(
+            builder: (context) => Scaffold(
+              body: TextButton(
+                onPressed: () => unawaited(
+                  runTripExport(
+                    context,
+                    repository,
+                    tripId: 7,
+                    pdfAllowed: pdfAllowed,
+                  ),
+                ),
+                child: const Text('Export'),
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.tap(find.text('Export'));
+      await tester.pumpAndSettle();
+      expect(
+        find.byKey(const ValueKey('trip-export-pdf')),
+        pdfAllowed ? findsOneWidget : findsNothing,
+      );
+      expect(find.byKey(const ValueKey('trip-export-csv')), findsOneWidget);
+      expect(
+        find.text('PDF export is available after you finish the trip.'),
+        pdfAllowed ? findsNothing : findsOneWidget,
+      );
+      if (pdfAllowed) {
+        repository.exportFailure = const ApiException(
+          'Server trip status changed',
+          code: 'trip_not_finished',
+          statusCode: 409,
+        );
+      }
+      await tester.tap(
+        find.byKey(
+          ValueKey(pdfAllowed ? 'trip-export-pdf' : 'trip-export-csv'),
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(repository.exports, [
+        pdfAllowed ? TripExportFormat.pdf : TripExportFormat.csv,
+      ]);
+      if (pdfAllowed) {
+        expect(
+          find.text('PDF export is available after you finish the trip.'),
+          findsOneWidget,
+        );
+      }
+      expect(tester.takeException(), isNull);
+    });
+  }
+
+  testWidgets(
+    'closed year season shows an explanation without retry or sharing',
+    (tester) async {
+      final repository = _Repository(
+        (_) async => throw const ApiException(
+          'Out of season',
+          code: 'year_summary_unavailable',
+          statusCode: 403,
+        ),
+      );
+      await tester.pumpWidget(_page(repository));
+      await tester.pumpAndSettle();
+      expect(
+        find.text(
+          'Your previous year’s summary is available from 1 January to 31 March.',
+        ),
+        findsOneWidget,
+      );
+      expect(find.byType(FilledButton), findsNothing);
+      expect(find.byKey(const ValueKey('year-summary-share')), findsNothing);
+      expect(repository.requests, [null]);
+    },
+  );
+
+  testWidgets(
+    'season response shows only the completed year without a year selector',
+    (tester) async {
+      final repository = _Repository(
+        (_) async => YearSummary.fromMap({
+          ..._summaryMap(),
+          'available_years': [2026],
+        }),
+      );
+      await tester.pumpWidget(_page(repository));
+      await tester.pumpAndSettle();
+      expect(find.text('2026'), findsOneWidget);
+      expect(find.byType(ChoiceChip), findsNothing);
+      expect(find.byKey(const ValueKey('year-summary-share')), findsOneWidget);
+    },
+  );
+
   test('summary parses all fields and tolerates nulls', () {
     final full = YearSummary.fromMap(_summaryMap());
     expect(full.countries, ['Italy', 'Latvia']);

@@ -1044,6 +1044,9 @@
   "profileEditRevolutMe": "Revolut.me",
   "imageCropperAdjustAvatar": "Налаштуйте аватар",
   "imageCropperAdjustTripImage": "Налаштуйте зображення поїздки",
+  "receiptCropHint": "Перетягніть краї, щоб у рамку потрапив увесь чек.",
+  "imageCropRotate": "Повернути фото",
+  "imageCropReset": "Скинути обрізання",
   "imageCropEditAction": "Редагувати кадрування",
   "imageCropZoomIn": "Збільшити",
   "imageCropZoomOut": "Зменшити",
@@ -2224,5 +2227,10 @@
   "quickSplitFromAction": "З Quick split",
   "quickSplitFromTitle": "Додати Quick split",
   "quickSplitNoneForTrip": "Немає Quick split лише з людьми з цієї подорожі.",
-  "expenseSplitAmountFirst": "Спершу введіть суму або виберіть «За позиціями»."
+  "expenseSplitAmountFirst": "Спершу введіть суму або виберіть «За позиціями».",
+  "tripExportPdfAfterFinish": "Експорт у PDF доступний після завершення подорожі.",
+  "yearSummarySeasonNotice": "Підсумок попереднього року доступний з 1 січня до 31 березня.",
+  "expenseItemsClearAll": "Видалити всі позиції",
+  "receiptRetakePhoto": "Перезняти",
+  "receiptUsePhoto": "Використати фото"
 }

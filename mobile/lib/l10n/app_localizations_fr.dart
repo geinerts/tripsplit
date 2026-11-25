@@ -2352,6 +2352,15 @@ class AppLocalizationsFr extends AppLocalizations {
   String get imageCropperAdjustTripImage => 'Ajuster l’image du voyage';
 
   @override
+  String get receiptCropHint => 'Faites glisser les bords pour cadrer tout le reçu.';
+
+  @override
+  String get imageCropRotate => 'Faire pivoter la photo';
+
+  @override
+  String get imageCropReset => 'Réinitialiser le recadrage';
+
+  @override
   String get imageCropEditAction => 'Modifier le cadrage';
 
   @override
@@ -5585,4 +5594,19 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get expenseSplitAmountFirst => 'Saisis d’abord le montant ou choisis Par article.';
+
+  @override
+  String get tripExportPdfAfterFinish => 'L’exportation en PDF est disponible une fois le voyage terminé.';
+
+  @override
+  String get yearSummarySeasonNotice => 'Le bilan de l’année précédente est disponible du 1er janvier au 31 mars.';
+
+  @override
+  String get expenseItemsClearAll => 'Supprimer tous les articles';
+
+  @override
+  String get receiptRetakePhoto => 'Reprendre';
+
+  @override
+  String get receiptUsePhoto => 'Utiliser la photo';
 }

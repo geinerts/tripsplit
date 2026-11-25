@@ -158,11 +158,17 @@ class _ExpenseEditorSurface extends StatelessWidget {
 /// What "Fill from receipt" gives the item editor: lines to fill, or only a
 /// message when the receipt could not be used.
 class _ReceiptFill {
-  const _ReceiptFill({this.draft, this.currencyCode, this.message});
+  const _ReceiptFill({
+    this.draft,
+    this.currencyCode,
+    this.message,
+    this.receiptTotalCents,
+  });
 
   final ReceiptSplitDraft? draft;
   final String? currencyCode;
   final String? message;
+  final int? receiptTotalCents;
 }
 
 class _ExpenseSplitEditor extends StatefulWidget {
@@ -188,7 +194,7 @@ class _ExpenseSplitEditor extends StatefulWidget {
   final Widget Function(WorkspaceUser) avatarBuilder;
 
   /// AI receipt reading for "By item"; null hides the button.
-  final Future<_ReceiptFill?> Function()? scanReceipt;
+  final Future<_ReceiptFill?> Function(bool rescan)? scanReceipt;
 
   /// Adds someone to the split (quick split only); null hides "+ Add".
   final Future<WorkspaceUser?> Function()? addPerson;
@@ -207,7 +213,40 @@ class _ExpenseSplitEditorState extends State<_ExpenseSplitEditor> {
   final _pinned = <String, Set<int>>{};
 
   bool _scanning = false;
+  bool _rescanRequested = false;
   String? _scanMessage;
+
+  bool get _hasItemInput =>
+      _items.any(
+        (item) =>
+            !item.isBlank ||
+            item.taken.isNotEmpty ||
+            item.qty != 1 ||
+            item.shared,
+      ) ||
+      _extra.text.trim().isNotEmpty;
+
+  void _clearItems() {
+    if (_scanning || !_hasItemInput) return;
+    FocusScope.of(context).unfocus();
+    final old = List.of(_items);
+    setState(() {
+      _items
+        ..clear()
+        ..add(_ExpenseItemDraft());
+      _extra.clear();
+      _scanAmount = null;
+      _scanMessage = null;
+      _rescanRequested = true;
+      _scanRun++;
+    });
+    // Wait until the old text fields are detached before disposing them.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      for (final item in old) {
+        item.dispose();
+      }
+    });
+  }
 
   /// Everyone in the split; grows when a person is added from People.
   late final List<WorkspaceUser> _users = List.of(widget.users);
@@ -241,16 +280,18 @@ class _ExpenseSplitEditorState extends State<_ExpenseSplitEditor> {
 
   Future<void> _scan() async {
     final scan = widget.scanReceipt;
-    if (scan == null || _scanning) return;
+    if (scan == null || _scanning || _hasItemInput) return;
     FocusScope.of(context).unfocus();
     setState(() {
       _scanning = true;
       _scanMessage = null;
     });
-    final fill = await scan();
+    final fill = await scan(_rescanRequested);
     if (!mounted) return;
     setState(() {
       _scanning = false;
+      // A user may type while the network request is running. Never overwrite it.
+      if (_hasItemInput) return;
       _scanMessage = fill?.message;
       final draft = fill?.draft;
       if (draft == null) return;
@@ -277,8 +318,11 @@ class _ExpenseSplitEditorState extends State<_ExpenseSplitEditor> {
       _extra.text = draft.extraCents > 0
           ? AppCurrencyCatalog.amountInputText(draft.extraCents / 100, currency)
           : '';
-      _scanAmount = draft.totalCents / 100;
+      // Compare the editable lines with the independently read receipt total.
+      // Using the draft sum here would make every scan appear to match itself.
+      _scanAmount = (fill?.receiptTotalCents ?? 0) / 100;
       _scanCurrency = currency;
+      _rescanRequested = false;
       _scanRun++;
     });
   }
@@ -290,16 +334,36 @@ class _ExpenseSplitEditorState extends State<_ExpenseSplitEditor> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        OutlinedButton.icon(
-          key: const ValueKey('receipt-ai-fill'),
-          onPressed: _scanning ? null : _scan,
-          icon: _scanning
-              ? const SizedBox.square(
-                  dimension: 18,
-                  child: CircularProgressIndicator(strokeWidth: 2),
-                )
-              : const Icon(Icons.auto_awesome_outlined),
-          label: Text(_scanning ? t.receiptAiReading : t.receiptAiFillAction),
+        Row(
+          children: [
+            Expanded(
+              child: OutlinedButton.icon(
+                key: const ValueKey('receipt-ai-fill'),
+                onPressed: _scanning || _hasItemInput ? null : _scan,
+                icon: _scanning
+                    ? const SizedBox.square(
+                        dimension: 18,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      )
+                    : const Icon(Icons.auto_awesome_outlined),
+                label: Text(
+                  _scanning ? t.receiptAiReading : t.receiptAiFillAction,
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            ),
+            if (_hasItemInput) ...[
+              const SizedBox(width: 8),
+              IconButton(
+                key: const ValueKey('expense-items-clear-all'),
+                tooltip: t.expenseItemsClearAll,
+                onPressed: _scanning ? null : _clearItems,
+                icon: const Icon(Icons.delete_outline_rounded),
+                color: theme.colorScheme.error,
+                constraints: const BoxConstraints(minWidth: 48, minHeight: 48),
+              ),
+            ],
+          ],
         ),
         if (message != null) ...[
           const SizedBox(height: 6),
@@ -704,7 +768,9 @@ class _ExpenseSplitEditorState extends State<_ExpenseSplitEditor> {
     users: _users,
     amount: _scanAmount ?? widget.amount,
     currencyCode: _scanCurrency ?? widget.currencyCode,
-    receiptAction: widget.scanReceipt == null ? null : _receiptButton(context),
+    receiptAction: widget.scanReceipt == null
+        ? null
+        : () => _receiptButton(context),
     addPerson: widget.addPerson == null ? null : _addPerson,
     items: _items,
     extra: _extra,

@@ -1044,6 +1044,9 @@
   "profileEditRevolutMe": "Revolut.me",
   "imageCropperAdjustAvatar": "Upravte avatar",
   "imageCropperAdjustTripImage": "Upravte obrázek výletu",
+  "receiptCropHint": "Přetáhněte okraje tak, aby byla v rámečku celá účtenka.",
+  "imageCropRotate": "Otočit fotku",
+  "imageCropReset": "Obnovit ořez",
   "imageCropEditAction": "Upravit oříznutí",
   "imageCropZoomIn": "Přiblížit",
   "imageCropZoomOut": "Oddálit",
@@ -2224,5 +2227,10 @@
   "quickSplitFromAction": "Z Quick split",
   "quickSplitFromTitle": "Přidat Quick split",
   "quickSplitNoneForTrip": "Žádný Quick split nemá jen lidi z tohoto výletu.",
-  "expenseSplitAmountFirst": "Nejdřív zadej částku, nebo zvol Podle položek."
+  "expenseSplitAmountFirst": "Nejdřív zadej částku, nebo zvol Podle položek.",
+  "tripExportPdfAfterFinish": "Export do PDF je dostupný po ukončení cesty.",
+  "yearSummarySeasonNotice": "Souhrn předchozího roku je dostupný od 1. ledna do 31. března.",
+  "expenseItemsClearAll": "Smazat všechny položky",
+  "receiptRetakePhoto": "Vyfotit znovu",
+  "receiptUsePhoto": "Použít fotku"
 }

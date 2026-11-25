@@ -139,9 +139,10 @@ Future<QuickSplit?> showQuickSplitForm(
       currentAccountId: currentAccountId,
       // AI receipt reading in "By item", for accounts that have it.
       scanReceipt: authController.currentUser?.receiptAi == true
-          ? (receiptPath, requestId) => workspaceController.scanReceipt(
+          ? (receiptPath, requestId, rescan) => workspaceController.scanReceipt(
               receiptPath: receiptPath,
               requestId: requestId,
+              rescan: rescan,
             )
           : null,
       addPerson: (formContext, users) async {

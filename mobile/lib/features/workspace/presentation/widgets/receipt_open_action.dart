@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../../core/l10n/l10n.dart';
+import 'receipt_thumbnail.dart';
 
 /// Fetches a fresh authorized URL on every attempt. The caller retains account
 /// checks and URL policy; the widget never stores a signed link for retry.
@@ -9,9 +10,13 @@ class ReceiptOpenAction extends StatefulWidget {
     required this.load,
     required this.open,
     this.compactLabel,
-  });
+    this.loadPreview,
+    this.isCurrentAccount,
+  }) : assert(loadPreview == null || isCurrentAccount != null);
   final Future<Uri?> Function() load;
   final Future<bool> Function(Uri) open;
+  final Future<Uri?> Function()? loadPreview;
+  final bool Function()? isCurrentAccount;
 
   /// Shows a small chip with this label instead of the full-width row.
   final String? compactLabel;
@@ -23,14 +28,14 @@ class _ReceiptOpenActionState extends State<ReceiptOpenAction> {
   bool _busy = false;
   String? _error;
   Future<void> _open() async {
-    if (_busy) return;
+    if (_busy || widget.isCurrentAccount?.call() == false) return;
     setState(() {
       _busy = true;
       _error = null;
     });
     try {
       final uri = await widget.load();
-      if (!mounted) return;
+      if (!mounted || widget.isCurrentAccount?.call() == false) return;
       if (uri == null) {
         setState(() => _error = context.l10n.receiptLinkInvalid);
       } else {
@@ -71,7 +76,22 @@ class _ReceiptOpenActionState extends State<ReceiptOpenAction> {
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    if (_busy)
+                    if (widget.loadPreview case final preview?)
+                      Stack(
+                        alignment: Alignment.center,
+                        children: [
+                          ReceiptThumbnail(
+                            load: preview,
+                            isCurrentAccount: widget.isCurrentAccount!,
+                          ),
+                          if (_busy)
+                            const SizedBox.square(
+                              dimension: 16,
+                              child: CircularProgressIndicator(strokeWidth: 2),
+                            ),
+                        ],
+                      )
+                    else if (_busy)
                       const SizedBox(
                         width: 16,
                         height: 16,
@@ -84,11 +104,13 @@ class _ReceiptOpenActionState extends State<ReceiptOpenAction> {
                         color: colors.primary,
                       ),
                     const SizedBox(width: 6),
-                    Text(
-                      label,
-                      style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                        color: colors.primary,
-                        fontWeight: FontWeight.w600,
+                    Flexible(
+                      child: Text(
+                        label,
+                        style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                          color: colors.primary,
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
                     ),
                   ],

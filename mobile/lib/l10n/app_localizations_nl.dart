@@ -2352,6 +2352,15 @@ class AppLocalizationsNl extends AppLocalizations {
   String get imageCropperAdjustTripImage => 'Pas de reisfoto aan';
 
   @override
+  String get receiptCropHint => 'Sleep de randen om de hele bon in beeld te brengen.';
+
+  @override
+  String get imageCropRotate => 'Foto draaien';
+
+  @override
+  String get imageCropReset => 'Uitsnede herstellen';
+
+  @override
   String get imageCropEditAction => 'Uitsnede bewerken';
 
   @override
@@ -5585,4 +5594,19 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get expenseSplitAmountFirst => 'Vul eerst het bedrag in of kies Per item.';
+
+  @override
+  String get tripExportPdfAfterFinish => 'Exporteren naar PDF is beschikbaar nadat je de reis hebt afgerond.';
+
+  @override
+  String get yearSummarySeasonNotice => 'Je overzicht van het voorgaande jaar is beschikbaar van 1 januari tot en met 31 maart.';
+
+  @override
+  String get expenseItemsClearAll => 'Alle items verwijderen';
+
+  @override
+  String get receiptRetakePhoto => 'Opnieuw nemen';
+
+  @override
+  String get receiptUsePhoto => 'Foto gebruiken';
 }

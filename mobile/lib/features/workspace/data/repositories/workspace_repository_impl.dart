@@ -157,8 +157,13 @@ class WorkspaceRepositoryImpl implements WorkspaceRepository {
   Future<ReceiptScan> scanReceipt({
     required String receiptPath,
     required String requestId,
+    bool rescan = false,
   }) {
-    return _remote.scanReceipt(receiptPath: receiptPath, requestId: requestId);
+    return _remote.scanReceipt(
+      receiptPath: receiptPath,
+      requestId: requestId,
+      rescan: rescan,
+    );
   }
 
   @override

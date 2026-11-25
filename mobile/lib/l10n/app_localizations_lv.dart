@@ -2358,6 +2358,15 @@ class AppLocalizationsLv extends AppLocalizations {
   String get imageCropperAdjustTripImage => 'Pielāgot ceļojuma attēlu';
 
   @override
+  String get receiptCropHint => 'Pavelc malas, lai ietvertu visu čeku.';
+
+  @override
+  String get imageCropRotate => 'Pagriezt attēlu';
+
+  @override
+  String get imageCropReset => 'Atiestatīt apgriešanu';
+
+  @override
   String get imageCropEditAction => 'Rediģēt kadrējumu';
 
   @override
@@ -5597,4 +5606,19 @@ class AppLocalizationsLv extends AppLocalizations {
 
   @override
   String get expenseSplitAmountFirst => 'Vispirms ievadi summu vai izvēlies \"Pa pozīcijām\".';
+
+  @override
+  String get tripExportPdfAfterFinish => 'PDF eksportēšana būs pieejama pēc ceļojuma pabeigšanas.';
+
+  @override
+  String get yearSummarySeasonNotice => 'Iepriekšējā gada kopsavilkums ir pieejams no 1. janvāra līdz 31. martam.';
+
+  @override
+  String get expenseItemsClearAll => 'Dzēst visas pozīcijas';
+
+  @override
+  String get receiptRetakePhoto => 'Fotografēt vēlreiz';
+
+  @override
+  String get receiptUsePhoto => 'Izmantot foto';
 }

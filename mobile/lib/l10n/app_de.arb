@@ -1044,6 +1044,9 @@
   "profileEditRevolutMe": "Revolut.me",
   "imageCropperAdjustAvatar": "Avatar anpassen",
   "imageCropperAdjustTripImage": "Reisebild anpassen",
+  "receiptCropHint": "Ziehe die Ränder so, dass der ganze Beleg im Rahmen liegt.",
+  "imageCropRotate": "Foto drehen",
+  "imageCropReset": "Zuschnitt zurücksetzen",
   "imageCropEditAction": "Zuschnitt bearbeiten",
   "imageCropZoomIn": "Vergrößern",
   "imageCropZoomOut": "Verkleinern",
@@ -2224,5 +2227,10 @@
   "quickSplitFromAction": "Aus Quick Split",
   "quickSplitFromTitle": "Quick Split hinzufügen",
   "quickSplitNoneForTrip": "Kein Quick Split hat nur Personen dieser Reise.",
-  "expenseSplitAmountFirst": "Gib zuerst den Betrag ein oder wähle Nach Posten."
+  "expenseSplitAmountFirst": "Gib zuerst den Betrag ein oder wähle Nach Posten.",
+  "tripExportPdfAfterFinish": "Der PDF-Export ist verfügbar, sobald du die Reise beendet hast.",
+  "yearSummarySeasonNotice": "Dein Rückblick auf das Vorjahr ist vom 1. Januar bis zum 31. März verfügbar.",
+  "expenseItemsClearAll": "Alle Positionen löschen",
+  "receiptRetakePhoto": "Erneut aufnehmen",
+  "receiptUsePhoto": "Foto verwenden"
 }

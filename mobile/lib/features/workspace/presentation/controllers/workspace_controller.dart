@@ -41,6 +41,7 @@ class WorkspaceController {
   Future<Uri?> loadReceiptUri({
     required int tripId,
     required int expenseId,
+    bool thumbnail = false,
   }) async {
     if (expenseId <= 0) return null;
     String? cursor;
@@ -56,7 +57,12 @@ class WorkspaceController {
       );
       for (final expense in page.items) {
         if (expense.id != expenseId) continue;
-        final uri = Uri.tryParse(expense.receiptUrl ?? '');
+        final uri = Uri.tryParse(
+          (thumbnail
+                  ? expense.receiptThumbUrl ?? expense.receiptUrl
+                  : expense.receiptUrl) ??
+              '',
+        );
         final base = Uri.parse(AppEnv.current.apiBaseUrl);
         if (uri == null ||
             uri.scheme != 'https' ||
@@ -123,10 +129,12 @@ class WorkspaceController {
   Future<ReceiptScan> scanReceipt({
     required String receiptPath,
     required String requestId,
+    bool rescan = false,
   }) {
     return _repository.scanReceipt(
       receiptPath: receiptPath,
       requestId: requestId,
+      rescan: rescan,
     );
   }
 

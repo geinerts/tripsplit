@@ -1044,6 +1044,9 @@
   "profileEditRevolutMe": "Revolut.me",
   "imageCropperAdjustAvatar": "Juster avatar",
   "imageCropperAdjustTripImage": "Juster reisebilde",
+  "receiptCropHint": "Dra i kantene slik at hele kvitteringen kommer med.",
+  "imageCropRotate": "Roter bilde",
+  "imageCropReset": "Tilbakestill beskjæring",
   "imageCropEditAction": "Rediger beskjæring",
   "imageCropZoomIn": "Zoom inn",
   "imageCropZoomOut": "Zoom ut",
@@ -2224,5 +2227,10 @@
   "quickSplitFromAction": "Fra et Quick split",
   "quickSplitFromTitle": "Legg til et Quick split",
   "quickSplitNoneForTrip": "Ingen Quick split har bare personer fra denne reisen.",
-  "expenseSplitAmountFirst": "Skriv inn beløpet først, eller velg Per vare."
+  "expenseSplitAmountFirst": "Skriv inn beløpet først, eller velg Per vare.",
+  "tripExportPdfAfterFinish": "PDF-eksport er tilgjengelig når du har avsluttet reisen.",
+  "yearSummarySeasonNotice": "Oppsummeringen av fjoråret er tilgjengelig fra 1. januar til 31. mars.",
+  "expenseItemsClearAll": "Slett alle poster",
+  "receiptRetakePhoto": "Ta på nytt",
+  "receiptUsePhoto": "Bruk bilde"
 }

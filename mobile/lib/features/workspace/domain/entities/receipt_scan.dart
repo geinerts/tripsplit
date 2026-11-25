@@ -41,6 +41,8 @@ class ReceiptScan {
     this.merchant,
     this.date,
     this.currencyCode,
+    this.category,
+    this.subcategory,
     this.discountCents = 0,
     this.taxCents = 0,
     this.tipCents = 0,
@@ -55,6 +57,12 @@ class ReceiptScan {
   /// ISO date (yyyy-MM-dd) or null when unreadable.
   final String? date;
   final String? currencyCode;
+
+  /// Suggested built-in expense category; null leaves the user's choice empty.
+  final String? category;
+
+  /// Optional built-in type within [category], such as food/restaurant.
+  final String? subcategory;
   final List<ReceiptScanItem> items;
   final int discountCents;
   final int taxCents;
@@ -154,6 +162,10 @@ class ReceiptScan {
       merchant: text('merchant'),
       date: text('date'),
       currencyCode: text('currency'),
+      category: json['category'] is String ? json['category'] as String : null,
+      subcategory: json['subcategory'] is String
+          ? json['subcategory'] as String
+          : null,
       items: (json['items'] as List? ?? const [])
           .map(ReceiptScanItem.fromJson)
           .whereType<ReceiptScanItem>()
