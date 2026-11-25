@@ -29,4 +29,9 @@ The other location use is optional: suggesting the current city when the user ad
 
 How to try it: open the demo group trip → Live map → Share my location → pick 15 minutes → Start sharing. The blue indicator appears; tap "Stop sharing" to end it.
 
-Account deletion: Profile → Delete account.
+Account deletion: Profile → Account and security → Delete account.
+1. Optionally choose a reason.
+2. Email/password accounts re-enter their password.
+3. A confirmation link is emailed to the account address. The link opens a page on splyto.eu, where typing DELETE erases the account permanently.
+
+The demo account's mailbox belongs to us, so you can start deletion in the app but will not receive the link. If you want to see the whole flow, please sign up with an email address you can access and delete that account, or contact us and we will confirm it. Please do not delete the demo account itself.

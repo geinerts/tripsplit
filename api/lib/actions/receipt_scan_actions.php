@@ -11,7 +11,8 @@ require_once __DIR__ . '/../helpers/helper_receipt_ai.php';
 /** The scan as the API returns it, from a validated result. */
 function receipt_ai_response_scan(int $scanId, string $requestId, bool $cached, array $result): array
 {
-    return ['id' => $scanId, 'request_id' => $requestId, 'cached' => $cached] + $result;
+    return ['id' => $scanId, 'request_id' => $requestId, 'cached' => $cached]
+        + receipt_ai_reconcile_totals($result);
 }
 
 function scan_receipt_action(): void
@@ -37,6 +38,10 @@ function scan_receipt_action(): void
 
     $requestId = trim((string) ($body['request_id'] ?? ''));
     $receiptPath = trim((string) ($body['receipt_path'] ?? ''));
+    $rescan = $body['rescan'] ?? false;
+    if (array_key_exists('rescan', $body) && !is_bool($body['rescan'])) {
+        json_out(['ok' => false, 'error' => 'rescan must be a boolean.'], 400);
+    }
     if (preg_match('/^[A-Za-z0-9_-]{8,64}$/D', $requestId) !== 1 || $receiptPath === '' || strlen($receiptPath) > 255) {
         json_out(['ok' => false, 'error' => 'receipt_path and request_id are required.'], 400);
     }
@@ -76,7 +81,7 @@ function scan_receipt_action(): void
     $hash = hash_file('sha256', $absPath);
 
     // 5. Same image read in the last 7 days: no AI call, no quota.
-    $cached = receipt_ai_cached_result($pdo, $userId, $hash, $now);
+    $cached = $rescan ? null : receipt_ai_cached_result($pdo, $userId, $hash, $now);
     if ($cached !== null) {
         $scanId = (int) $cached['id'];
         unset($cached['id'], $cached['request_id']);

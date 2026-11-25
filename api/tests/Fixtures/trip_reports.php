@@ -25,6 +25,11 @@ if (!function_exists('load_user_notification_preferences')) {
 }
 require_once __DIR__ . '/../../lib/actions/trip_reports_actions.php';
 
+$report_now = strtotime('2026-01-15T12:00:00Z');
+function test_travel_year_summary_action(): void {
+    travel_year_summary_action($GLOBALS['report_now']);
+}
+
 ini_set('error_log', '/dev/null');
 $assertions = 0;
 $fx_calls = 0;
@@ -180,9 +185,21 @@ invitation_expect(!str_contains($csv, 'example.invalid'), 'CSV has no email addr
 
 // Detailed PDF, rendered for real.
 $_GET = ['format' => 'pdf', 'locale' => 'ru'];
+$pdo->exec('UPDATE trip_trips SET status = "active" WHERE id = 10');
+$activePdf = invitation_call('trip_export_action', 4);
+invitation_expect($activePdf['status'] === 409 && $activePdf['body']['code'] === 'trip_not_finished', 'Active trip PDF is rejected at the endpoint');
+invitation_expect(!isset($activePdf['body']['content_base64']), 'Rejected PDF contains no document');
+$_GET['format'] = 'csv';
+invitation_expect(invitation_call('trip_export_action', 4)['status'] === 200, 'Active trip CSV remains available');
+$_GET['format'] = 'pdf';
+$pdo->exec('UPDATE trip_trips SET status = "unknown" WHERE id = 10');
+invitation_expect(invitation_call('trip_export_action', 4)['status'] === 409, 'Unknown trip status cannot export PDF');
+$pdo->exec('UPDATE trip_trips SET status = "settling" WHERE id = 10');
 $export = invitation_call('trip_export_action', 4);
 invitation_expect($export['status'] === 200 && $export['body']['mime_type'] === 'application/pdf', 'Premium account can export a PDF');
 invitation_expect(str_starts_with((string) base64_decode($export['body']['content_base64']), '%PDF-'), 'Output is a PDF');
+$pdo->exec('UPDATE trip_trips SET status = "archived" WHERE id = 10');
+invitation_expect(invitation_call('trip_export_action', 4)['status'] === 200, 'Archived trip PDF remains available');
 $detailed = trip_report_html(trip_report_load($pdo, 10, 4), trip_report_strings('en'), 'en', true);
 invitation_expect(str_contains($detailed, '=SUM(A1) dinner') && str_contains($detailed, '&lt;b&gt;lesson'), 'Detailed report lists escaped expenses');
 invitation_expect(str_contains($detailed, 'All expenses') && !str_contains($detailed, '<b>lesson'), 'Detailed report has its section');
@@ -217,9 +234,9 @@ $pdo->exec('INSERT INTO trip_expense_participants(expense_id,user_id,owed_cents)
 $pdo->exec('INSERT INTO trip_travel_places(user_id,city,country,country_code,visited_on) VALUES
     (4,"Tallinn","Estonia","EE","2025-02-02"),(4,"Vilnius","Lithuania","LT","2024-02-02"),(7,"Tokyo","Japan","JP","2025-02-02")');
 $_GET = ['year' => '2025'];
-$yearDenied = invitation_call('travel_year_summary_action', 8);
+$yearDenied = invitation_call('test_travel_year_summary_action', 8);
 invitation_expect($yearDenied['status'] === 403 && $yearDenied['body']['code'] === 'premium_required', 'Year summary requires Premium');
-$year = invitation_call('travel_year_summary_action', 4)['body']['summary'];
+$year = invitation_call('test_travel_year_summary_action', 4)['body']['summary'];
 invitation_expect($year['trip_count'] === 3, 'Only finished trips of the account count');
 invitation_expect($year['days_away'] === 13, 'Overlapping days count once');
 invitation_expect(array_column($year['countries'], 'code') === ['EE', 'NO'], 'Countries combine trips and own visits');
@@ -232,16 +249,42 @@ invitation_expect($year['top_companion'] === ['nickname' => 'Plain=1', 'trip_cou
 invitation_expect(!isset($year['top_companion']['email']), 'Companion has only a nickname');
 $calls = $fx_calls;
 invitation_expect((int) $pdo->query('SELECT COUNT(*) FROM trip_fx_rate_cache')->fetchColumn() === 1, 'Fetched rates are kept');
-invitation_call('travel_year_summary_action', 4);
+invitation_call('test_travel_year_summary_action', 4);
 invitation_expect($fx_calls === $calls + 1, 'A kept rate is not fetched again; the missing one still is');
-invitation_expect(in_array(2025, $year['available_years'], true), 'Years with trips are listed');
+invitation_expect($year['available_years'] === [2025], 'Only the previous calendar year is offered');
+$_GET = [];
+invitation_expect(invitation_call('test_travel_year_summary_action', 4)['body']['summary']['year'] === 2025, 'Omitted year defaults to the previous year');
+$_GET = ['year' => '2026'];
+invitation_expect(invitation_call('test_travel_year_summary_action', 4)['status'] === 400, 'Current incomplete year is rejected');
 $_GET = ['year' => '1999'];
-invitation_expect(invitation_call('travel_year_summary_action', 4)['status'] === 400, 'Year out of range is rejected');
+invitation_expect(invitation_call('test_travel_year_summary_action', 4)['status'] === 400, 'Year out of range is rejected');
 $_GET = ['year' => 'abc'];
-invitation_expect(invitation_call('travel_year_summary_action', 4)['status'] === 400, 'Year must be a number');
+invitation_expect(invitation_call('test_travel_year_summary_action', 4)['status'] === 400, 'Year must be a number');
 $_GET = ['year' => '2020'];
-$emptyYear = invitation_call('travel_year_summary_action', 4)['body']['summary'];
+invitation_expect(invitation_call('test_travel_year_summary_action', 4)['status'] === 400, 'Older years are not available in this season');
+$emptyYear = year_summary_build($pdo, 4, 2020, 'EUR', static fn(): float => 1.0);
 invitation_expect($emptyYear['trip_count'] === 0 && $emptyYear['biggest_trip'] === null && $emptyYear['top_category'] === null, 'Empty year has nulls');
+
+// Both season boundaries are enforced by the endpoint independently of the client.
+foreach ([
+    '2026-12-31T23:59:59Z' => 403,
+    '2027-01-01T00:00:00Z' => 200,
+    '2027-03-31T23:59:59Z' => 200,
+    '2027-04-01T00:00:00Z' => 403,
+] as $stamp => $status) {
+    $report_now = strtotime($stamp);
+    $_GET = [];
+    $seasonResponse = invitation_call('test_travel_year_summary_action', 4);
+    invitation_expect($seasonResponse['status'] === $status, 'Season boundary ' . $stamp);
+    if ($status === 403) {
+        invitation_expect($seasonResponse['body']['code'] === 'year_summary_unavailable', 'Out-of-season response has a stable code');
+        invitation_expect(!isset($seasonResponse['body']['summary']), 'No summary outside the season');
+    } else {
+        invitation_expect($seasonResponse['body']['summary']['year'] === 2026, 'Boundary response shows the completed year');
+        invitation_expect($seasonResponse['body']['summary']['available_years'] === [2026], 'Boundary response has only that season year');
+    }
+}
+$report_now = strtotime('2026-01-15T12:00:00Z');
 
 // Without the migration, finishing a trip still works and nothing is queued.
 $pdo->exec('DROP TABLE trip_report_deliveries');
@@ -252,7 +295,7 @@ $usage = $pdo->query('SELECT feature, SUM(use_count) AS n FROM trip_feature_usag
 invitation_expect(($usage['trip_export_pdf'] ?? 0) > 0 && ($usage['trip_export_csv'] ?? 0) > 0, 'Successful exports are counted by format');
 invitation_expect(($usage['year_summary_view'] ?? 0) > 0, 'Year summary is counted');
 $before = array_sum($usage);
-invitation_call('travel_year_summary_action', 8);
+invitation_call('test_travel_year_summary_action', 8);
 invitation_call('trip_export_action', 8);
 invitation_expect((int) $pdo->query('SELECT SUM(use_count) FROM trip_feature_usage_counts')->fetchColumn() === (int) $before, 'Rejected requests are not counted');
 

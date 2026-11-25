@@ -60,7 +60,11 @@ purchase flow.
 ## Detailed export (Premium)
 
 `GET trip_export?format=pdf|csv` with the usual `X-Trip-Id` header. Any current member can
-export a trip of any status. Limited to 20 requests per 15 minutes per account. Responses
+export CSV for a trip of any status. PDF export requires a finished trip: status `settling`
+or `archived`. An active or unknown status returns HTTP 409 with
+`{"ok":false,"code":"trip_not_finished","error":"Finish the trip before exporting a PDF."}`.
+The app offers PDF only for finished trips; the server also enforces this rule.
+Limited to 20 requests per 15 minutes per account. Responses
 are `Cache-Control: private, no-store`. The optional `locale` parameter takes a language
 code and defaults to the stored language.
 
@@ -83,7 +87,18 @@ spreadsheet can't run them as formulas.
 
 ## Year summary (Premium)
 
-`GET travel_year_summary?year=2026` returns the requesting account's year:
+Available only from 1 January 00:00 UTC through 31 March 23:59:59 UTC, for the
+previous calendar year (owner decision, 2026-11-22). For example, January–March 2027
+shows 2026. Outside this season, `premium_access.features.year_summary` is `false`,
+so the profile entry is hidden, and the endpoint returns HTTP 403 with code
+`year_summary_unavailable`. Premium and the launch switch do not bypass the season.
+
+`GET travel_year_summary` defaults to the previous year. The optional `year` must
+equal that year; other years return HTTP 400 `Invalid year.`. The existing
+`available_years` field contains only that season's year, so there is no selector
+for unfinished/current or older years. No response fields are added.
+
+`GET travel_year_summary?year=2026` during January–March 2027 returns:
 
 ```json
 {"ok": true, "summary": {
@@ -103,8 +118,7 @@ spreadsheet can't run them as formulas.
 }}
 ```
 
-- `year` defaults to the current UTC year. A value outside 2000 to the current year returns
-  400 `Invalid year.`
+- `year` defaults to the previous UTC year and only that year can be requested in season.
 - A trip counts when it is finished and its start date, or its finish date when it has no
   start date, falls in the year.
 - `days_away` merges overlapping trips. A trip without dates uses the range of its expense
@@ -120,6 +134,22 @@ The summary is calculated on request and not stored. Limited to 30 requests per 
 minutes per account.
 
 ## Migration and deployment
+
+Availability update deployed on 2026-11-22: `trip_reports_actions.php`,
+`helper_premium.php` and the new `helper_year_summary_season.php`. No migration or
+configuration change was needed. Server syntax and file hashes were verified; a
+fresh process as `www-data` confirmed export access for three active accounts and
+the year-summary flag hidden outside the season. The public API smoke check returned
+the expected 404 JSON for an unknown action. The launch switch remains enabled.
+The mobile PDF-choice restriction and localized availability messages are implemented
+locally and require the next mobile build; existing builds already honor the server's
+year-summary feature flag. No iOS/Android release was published by this change.
+
+Validation: 21 targeted PHP tests (267 assertions) and 240 Flutter tests passed.
+The full PHP suite ran 572 tests; its sole failure was a sandbox-denied local socket
+in `JsonPhotoBodyTest`, which passed separately with socket access (29 assertions).
+That full run also reported three warnings, one deprecation and one skipped test.
+Flutter analysis retained the same 17 pre-existing diagnostics.
 
 Run `sql/migrations/2026-11-06-add-trip-reports.sql` before the server is updated. It adds
 `trip_report_deliveries`, `trip_fx_rate_cache`, `trip_users.locale` and

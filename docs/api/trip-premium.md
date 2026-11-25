@@ -38,6 +38,11 @@ missing, only the account's own Premium counts. Older apps ignore the field. App
 `trip_export` uses the same rule for the trip in `X-Trip-Id`. Otherwise it still returns 403
 `premium_required`. Other request and response fields don't change.
 
+Trip Premium does not bypass the report availability rules: PDF requires status
+`settling` or `archived`; CSV remains available for an active trip. The account-wide
+year summary is seasonal (January–March for the previous year), including when
+Premium is open to everyone. See [trip reports](trip-reports.md).
+
 ## Administration
 
 `admin_panel_premium_mutate` gains two operations, with the same superadmin, verified 2FA,

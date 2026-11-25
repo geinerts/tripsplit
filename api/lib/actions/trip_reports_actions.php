@@ -5,11 +5,12 @@ require_once __DIR__ . '/../helpers/helper_trip_report.php';
 require_once __DIR__ . '/../helpers/helper_trip_report_render.php';
 require_once __DIR__ . '/../helpers/helper_trip_report_delivery.php';
 require_once __DIR__ . '/../helpers/helper_year_summary.php';
+require_once __DIR__ . '/../helpers/helper_year_summary_season.php';
 require_once __DIR__ . '/../helpers/helper_feature_usage.php';
 
-function require_premium_feature(PDO $pdo, array $me, string $feature, ?int $tripId = null): void
+function require_premium_feature(PDO $pdo, array $me, string $feature, ?int $tripId = null, ?int $now = null): void
 {
-    $access = premium_access_for_user($pdo, (int) $me['id']);
+    $access = premium_access_for_user($pdo, (int) $me['id'], $now);
     if (!premium_feature_allowed_for($pdo, $access, $feature, $tripId)) {
         json_out(['ok' => false, 'code' => 'premium_required', 'error' => 'This feature requires Premium.'], 403);
     }
@@ -42,6 +43,10 @@ function trip_export_action(): void
     if ($format !== 'pdf' && $format !== 'csv') {
         json_out(['ok' => false, 'error' => 'Unsupported export format.'], 400);
     }
+    if ($format === 'pdf' && !in_array($trip['status'] ?? '', ['settling', 'archived'], true)) {
+        json_out(['ok' => false, 'code' => 'trip_not_finished',
+            'error' => 'Finish the trip before exporting a PDF.'], 409);
+    }
     enforce_rate_limit($pdo, 'trip_export_user', (string) ((int) $me['id']), 20, 900);
 
     $report = trip_report_load($pdo, (int) $trip['id'], (int) $me['id']);
@@ -68,16 +73,21 @@ function trip_export_action(): void
     ]);
 }
 
-function travel_year_summary_action(): void
+function travel_year_summary_action(?int $now = null): void
 {
+    $now ??= time();
     $me = get_me();
     $pdo = db();
-    require_premium_feature($pdo, $me, 'year_summary');
+    $seasonYear = year_summary_season_year($now);
+    if ($seasonYear === null) {
+        json_out(['ok' => false, 'code' => 'year_summary_unavailable',
+            'error' => 'Your year summary is available from January through March.'], 403);
+    }
+    require_premium_feature($pdo, $me, 'year_summary', null, $now);
 
-    $thisYear = (int) gmdate('Y');
     $rawYear = $_GET['year'] ?? null;
-    $year = $rawYear === null ? $thisYear : filter_var($rawYear, FILTER_VALIDATE_INT);
-    if (!is_int($year) || $year < 2000 || $year > $thisYear) {
+    $year = $rawYear === null ? $seasonYear : filter_var($rawYear, FILTER_VALIDATE_INT);
+    if (!is_int($year) || $year < 2000 || $year !== $seasonYear) {
         json_out(['ok' => false, 'error' => 'Invalid year.'], 400);
     }
     enforce_rate_limit($pdo, 'year_summary_user', (string) ((int) $me['id']), 30, 900);
@@ -90,6 +100,7 @@ function travel_year_summary_action(): void
         $currency,
         static fn(string $from, string $to, string $date): float => year_summary_fx_rate($pdo, $from, $to, $date)
     );
+    $summary['available_years'] = [$seasonYear];
     record_feature_use($pdo, 'year_summary_view');
     if (!headers_sent()) {
         header('Cache-Control: private, no-store');

@@ -486,6 +486,45 @@ visi dalīšanas veidi izskatās vienādi ar "By item".
 
 Teksti visās 16 valodās (ARB, `flutter gen-l10n`).
 
+## I. Gada kopsavilkums Quick Start stilā (vēlāk; izvēlēts 2026-11-22)
+
+**Statuss:** īpašnieks izvēlējies šo dizaina virzienu un lūdzis saglabāt pie piezīmēm.
+Ieviešana atlikta; šī piezīme nenozīmē, ka ekrāns jau ir pārveidots, un nepiesaista
+darbu konkrētam laidienam.
+
+**Izvēlētais makets:** [trīs slaidi Quick Start stilā](../../output/design/year-summary/d-quick-start-style.png).
+Maketa skaitļi un valstis ir demonstrācijas dati. Iepriekšējie A/B/C varianti paliek
+`output/design/year-summary/` salīdzināšanai; ieviešanas pamats ir **D / Quick Start**.
+
+### Dizains un saturs
+
+Pārņemt esošā Quick Start mintzaļo–krēmkrāsas fonu, krāsainās lentes, Inter
+virsrakstus, slaidu punktiņus un navigācijas stilu. Centrā rādīt lietotāja gada
+datus un kartītes. Kopā **trīs slaidi**:
+
+1. **Tavs gads:** gads, ceļojumu, prom pavadīto dienu, valstu un pilsētu skaits.
+2. **Gada pieturas:** apmeklētās valstis, lietotāja izdevumu daļa, dārgākais
+   ceļojums pēc lietotāja izdevumu daļas un galvenā izdevumu kategorija.
+3. **Dalies ar savu gadu:** kopīgojamās kartītes priekšskatījums, poga kopīgošanai
+   un poga pabeigšanai. Izdevumu summas kopīgojamajā attēlā pēc noklusējuma
+   paslēptas; lietotājs var tās ieslēgt ar slēdzi.
+
+Pārvilkšana ar pirkstu, **Tālāk**, iespēja atgriezties un aizvērt jebkurā brīdī.
+Bez automātiskas slaidu pārslēgšanās. Saglabāt atbalstu palielinātam tekstam,
+maziem ekrāniem, drošajām ekrāna malām un samazinātām animācijām. Trūkstošus
+datus neizdomāt; tukšam gadam saglabāt atbilstošu tukšo stāvokli.
+
+### Ieviešanas atskaites punkti
+
+- Stila paraugs: `mobile/lib/features/quick_start/presentation/quick_start_sheet.dart`
+  un `quick_start_background.dart` tajā pašā mapē. Koplietojamu vizuālo kodu vajadzības
+  gadījumā izdalīt kopīgā UI slānī, neveidojot atkarību starp funkciju prezentācijas slāņiem.
+- Pašreizējais ekrāns: `mobile/lib/features/trip_reports/presentation/year_summary_page.dart`.
+- Izmantot esošos `YearSummary` datus un kopīgošanu; pats dizains neprasa AI ieviešanu.
+- Saglabāt iepriekš pieņemto pieejamību: **1. janvāris–31. marts (UTC), par iepriekšējo
+  kalendāro gadu**. Līgums: [trip-reports.md](../api/trip-reports.md).
+- Jaunie teksti visās lietotnes valodās, slaidu un kopīgošanas pārbaudes abām platformām.
+
 ## Secība un izlaišana
 
 1. **Apstiprinājumi.** API izmaiņas (jauns paziņojuma veids, `receipt_kind`), datubāzes

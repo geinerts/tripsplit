@@ -1,6 +1,8 @@
 <?php
 declare(strict_types=1);
 
+require_once __DIR__ . '/helper_year_summary_season.php';
+
 function premium_can_manage(array $session): bool
 {
     return ($session['role'] ?? '') === 'superadmin'
@@ -61,12 +63,15 @@ function premium_feature_catalog(): array
     ];
 }
 
-/** What each listed feature allows for a plan. Free-tier features are allowed for every plan. */
-function premium_features_for_plan(string $plan): array
+/** Plan eligibility combined with availability windows; the server remains authoritative. */
+function premium_features_for_plan(string $plan, ?int $now = null): array
 {
     $features = [];
     foreach (premium_feature_catalog() as $feature => $definition) {
         $features[$feature] = $definition['tier'] === 'free' || $plan === 'premium';
+    }
+    if (year_summary_season_year($now) === null) {
+        $features['year_summary'] = false;
     }
     return $features;
 }
@@ -157,7 +162,7 @@ function premium_access_payload(int $userId, string $plan, ?string $endsAt, int 
         'expires_at' => $endsAt === null ? null : str_replace(' ', 'T', $endsAt) . 'Z',
         'checked_at' => gmdate('Y-m-d\TH:i:s\Z', $now), 'refresh_after_seconds' => 300,
         'billing_enabled' => false, 'limits_enforced' => false,
-        'features' => premium_features_for_plan($plan)];
+        'features' => premium_features_for_plan($plan, $now)];
 }
 
 /** Account-scoped projection; sandbox purchases and profile flags never grant access. */

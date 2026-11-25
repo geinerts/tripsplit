@@ -141,6 +141,18 @@ switch ($scenario) {
         $out['same_image_new_request'] = scan(['receipt_path' => 'receipts/u1_receipt.png', 'request_id' => 'req-00000009']);
         $out['state'] = state($pdo);
         break;
+    case 'rescan':
+        $out['first'] = scan($ok);
+        $GLOBALS['answer']['data']['items'][0]['name'] = 'Corrected milk';
+        $request = array_replace($ok, ['request_id' => 'req-rescan-01', 'rescan' => true]);
+        $out['rescan'] = scan($request);
+        $out['again'] = scan($request);
+        $out['cached_after'] = scan(array_replace($ok, ['request_id' => 'req-cache-02']));
+        $out['invalid_type'] = scan(array_replace($ok, ['request_id' => 'req-bad-flag', 'rescan' => 'true']));
+        $out['null_type'] = scan(array_replace($ok, ['rescan' => null]));
+        $out['state'] = state($pdo);
+        $out['rates'] = $GLOBALS['rates'];
+        break;
     case 'quota':
         $insert = $pdo->prepare("INSERT INTO trip_ai_scans (user_id, request_id, receipt_path, image_sha256, status, model,
             budget_hour, budget_day, budget_month, created_at) VALUES (1, ?, 'x', 'h', 'done', 'm', 'h', 'd', 'm', ?)");
@@ -148,6 +160,7 @@ switch ($scenario) {
         $out['response'] = scan($ok);
         $out['calls'] = count($GLOBALS['calls']);
         $out['budget'] = state($pdo)['budget'];
+        $out['rescan'] = scan(array_replace($ok, ['rescan' => true]));
         break;
     case 'budget':
         [, $day] = receipt_ai_periods(time());
@@ -182,6 +195,89 @@ switch ($scenario) {
             'items' => [['name' => 'x', 'quantity' => 1, 'unit_price' => 1, 'total' => 1, 'uncertain' => false]],
             'discounts' => null, 'tax' => null, 'tip' => null, 'service_charge' => null, 'total' => 9, 'notes' => 'A cat.'];
         $out['response'] = scan($ok);
+        break;
+    case 'subcategory':
+        foreach (RECEIPT_AI_SUBCATEGORIES as $category => $types) {
+            foreach ($types as $type) {
+                $scan = receipt_ai_validate(array_replace($receipt, ['category' => $category, 'subcategory' => $type]), time());
+                $out['valid'][] = [$scan['category'], $scan['subcategory']];
+            }
+        }
+        foreach ([['food', 'hotel'], ['transport', 'restaurant'], ['groceries', 'restaurant'],
+            ['activities', 'tour'], ['shopping', 'clothes'], [null, 'cafe'], ['invented', 'cafe'],
+            ['food', 'invented'], ['food', ''], ['food', null], ['food', 123], ['food', ['cafe']]] as [$category, $type]) {
+            $out['invalid'][] = receipt_ai_validate(array_replace($receipt, ['category' => $category, 'subcategory' => $type]), time())['subcategory'];
+        }
+        $out['missing'] = receipt_ai_validate($receipt, time())['subcategory'];
+        $out['not_receipt'] = receipt_ai_validate(['is_receipt' => false, 'category' => 'food', 'subcategory' => 'cafe'], time())['subcategory'];
+        $GLOBALS['answer']['data'] = array_replace($receipt, ['category' => 'food', 'subcategory' => 'restaurant']);
+        $out['fresh'] = scan($ok);
+        $out['cached'] = scan(array_replace($ok, ['request_id' => 'subcategory-cache']));
+        $out['calls'] = count($GLOBALS['calls']);
+        $out['schema'] = receipt_ai_schema();
+        break;
+    case 'category':
+        foreach ([...RECEIPT_AI_CATEGORIES, null, 'other', 'invented', 'Groceries', '', 1, ['groceries']] as $value) {
+            $out['validated'][] = receipt_ai_validate(array_replace($receipt, ['category' => $value]), time())['category'];
+        }
+        $out['missing'] = receipt_ai_validate($receipt, time())['category'];
+        $out['not_receipt'] = receipt_ai_validate(['is_receipt' => false, 'category' => 'groceries'], time())['category'];
+        $GLOBALS['answer']['data']['category'] = 'groceries';
+        $out['fresh'] = scan($ok);
+        $out['cached'] = scan(array_replace($ok, ['request_id' => 'category-cache']));
+        $out['calls'] = count($GLOBALS['calls']);
+        $out['schema'] = receipt_ai_schema();
+        break;
+    case 'deposit_order':
+        $GLOBALS['answer']['data'] = array_replace($receipt, [
+            'items' => [
+                ['name' => 'Non-alcoholic beer', 'quantity' => 6, 'unit_price' => 1.49, 'total' => 8.94],
+                ['name' => 'Depozīts', 'quantity' => 6, 'unit_price' => 0.10, 'total' => 0.60],
+                ['name' => 'Bread', 'quantity' => 1, 'unit_price' => 1.35, 'total' => 1.35],
+                ['name' => 'Water', 'quantity' => 1, 'unit_price' => 0.49, 'total' => 0.49],
+                ['name' => 'Depozīts', 'quantity' => 1, 'unit_price' => 0.10, 'total' => 0.10],
+            ],
+            'total' => 11.48,
+        ]);
+        $out['fresh'] = scan($ok);
+        $out['cached'] = scan(array_replace($ok, ['request_id' => 'deposit-cache']));
+        $out['calls'] = count($GLOBALS['calls']);
+        $pdo->prepare('UPDATE trip_ai_scans SET created_at = ?')->execute([
+            gmdate('Y-m-d H:i:s', strtotime(RECEIPT_AI_CACHE_SINCE . ' UTC') - 1),
+        ]);
+        $out['old_retry'] = scan($ok);
+        $out['after_old_result'] = scan(array_replace($ok, ['request_id' => 'deposit-new-prompt']));
+        $out['calls_after_old_result'] = count($GLOBALS['calls']);
+        break;
+    case 'tax_totals':
+        $inclusive = array_replace($receipt, [
+            'items' => [['name' => 'Groceries A', 'total' => 20], ['name' => 'Groceries B', 'total' => 25.97]],
+            'tax' => 7.23, 'total' => 45.97,
+        ]);
+        $out['inclusive'] = receipt_ai_validate($inclusive, time());
+        $out['exclusive'] = receipt_ai_validate(array_replace($inclusive, [
+            'items' => [['name' => 'Net items', 'total' => 38.74]],
+        ]), time());
+        $out['extras'] = receipt_ai_validate(array_replace($inclusive, [
+            'tip' => 2, 'service_charge' => 1, 'total' => 48.97,
+        ]), time());
+        $out['discount'] = receipt_ai_validate(array_replace($inclusive, [
+            'discounts' => 1, 'total' => 44.97,
+        ]), time());
+        $out['mismatch'] = receipt_ai_validate(array_replace($inclusive, ['total' => 50]), time());
+        $out['missing_total'] = receipt_ai_validate(array_replace($inclusive, ['total' => null]), time());
+        $out['rounding'] = receipt_ai_validate(array_replace($inclusive, ['total' => 45.98]), time());
+        $out['small_added_tax'] = receipt_ai_validate(array_replace($inclusive, ['tax' => 0.01, 'total' => 45.98]), time());
+        $out['no_items'] = receipt_ai_validate(array_replace($inclusive, ['items' => [], 'total' => 0]), time());
+        // Emulate a result saved before the fix. Both cache and request-ID retries
+        // must reconcile it without spending another scan or changing saved expenses.
+        $GLOBALS['answer']['data'] = $inclusive;
+        $out['fresh'] = scan($ok);
+        $legacy = array_replace($out['inclusive'], ['tax_cents' => 723, 'sum_matches' => false, 'difference_cents' => -723]);
+        $pdo->prepare('UPDATE trip_ai_scans SET result_json = ?')->execute([json_encode($legacy)]);
+        $out['retry'] = scan($ok);
+        $out['cached'] = scan(array_replace($ok, ['request_id' => 'req-tax-cache']));
+        $out['calls'] = count($GLOBALS['calls']);
         break;
     case 'validate':
         $now = gmmktime(12, 0, 0, 11, 20, 2026);

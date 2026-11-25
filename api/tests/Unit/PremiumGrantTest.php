@@ -99,7 +99,7 @@ final class PremiumGrantTest extends TestCase
         $this->mutate($this->body());
         $premium = premium_access_for_user($this->pdo, 7, $this->now, ['enabled' => false]);
         self::assertTrue(premium_feature_allowed($premium, 'trip_export'));
-        self::assertTrue(premium_feature_allowed($premium, 'year_summary'));
+        self::assertFalse(premium_feature_allowed($premium, 'year_summary'), 'The September profile hides the seasonal summary');
         self::assertFalse(premium_feature_allowed($premium, 'unlisted'));
         self::assertFalse(premium_feature_allowed(['features' => ['trip_export' => 'yes']], 'trip_export'));
     }
@@ -122,6 +122,27 @@ final class PremiumGrantTest extends TestCase
                 ['enabled' => true, 'until' => $invalid])['plan'], $invalid);
         }
         self::assertSame('free', premium_access_for_user($this->pdo, 8, $this->now, ['enabled' => false, 'until' => ''])['plan']);
+    }
+
+    public function test_year_summary_season_boundaries_apply_to_launch_and_personal_premium(): void
+    {
+        foreach ([
+            '2026-12-31T23:59:59Z' => null,
+            '2027-01-01T00:00:00Z' => 2026,
+            '2027-03-31T23:59:59Z' => 2026,
+            '2027-04-01T00:00:00Z' => null,
+            '2028-02-29T12:00:00Z' => 2027,
+        ] as $stamp => $year) {
+            $now = strtotime($stamp);
+            self::assertSame($year, year_summary_season_year($now));
+            $launch = premium_access_for_user($this->pdo, 8, $now, ['enabled' => true, 'until' => '']);
+            $personal = premium_access_payload(7, 'premium', '2029-01-01 00:00:00', $now);
+            foreach ([$launch, $personal] as $access) {
+                self::assertSame($year !== null, premium_feature_allowed($access, 'year_summary'), $stamp);
+                self::assertTrue(premium_feature_allowed($access, 'trip_export'));
+            }
+            self::assertFalse(premium_features_for_plan('free', $now)['year_summary']);
+        }
     }
 
     public function test_admin_grant_takes_precedence_and_switch_survives_missing_grant_table(): void

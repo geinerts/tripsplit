@@ -1,12 +1,16 @@
 # Subscription rollout
 
-Status: Premium can be switched on for everyone from server configuration, and two features
-check it. RevenueCat exists only as sandbox server verification. There is no purchase UI and
-no store product. Nothing in this document is deployed or configured by itself.
+Status: the latest product decision (2026-11-16, reaffirmed 2026-11-22) is to make all
+features free for everyone for the first 1–2 years, including AI receipt reading with usage
+limits. See [the AI plan](../mobile/quick-split-ai-plan.md#11-saistība-ar-esošajiem-lēmumiem-piezīmes-2026-11-16).
+The existing Premium gates remain in code; the launch configuration below opens them for
+all active accounts. RevenueCat exists only as sandbox server verification. There is no
+purchase UI and no store product. This document alone does not change server configuration.
 
 ## Free and Premium
 
-Agreed with the owner on 2026-11-08. Everything a group needs to split money together stays
+The original tier allocation below was agreed on 2026-11-08 and is retained for a possible
+future paid offering, not as the launch paywall. Everything a group needs to split money together stays
 free, because a paywall there stops new people joining. Premium is extra value for one
 person. Nobody pays to see their own data.
 
@@ -20,9 +24,18 @@ person. Nobody pays to see their own data.
 | One trip budget, analytics, travel map, live map, random picker | |
 | Offline use, notifications, languages, the trip report email | |
 
-Planned, not built: AI receipt reading with a personal monthly limit (Premium), a short
-year summary (free) next to the full one, a trip story with SPLYTO branding (free) and more
-designs (Premium). Prices live in the stores, not in code.
+Availability rules approved on 2026-11-22 apply to all plans, including launch access:
+PDF export is offered only after the trip is finished (`settling` or `archived`);
+CSV export remains available during a trip. The year summary is offered only from
+1 January through 31 March (UTC), for the previous calendar year. Outside that season,
+the server projects `features.year_summary: false` and rejects direct summary requests.
+See [trip reports](../api/trip-reports.md).
+
+AI receipt reading is implemented with its own feature flag, account quotas and global
+budget, without a Premium check; see [receipt scan](../api/receipt-scan.md). The older idea
+of making it Premium-only is superseded by the launch decision. Earlier ideas not built:
+a short year summary next to the full one, and a trip story with SPLYTO branding and
+additional designs. Their future paid allocation is not part of the current launch.
 
 Two products, decided on 2026-11-08: a yearly subscription for one person, and a one-off
 Premium for a single trip that covers the whole group of that trip. The trip Premium exists
@@ -45,6 +58,28 @@ the list, so the app shows a feature exactly when the server would allow it. A f
 free on the server appears in current apps without an update.
 
 ## Premium for everyone
+
+Launch configuration requested on 2026-11-22:
+
+```dotenv
+TRIP_PREMIUM_FOR_EVERYONE=1
+TRIP_PREMIUM_FOR_EVERYONE_UNTIL=
+```
+
+Set these in the active server environment file (the VPS uses
+`/etc/splyto/splyto.env`). Leave the end empty so access does not automatically disappear;
+any later transition to paid access needs a separate decision. Verify the effective
+configuration and the resolved feature list after applying it. Current mobile builds
+show the features after refreshing the profile/trip data. This switch does not enable
+the separate AI rollout flag or change its quotas, budgets or rate limits.
+
+Applied on the production VPS on 2026-11-22: only these two environment settings were
+updated, preserving file ownership/permissions and a private rollback backup outside
+the web root. A fresh PHP process as `www-data` confirmed the effective switch, no
+automatic expiry, both catalog features enabled for three sampled active accounts,
+an inactive account denied, and billing still disabled. The local `PremiumGrantTest`
+suite passed (19 tests, 122 assertions). No application code deployment or database
+migration was needed.
 
 Two server settings switch Premium on for every active account:
 

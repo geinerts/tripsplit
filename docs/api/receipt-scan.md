@@ -17,6 +17,13 @@ Request:
 { "receipt_path": "<path from upload_receipt>", "request_id": "<8–64 chars [A-Za-z0-9_-]>" }
 ```
 
+Optional `rescan: true` explicitly requests a new AI reading after clearing the item
+list (approved 2026-11-22). It bypasses only the same-image result cache; ownership,
+feature access, rate limits, concurrency, account quotas and global budget reservations
+still apply. Omitted/false retains normal cache reuse; other types return 400.
+Each intentional rescan uses a new `request_id`. Retrying an existing ID remains
+idempotent even when `rescan` is true, so network retries never start another AI call.
+
 The receipt must have been uploaded by the caller (same ownership rule as `add_expense`).
 `request_id` makes the call idempotent: repeating it returns the stored result (or
 `scan_in_progress`) and never calls the AI again. A repeated `request_id` is answered before
@@ -29,7 +36,7 @@ Checks run in this order, cheapest first; none of the later steps runs if one fa
 2. `receipt_ai` enabled for the account (uncached).
 3. Rate: 2 per minute per account, 10 per minute per IP; 1 scan at a time per account.
 4. Receipt owned by the caller, file present, at most 5 MB and 40 megapixels.
-5. Same image (server SHA-256) scanned by this account in the last 7 days → that result,
+5. Unless `rescan: true`, same image (server SHA-256) scanned by this account in the last 7 days → that result,
    no AI call, no quota used.
 6. Account quota and global budget reserved together in one MySQL transaction.
 7. Image scaled to at most 1568 px on the long side, sent once (timeout 30 s, at most 2000
@@ -44,7 +51,7 @@ Success (`200`):
   "scan": {
     "id": 123, "request_id": "…", "cached": false,
     "is_receipt": true,
-    "merchant": "Rimi", "date": "2026-11-20", "currency": "EUR",
+    "merchant": "Rimi", "date": "2026-11-20", "currency": "EUR", "category": "groceries", "subcategory": null,
     "items": [ { "name": "Milk", "quantity": 1, "unit_price_cents": 129, "total_cents": 129, "uncertain": false } ],
     "discount_cents": 0, "tax_cents": 0, "tip_cents": 0, "service_cents": 0,
     "total_cents": 129,
@@ -57,11 +64,46 @@ Success (`200`):
 
 - Amounts are integer cents in `currency`. `tax_cents` is only tax added on top of the item
   prices; VAT already included in prices is not repeated.
+  The validator removes a duplicate tax only when the sum with tax fails the printed-total
+  check and items after discounts plus tip/service without tax match that total (±1 cent).
+  Genuine additional tax and ambiguous or missing totals are left for review. This check
+  also applies when returning old cached scans and request-ID retries, without a new AI call.
+  The provider is instructed to read the printed payable total independently of its item arithmetic.
+- Optional AI category selection requested on 2026-11-22 adds nullable `category` to
+  the scan response. Allowed suggestions: `food`, `groceries`, `fuel`, `transport`,
+  `accommodation`, `activities`, `tickets`, `shopping`, `party`, `parking`.
+  Use `null` for unclear/mixed evidence, unknown categories or a non-receipt; do not
+  substitute `other`. This is one suggestion for the whole expense, inferred in the
+  existing receipt request with no additional user/account data or extra AI call.
+  Old cached results may omit the field; clients treat missing as no suggestion.
+  The app fills only an unselected category, preserves manual/custom selections and
+  lets the user change the suggestion. With no suggestion, an empty field stays Choose.
+  Existing app versions ignore the additional response field.
+- Optional AI type selection requested on 2026-11-22 adds nullable `subcategory`.
+  Only built-in types from `docs/api/expense-subcategories.md` are suggested:
+  Food: `restaurant`, `cafe`, `bar`, `fast_food`, `snacks`;
+  Transport: `taxi`, `flight`, `train`, `bus`, `car_rental`, `ferry`, `public_transport`;
+  Accommodation: `hotel`, `hostel`, `apartment`, `camping`.
+  The server rejects a type that does not belong to the suggested category by returning
+  `null`. Unknown category/type or any category without built-in types returns no type;
+  AI does not invent custom types. The app applies a suggested type only if its selected
+  category matches the AI category and no type has already been selected. Users may
+  change or clear either field; a manually cleared type is not filled again by a rescan.
+  Missing fields in older cached results mean no suggestion. No extra AI call is made.
 - An item's `total_cents` is after the discount printed for that line (for example "Atlaide"
   under it; fixed 2026-11-20), while `unit_price_cents` stays the printed price. Discount lines
   that belong to no item may appear as negative items; `discount_cents` holds discounts on the
   whole receipt, which the app spreads over the lines. Results read before this fix are not
   reused from the same-image cache.
+- Purchased items should retain their original printed order. The provider instructions
+  explicitly keep container deposits as separate lines where printed (including quantity
+  and unit price), without grouping repeated deposits or moving them to the end or extras.
+  Server validation and mobile draft conversion preserve the provider's item order;
+  they cannot reconstruct a printed order the model failed to return. Line discounts
+  continue to be applied to their item rather than displayed as separate discount rows.
+  Same-image results created before the latest prompt cutoff (2026-11-22
+  15:27:00 UTC, category/type rollout) are not reused for new requests; retries with
+  an existing request ID remain idempotent.
 - `sum_matches` is computed by the server: items − discount + tax + tip + service = total
   (±1 cent). When false, the app shows "Totals don't match, check the items".
 - `currency` is `null` when unknown or unsupported; `date` is `null` when unreadable or
@@ -88,14 +130,70 @@ because the provider may already have charged for it.
 
 ## App
 
+The item editor offers **Clear all items** above the list. It clears local rows,
+assignments, tax/tip, the scanned total and scan warnings, retaining the receipt photo.
+Receipt reading is disabled while the list contains any entered item or tax/tip.
+After clearing, reading is enabled again and requests an explicit rescan in the same
+editor. Clearing does not save or delete a stored expense.
+
+The optional rescan handler was deployed to the VPS on 2026-11-22 with a private
+backup, matching file hashes and PHP syntax checks. No migration or quota/configuration
+change was required. The clear-list button and client rescan flag require the next
+mobile build; no mobile release was published by this change. Validation: 236 Flutter
+tests and 12 PHP receipt-scan tests (130 assertions) passed using fake AI responses,
+including cache bypass, idempotent retries, quota enforcement, manual-input protection
+and clearing/rescanning without leaving the editor. Flutter analysis retained the same
+17 pre-existing diagnostics. No paid provider request was used for verification.
+
 "Fill from receipt" is a button in the "By item" split editor, in trip expenses and in Quick
-split, shown only when the account's `features.receipt_ai` is true. The first use per account on
-a device shows a notice that the photo goes to OpenAI; nothing is sent until the user agrees.
+split, shown only when the account's `features.receipt_ai` is true. Tapping the button starts
+the receipt flow directly, including first use; there is no additional AI notice dialog.
+Receipt-processing information is covered by the Privacy Policy; website and Quick Start
+notices are separate from this action.
 Without an uploaded receipt the button takes a photo first (the expense's receipt). The result
 fills the item lines (no people assigned), the extra (tax + tip + service), currency, date and an
 empty note. Equal and other splits have no AI button.
+The item editor compares its editable sum against the scan's printed `total_cents`, not
+against the sum of the imported draft. An unreadable total does not receive a match checkmark.
+
+### Included VAT fix — deployed 2026-11-22
+
+Deployed only `api/lib/helpers/helper_receipt_ai.php` and
+`api/lib/actions/receipt_scan_actions.php` to the production VPS, after comparing the
+live files and confirming that only the VAT prompt/reconciliation changes were pending.
+A private backup was retained; deployed hashes match local files. PHP 8.3 syntax checks,
+synthetic included-tax / added-tax / cached-result checks, and anonymous API smoke checks
+(unknown action: 404; me: 401) passed. No database migration, provider call or expense
+mutation was performed. Local verification: 13 PHP tests (174 assertions), 384 Flutter
+workspace/Quick Split tests, and the unchanged 17 existing analyzer diagnostics.
+
+The server fix applies to the existing mobile build. The independent-total display check
+is local mobile code and still requires a new build; existing saved expenses are not modified.
+
+The printed-order/deposit instructions and old same-image cache cutoff were also deployed
+on 2026-11-22, in `helper_receipt_ai.php` only. A private backup, matching SHA-256,
+server PHP syntax check, active PHP-FPM after reload and API 404 JSON smoke check were
+verified. Local checks passed: 14 PHP tests (197 assertions), 8 receipt draft tests,
+and the same 17 pre-existing Flutter analyzer diagnostics. Tests use synthetic receipts;
+no paid provider request was made. Existing mobile builds preserve returned item order,
+so this prompt update requires no mobile release. Already saved expenses are unchanged.
 
 ## Limits (test phase; server configuration, no app change)
+
+Production override updated on 2026-11-22 at the owner's request for receipt testing:
+`TRIP_RECEIPT_AI_USER_DAY_MAX=100` (previously the default 20). Applies per account
+with AI access. Monthly limit remains 200; global budgets, access flags and rate limits
+are unchanged. Runtime configuration was verified after the change; a private server
+configuration backup was retained. The defaults below remain unchanged in code.
+
+Later on 2026-11-22, recent failed scans showed `provider_incomplete` with exactly
+2000 output tokens after 7–10 seconds. At the owner's request, production
+`TRIP_RECEIPT_AI_MAX_OUTPUT_TOKENS` was raised to 4000. The per-scan budget
+reservation (`TRIP_RECEIPT_AI_RESERVE_MICROUSD`) was increased from 15000 to 30000
+to cover longer output; settlement still uses actual reported token usage.
+Global budget ceilings, the 30-second timeout and account quotas were left unchanged.
+Runtime configuration was verified and a private configuration backup retained.
+No paid AI call was made for verification; the owner will retry the long receipt.
 
 | Setting | Env | Default |
 | --- | --- | --- |
@@ -129,3 +227,17 @@ Rows are removed with the user (cascade) and on account deletion.
 `admin_panel_features` gains `receipt_ai_usage`: spent/reserved/limit for the current hour, day
 and month, scans and failures today, and the last 20 scans (time, account id, status, cost,
 duration, error code; no receipt content).
+
+### Category/type suggestions — deployed 2026-11-22
+
+Deployed only `api/lib/helpers/helper_receipt_ai.php` to the existing Splyto VPS.
+The same-image cache cutoff is now `2026-11-22 15:27:00` UTC so new scans do not
+reuse pre-category results; existing request IDs remain idempotent. No configuration
+or database changes. Previous code: `/var/backups/splyto/receipt-category-20261122-1527/`.
+
+Local receipt tests passed (16 tests, 222 assertions). Production PHP 8.3 lint,
+synthetic category/type validation, FPM reload/active status, SHA-256 match and API
+unknown-action smoke (404 JSON) passed. Deployed SHA-256:
+`a134584429b229a3e9c29a87f1bd9b503e9229fcdc29d9c25acdaff7433449ef`.
+No paid provider call was made during deployment. Mobile category/type selection
+requires the new app build; older versions ignore these optional response fields.
