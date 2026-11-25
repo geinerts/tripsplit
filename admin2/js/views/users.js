@@ -1,10 +1,10 @@
-import { get, post } from '../core/api.js?v=23';
-import { actionAttrs, html, join, setHtml } from '../core/html.js?v=23';
-import { registerActions, registerView } from '../core/router.js?v=23';
-import { can } from '../core/state.js?v=23';
-import { askInModal, modal, relTime, statusBadge, toast } from '../core/ui.js?v=23';
-import { userFeaturesHtml } from './features.js?v=23';
-import { premiumDetailHtml } from './premium.js?v=23';
+import { get, post } from '../core/api.js?v=25';
+import { actionAttrs, html, join, setHtml } from '../core/html.js?v=25';
+import { navigate, registerActions, registerView, reloadView, routePath } from '../core/router.js?v=25';
+import { can, state } from '../core/state.js?v=25';
+import { askInModal, relTime, statusBadge, toast } from '../core/ui.js?v=25';
+import { userFeaturesHtml } from './features.js?v=25';
+import { premiumDetailHtml } from './premium.js?v=25';
 
 // Remembered per browser; falls back to the list when storage is unavailable.
 function usersLayout() {
@@ -23,56 +23,65 @@ const usersState = { offset: 0 };
 
 registerView('users', {
   title: 'Users',
-  async render() {
-    const layout = usersLayout();
-    const option = (value, label) => html`<option value="${value}">${label}</option>`;
-    return html`
-      <div class="toolbar">
-        <div class="toolbar-search">
-          <input type="search" id="user-search-inp" placeholder="Search by name or email…" aria-label="Search users"/>
-        </div>
-        <button class="btn btn-ghost btn-sm" id="user-search-btn">Search</button>
-        <div class="segmented" role="group" aria-label="Layout">
-          <button type="button" class="segmented-btn" data-users-layout="list" aria-pressed="${String(layout === 'list')}">☰ List</button>
-          <button type="button" class="segmented-btn" data-users-layout="grid" aria-pressed="${String(layout === 'grid')}">▦ Grid</button>
-        </div>
-      </div>
-      <div class="toolbar filter-row">
-        <select class="form-input" id="user-status-filter" aria-label="Status">
-          ${option('all', 'All statuses')}${option('active', 'Active')}${option('deactivated', 'Suspended')}${option('deleted', 'Deleted')}
-        </select>
-        <select class="form-input" id="user-platform-filter" aria-label="Platform">
-          ${option('', 'All platforms')}${option('ios', 'iOS')}${option('android', 'Android')}
-        </select>
-        <select class="form-input" id="user-signin-filter" aria-label="Sign-in method">
-          ${option('', 'Any sign-in')}${option('email', 'Email')}${option('apple', 'Apple')}${option('google', 'Google')}
-        </select>
-        <select class="form-input" id="user-sort" aria-label="Sort">
-          ${option('newest', 'Newest first')}${option('last_active', 'Last active')}${option('trips', 'Most trips')}${option('oldest', 'Oldest first')}
-        </select>
-        <label class="check-chip"><input type="checkbox" id="user-premium-filter"/> Premium</label>
-        <label class="check-chip"><input type="checkbox" id="user-unverified-filter"/> Email not verified</label>
-      </div>
-      <div id="user-results"><div class="loading-state"><span class="spinner"></span></div></div>
-    `;
+  render(data) {
+    return data.id ? renderUserPage(data) : renderUserList(data);
   },
-  init() {
-    const doSearch = () => userSearch(0);
-    document.getElementById('user-search-btn').addEventListener('click', doSearch);
-    for (const id of ['user-status-filter', 'user-platform-filter', 'user-signin-filter', 'user-sort',
-      'user-premium-filter', 'user-unverified-filter']) {
-      document.getElementById(id).addEventListener('change', doSearch);
-    }
-    for (const btn of document.querySelectorAll('[data-users-layout]')) {
-      btn.addEventListener('click', () => setUsersLayout(btn.dataset.usersLayout));
-    }
-    document.getElementById('user-search-inp').addEventListener('keydown', e => {
-      if (e.key === 'Enter') doSearch();
-    });
-    // Newest sign-ups first, so new or suspicious accounts are visible without searching.
-    doSearch();
+  init(data) {
+    if (data.id) initUserPage();
+    else initUserList();
   },
 });
+
+async function renderUserList(data) {
+  const layout = usersLayout();
+  const option = (value, label) => html`<option value="${value}">${label}</option>`;
+  return html`
+    <div class="toolbar">
+      <div class="toolbar-search">
+        <input type="search" id="user-search-inp" placeholder="Search by name or email…" aria-label="Search users" value="${data.q || ''}"/>
+      </div>
+      <button class="btn btn-ghost btn-sm" id="user-search-btn">Search</button>
+      <div class="segmented" role="group" aria-label="Layout">
+        <button type="button" class="segmented-btn" data-users-layout="list" aria-pressed="${String(layout === 'list')}">☰ List</button>
+        <button type="button" class="segmented-btn" data-users-layout="grid" aria-pressed="${String(layout === 'grid')}">▦ Grid</button>
+      </div>
+    </div>
+    <div class="toolbar filter-row">
+      <select class="form-input" id="user-status-filter" aria-label="Status">
+        ${option('all', 'All statuses')}${option('active', 'Active')}${option('deactivated', 'Suspended')}${option('deleted', 'Deleted')}
+      </select>
+      <select class="form-input" id="user-platform-filter" aria-label="Platform">
+        ${option('', 'All platforms')}${option('ios', 'iOS')}${option('android', 'Android')}
+      </select>
+      <select class="form-input" id="user-signin-filter" aria-label="Sign-in method">
+        ${option('', 'Any sign-in')}${option('email', 'Email')}${option('apple', 'Apple')}${option('google', 'Google')}
+      </select>
+      <select class="form-input" id="user-sort" aria-label="Sort">
+        ${option('newest', 'Newest first')}${option('last_active', 'Last active')}${option('trips', 'Most trips')}${option('oldest', 'Oldest first')}
+      </select>
+      <label class="check-chip"><input type="checkbox" id="user-premium-filter"/> Premium</label>
+      <label class="check-chip"><input type="checkbox" id="user-unverified-filter"/> Email not verified</label>
+    </div>
+    <div id="user-results"><div class="loading-state"><span class="spinner"></span></div></div>
+  `;
+}
+
+function initUserList() {
+  const doSearch = () => userSearch(0);
+  document.getElementById('user-search-btn').addEventListener('click', doSearch);
+  for (const id of ['user-status-filter', 'user-platform-filter', 'user-signin-filter', 'user-sort',
+    'user-premium-filter', 'user-unverified-filter']) {
+    document.getElementById(id).addEventListener('change', doSearch);
+  }
+  for (const btn of document.querySelectorAll('[data-users-layout]')) {
+    btn.addEventListener('click', () => setUsersLayout(btn.dataset.usersLayout));
+  }
+  document.getElementById('user-search-inp').addEventListener('keydown', e => {
+    if (e.key === 'Enter') doSearch();
+  });
+  // Newest sign-ups first, so new or suspicious accounts are visible without searching.
+  doSearch();
+}
 
 function userSearchQuery(offset) {
   const value = id => document.getElementById(id).value;
@@ -150,7 +159,13 @@ export async function userSearch(offset = 0) {
   if (!results) return;
   setHtml(results, html`<div class="loading-state"><span class="spinner"></span></div>`);
 
-  const res = await get('admin_panel_user_search', userSearchQuery(offset));
+  const query = userSearchQuery(offset);
+  // Keep the search text in the address so reload and back return to the same results.
+  if (state.view === 'users' && !state.viewData.id) {
+    state.viewData = query.q ? { q: query.q } : {};
+    history.replaceState(null, '', routePath('users', state.viewData));
+  }
+  const res = await get('admin_panel_user_search', query);
   if (!res.ok) { setHtml(results, html`<div class="empty-state">Error: ${res.error}</div>`); return; }
   if (!res.users.length) { setHtml(results, html`<div class="empty-state">No users found.</div>`); return; }
 
@@ -185,15 +200,113 @@ function userSignalBadges(u) {
   return parts;
 }
 
-export async function openUserDetail(userId) {
-  modal.open('User detail', html`<div class="loading-state"><span class="spinner"></span> Loading…</div>`);
-  const res = await get('admin_panel_user_detail', { user_id: userId });
-  if (!res.ok) { modal.open('Error', html`<div class="empty-state">${res.error}</div>`); return; }
+// Opens the user's own page (#/users/<id>); on that page already, reloads it in place.
+export function openUserDetail(userId) {
+  if (state.view === 'users' && String(state.viewData.id) === String(userId)) return reloadView();
+  return navigate('users', { id: userId });
+}
+
+const USER_TABS = [
+  ['overview', 'Overview'], ['trips', 'Trips'], ['premium', 'Premium'], ['devices', 'Devices'], ['activity', 'Activity'],
+];
+
+async function renderUserPage(data) {
+  const back = html`<button type="button" class="back-link" ${actionAttrs('navigate', 'users')}>← All users</button>`;
+  const res = await get('admin_panel_user_detail', { user_id: Number(data.id) });
+  if (!res.ok) return html`${back}<div class="empty-state">${res.error || 'User not found.'}</div>`;
 
   const u  = res.user;
+  const sessions = res.sessions || [];
+  const timeline = res.timeline || [];
+  const tripRows = userTripsHtml(res, u);
+  const tab = USER_TABS.some(([key]) => key === data.tab) ? data.tab : 'overview';
+  const support = can('superadmin', 'admin', 'support');
+
+  // Reversible support actions sit in the header; account-level ones in the danger zone.
+  const quick = [];
+  if (support) quick.push(html`<button class="btn btn-ghost btn-sm" ${actionAttrs('clearPushTokens', u.id)}>Clear push tokens</button>`);
+  if (support && sessions.length) quick.push(html`<button class="btn btn-ghost btn-sm" ${actionAttrs('signOutEverywhere', u.id, u.nickname)}>Sign out everywhere</button>`);
+
+  const danger = [];
+  if (u.account_status === 'active' && support)
+    danger.push(html`<div class="danger-row"><div><strong>Suspend account</strong><p>Signs the user out; they cannot use the app until reactivated.</p></div>
+      <button class="btn btn-amber btn-sm" ${actionAttrs('suspendUser', u.id, u.nickname)}>Suspend</button></div>`);
+  if (u.account_status === 'deactivated' && support)
+    danger.push(html`<div class="danger-row"><div><strong>Reactivate account</strong><p>The user can sign in again.</p></div>
+      <button class="btn btn-ghost btn-sm" ${actionAttrs('reactivateUser', u.id, u.nickname)}>Reactivate</button></div>`);
+  if (can('superadmin', 'admin') && u.account_status !== 'deleted')
+    danger.push(html`<div class="danger-row"><div><strong>Delete account</strong><p>Cannot be undone. Shared trip history stays as "Deleted User".</p></div>
+      <button class="btn btn-danger btn-sm" ${actionAttrs('deleteUser', u.id, u.nickname)}>Delete user</button></div>`);
+
+  const counts = { trips: (res.trips || []).length, devices: sessions.length, activity: timeline.length };
+  const panels = {
+    overview: html`
+      <div class="card">
+        <div class="detail-row"><span class="detail-label">Joined</span><span class="detail-value">${relTime(u.created_at)}</span></div>
+        <div class="detail-row"><span class="detail-label">Unread notifs</span><span class="detail-value">${res.unread_notifs}</span></div>
+        <div class="detail-row"><span class="detail-label">Sign-in &amp; apps</span><span class="detail-value user-signals">${userSignalBadges(u)}</span></div>
+        <div class="detail-row"><span class="detail-label">Push tokens</span><span class="detail-value">${pushTokenSummary(res.push_tokens || [])}</span></div>
+        ${userFeaturesHtml(res.features || [], u)}
+      </div>
+      ${danger.length ? html`<section class="danger-zone" aria-labelledby="danger-title">
+        <h3 id="danger-title">Danger zone</h3>${danger}</section>` : ''}`,
+    trips: html`<div class="card">${tripRows.length ? tripRows : html`<div class="empty-state pad-8">No trips</div>`}</div>`,
+    premium: html`<div class="card">${premiumDetailHtml(res.premium, u) || html`<div class="empty-state pad-8">Premium status unavailable.</div>`}</div>`,
+    devices: html`<div class="card">${userSessionsHtml(sessions)}</div>`,
+    activity: html`<div class="card">${userTimelineHtml(timeline)}</div>`,
+  };
+
+  return html`
+    ${back}
+    <header class="user-page-head">
+      <span class="user-avatar large" data-hue="${userAvatarHue(u.id)}" aria-hidden="true">${userInitials(u.nickname)}</span>
+      <div class="flex-fill">
+        <h2 class="user-page-name">${u.nickname}</h2>
+        <div class="cl-sub">${u.email || '—'} · #${u.id}</div>
+      </div>
+      ${statusBadge(u.account_status)}
+      ${quick.length ? html`<div class="user-page-actions">${quick}</div>` : ''}
+    </header>
+    <div class="tabs" role="tablist" aria-label="User sections">
+      ${USER_TABS.map(([key, label]) => html`<button type="button" class="tab" role="tab" id="user-tab-${key}"
+        aria-controls="user-panel-${key}" aria-selected="${String(key === tab)}" tabindex="${key === tab ? '0' : '-1'}"
+        data-user-tab="${key}">${label}${counts[key] !== undefined ? html` <span class="tab-count">${counts[key]}</span>` : ''}</button>`)}
+    </div>
+    ${USER_TABS.map(([key]) => html`<section class="tab-panel" role="tabpanel" id="user-panel-${key}"
+      aria-labelledby="user-tab-${key}" ${key === tab ? '' : html`hidden`}>${panels[key]}</section>`)}
+  `;
+}
+
+// Tabs switch in place; the tab is kept in the address without a new history entry.
+function initUserPage() {
+  const tabs = [...document.querySelectorAll('[data-user-tab]')];
+  const select = tab => {
+    for (const el of tabs) {
+      const on = el === tab;
+      el.setAttribute('aria-selected', String(on));
+      el.tabIndex = on ? 0 : -1;
+      document.getElementById(el.getAttribute('aria-controls')).hidden = !on;
+    }
+    const key = tab.dataset.userTab;
+    state.viewData = { ...state.viewData, tab: key === 'overview' ? undefined : key };
+    history.replaceState(null, '', routePath('users', state.viewData));
+  };
+  for (const tab of tabs) {
+    tab.addEventListener('click', () => select(tab));
+    tab.addEventListener('keydown', e => {
+      const step = e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : 0;
+      if (!step) return;
+      const next = tabs[(tabs.indexOf(tab) + step + tabs.length) % tabs.length];
+      next.focus();
+      select(next);
+    });
+  }
+}
+
+function userTripsHtml(res, u) {
   const tripGrants = res.premium?.trip_grants || [];
   const canManageTrips = Boolean(res.premium?.can_manage);
-  const trips = (res.trips || []).map(t => {
+  return (res.trips || []).map(t => {
     const grant = tripGrants.find(g => Number(g.trip_id) === Number(t.id));
     const button = !canManageTrips ? '' : grant
       ? html`<button class="btn btn-danger btn-sm" ${actionAttrs('openPremiumForm', 'trip_grant_revoke', u.id, grant.id)}>Revoke trip Premium</button>`
@@ -202,37 +315,6 @@ export async function openUserDetail(userId) {
     return html`<div class="detail-row"><span><span>${t.name}</span> <span class="muted-inline">· ${members} member${members === 1 ? '' : 's'}</span></span><span class="trip-premium-row">
       <span class="badge badge-gray">${t.status}</span>${grant ? html`<span class="badge">Trip Premium</span>` : ''}${button}</span></div>`;
   });
-
-  const actions = [];
-  if (u.account_status === 'active' && can('superadmin','admin','support'))
-    actions.push(html`<button class="btn btn-amber btn-sm" data-close-modal ${actionAttrs('suspendUser', u.id, u.nickname)}>Suspend</button>`);
-  if (u.account_status === 'deactivated' && can('superadmin','admin','support'))
-    actions.push(html`<button class="btn btn-ghost btn-sm" data-close-modal ${actionAttrs('reactivateUser', u.id, u.nickname)}>Reactivate</button>`);
-  if (can('superadmin','admin','support'))
-    actions.push(html`<button class="btn btn-ghost btn-sm" data-close-modal ${actionAttrs('clearPushTokens', u.id)}>Clear push tokens</button>`);
-  if (can('superadmin','admin','support') && (res.sessions || []).length)
-    actions.push(html`<button class="btn btn-amber btn-sm" data-close-modal ${actionAttrs('signOutEverywhere', u.id, u.nickname)}>Sign out everywhere</button>`);
-  if (can('superadmin','admin'))
-    actions.push(html`<button class="btn btn-danger btn-sm" data-close-modal ${actionAttrs('deleteUser', u.id, u.nickname)}>Delete user</button>`);
-
-  modal.open('User: ' + u.nickname, html`
-    <div class="detail-row"><span class="detail-label">ID</span><span class="detail-value">${u.id}</span></div>
-    <div class="detail-row"><span class="detail-label">Email</span><span class="detail-value">${u.email}</span></div>
-    <div class="detail-row"><span class="detail-label">Status</span><span class="detail-value">${statusBadge(u.account_status)}</span></div>
-    <div class="detail-row"><span class="detail-label">Joined</span><span class="detail-value">${relTime(u.created_at)}</span></div>
-    <div class="detail-row"><span class="detail-label">Unread notifs</span><span class="detail-value">${res.unread_notifs}</span></div>
-    <div class="detail-row"><span class="detail-label">Sign-in &amp; apps</span><span class="detail-value user-signals">${userSignalBadges(u)}</span></div>
-    <div class="detail-row"><span class="detail-label">Push tokens</span><span class="detail-value">${pushTokenSummary(res.push_tokens || [])}</span></div>
-    ${userFeaturesHtml(res.features || [], u)}
-    <div class="detail-section-title mt-14">Recent trips</div>
-    ${trips.length ? trips : html`<div class="empty-state pad-8">No trips</div>`}
-    ${premiumDetailHtml(res.premium, u)}
-    <div class="detail-section-title">Signed-in devices (${(res.sessions || []).length})</div>
-    ${userSessionsHtml(res.sessions || [])}
-    <div class="detail-section-title">Recent activity</div>
-    ${userTimelineHtml(res.timeline || [])}
-    <div class="action-row">${actions}</div>
-  `, html`<button class="btn btn-ghost" ${actionAttrs('closeModal')}>Close</button>`);
 }
 
 // A short device name from the app's User-Agent; the raw string is the tooltip.
@@ -268,6 +350,11 @@ function pushTokenSummary(tokens) {
 
 // ── Account actions ───────────────────────────────────────────────────────────
 
+function refreshAfterAction() {
+  if (state.view === 'users' && state.viewData.id) reloadView();
+  else userSearch(usersState.offset);
+}
+
 async function signOutEverywhere(userId, name) {
   if (!await askInModal({ title: `Sign ${name} out everywhere?`, confirmLabel: 'Sign out', danger: true,
     message: 'Every app session ends now. The account stays active and the user can sign in again.' })) return;
@@ -282,13 +369,13 @@ async function suspendUser(userId, name) {
     input: { label: 'Reason (optional)' } });
   if (reason === null) return;
   const res = await post('admin_panel_user_suspend', { user_id: userId, reason });
-  if (res.ok) { toast(`${name} suspended`, 'success'); userSearch(); }
+  if (res.ok) { toast(`${name} suspended`, 'success'); refreshAfterAction(); }
   else toast(res.error || 'Failed', 'error');
 }
 
 async function reactivateUser(userId, name) {
   const res = await post('admin_panel_user_reactivate', { user_id: userId, reason: 'admin action' });
-  if (res.ok) { toast(`${name} reactivated`, 'success'); userSearch(); }
+  if (res.ok) { toast(`${name} reactivated`, 'success'); refreshAfterAction(); }
   else toast(res.error || 'Failed', 'error');
 }
 
@@ -298,7 +385,7 @@ async function deleteUser(userId, name) {
     input: { label: 'Reason', required: true } });
   if (!reason) return;
   const res = await post('admin_panel_user_delete', { user_id: userId, reason });
-  if (res.ok) { toast(`${name} deleted`, 'success'); userSearch(); }
+  if (res.ok) { toast(`${name} deleted`, 'success'); refreshAfterAction(); }
   else toast(res.error || 'Failed', 'error');
 }
 

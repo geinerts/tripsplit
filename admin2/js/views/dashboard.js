@@ -1,7 +1,9 @@
-import { get } from '../core/api.js?v=23';
-import { actionAttrs, html } from '../core/html.js?v=23';
-import { registerView } from '../core/router.js?v=23';
-import { auditTone, eventTone, relTime, sevBadge, statusBadge } from '../core/ui.js?v=23';
+import { get } from '../core/api.js?v=25';
+import { actionAttrs, html } from '../core/html.js?v=25';
+import { registerView } from '../core/router.js?v=25';
+import { can } from '../core/state.js?v=25';
+import { formatBytes, sevBadge, statusBadge, timeAgo } from '../core/ui.js?v=25';
+import { describeAudit, describeEvent } from './logs.js?v=25';
 
 // Monthly totals of feature use (docs/api/feature-usage-counters.md), not people.
 export function renderFeatureUsage(usage) {
@@ -155,35 +157,91 @@ function renderGrowth(days) {
   document.addEventListener('scroll', () => { tip.hidden = true; }, true);
 })();
 
-function activityItem({ tone, who, code, id, time }) {
+// ── Today: what needs attention now ───────────────────────────────────────────
+
+const optional = promise => promise.catch(() => null);
+
+// Each item: [tone, text, view to open]. Only checks the admin's role can see.
+function attentionItems(stats, health, features) {
+  const items = [];
+  const incidents = stats.open_incidents ?? 0;
+  if (incidents) items.push(['red', `${incidents} open incident${incidents === 1 ? '' : 's'}`, 'incidents']);
+
+  if (health?.ok) {
+    for (const job of health.jobs || []) {
+      if (job.state === 'failed') items.push(['red', `${job.label} failed`, 'system']);
+      else if (job.state === 'stale') items.push(['amber', `${job.label} is late`, 'system']);
+    }
+    const missing = Object.keys(health.limits || {}).filter(key => !health.limits[key]);
+    if (missing.length) items.push(['red', `Security limits not working: ${missing.join(', ')}`, 'system']);
+    const sys = health.system || {};
+    if (sys.disk_total_bytes && sys.disk_free_bytes !== null && sys.disk_free_bytes !== undefined) {
+      const usedPct = Math.round((sys.disk_total_bytes - sys.disk_free_bytes) / sys.disk_total_bytes * 100);
+      if (usedPct >= 85) items.push(['amber', `Disk ${usedPct}% full (${formatBytes(sys.disk_free_bytes)} free)`, 'system']);
+    }
+  }
+
+  const pq = stats.push_queue || {};
+  const failed = pq.failed ?? 0;
+  const dead = pq.dead ?? 0;
+  if (failed || dead) items.push(['amber', `Push notifications: ${failed} failed, ${dead} dead`, can('superadmin', 'admin', 'ops') ? 'push-queue' : null]);
+
+  const budget = features?.ok ? features.receipt_ai_usage?.budget : null;
+  for (const [period, label] of [['hour', 'this hour'], ['day', 'today'], ['month', 'this month']]) {
+    const b = budget?.[period];
+    if (!b?.limit_microusd) continue;
+    const pct = Math.round(((b.spent_microusd || 0) + (b.reserved_microusd || 0)) / b.limit_microusd * 100);
+    if (pct >= 80) items.push([pct >= 95 ? 'red' : 'amber', `AI receipt budget ${pct}% used ${label}`, 'features']);
+  }
+  return items;
+}
+
+function checkedList(health, features) {
+  return ['incidents', 'push', health?.ok ? 'scheduled jobs, disk, security limits' : null, features?.ok ? 'AI budget' : null]
+    .filter(Boolean).join(', ');
+}
+
+function attentionCard(items, checked) {
+  if (!items.length) {
+    return html`<section class="attention ok" aria-label="Status">
+      <span class="attention-dot bg-green"></span><strong>Everything is working.</strong>
+      <span class="text-muted">Checked: ${checked}.</span></section>`;
+  }
+  return html`<section class="attention" aria-labelledby="attention-title">
+    <h2 id="attention-title">Needs attention (${items.length})</h2>
+    <ul>${items.map(([tone, text, view]) => html`<li>
+      <span class="attention-dot bg-${tone}"></span><span class="flex-fill">${text}</span>
+      ${view ? html`<button type="button" class="btn btn-ghost btn-sm" ${actionAttrs('navigate', view)}>Open</button>` : ''}
+    </li>`)}</ul>
+    <p class="text-muted small">Also checked: ${checked}.</p>
+  </section>`;
+}
+
+function feedItem({ who, text, code, time }) {
   return html`
     <div class="activity-item">
-      <div class="activity-dot bg-${tone}"></div>
       <div class="flex-fill">
-        <div class="activity-text">
-          <strong>${who}</strong> — <span class="event-code">${code}</span>
-          ${id ? html`<span class="text-muted"> #${id}</span>` : ''}
-        </div>
-        <div class="activity-time">${relTime(time)}</div>
+        <div class="activity-text"><strong>${who}</strong> ${text}</div>
+        <div class="activity-time"><span class="event-code">${code}</span> · ${timeAgo(time)}</div>
       </div>
     </div>`;
 }
 
-const pushTone = (count, onTone, offTone) => count > 0 ? onTone : offTone;
-
 registerView('dashboard', {
-  title: 'Dashboard',
+  title: 'Today',
   async render() {
-    const [dashRes, auditRes, appEventsRes] = await Promise.all([
+    const ops = can('superadmin', 'admin', 'ops');
+    const [dashRes, auditRes, eventsRes, health, features] = await Promise.all([
       get('admin_panel_dashboard'),
-      get('admin_panel_audit_log', { limit: 6, offset: 0 }),
-      get('admin_panel_app_events', { limit: 8, offset: 0 }),
+      ops ? optional(get('admin_panel_audit_log', { limit: 8, offset: 0 })) : null,
+      ops ? optional(get('admin_panel_app_events', { limit: 8, offset: 0 })) : null,
+      ops ? optional(get('admin_panel_system_health')) : null,
+      can('superadmin', 'admin') ? optional(get('admin_panel_features')) : null,
     ]);
     if (!dashRes.ok) return html`<div class="empty-state">Failed to load stats.</div>`;
-    const s  = dashRes.stats || {};
-    const pq = s.push_queue || {};
+    const s = dashRes.stats || {};
 
-    const incidentCards = (s.recent_incidents || []).map(inc => html`
+    const incidents = (s.recent_incidents || []).map(inc => html`
       <div class="data-row clickable" ${actionAttrs('navigate', 'incidents')}>
         <div class="data-row-top">
           <span class="inc-dot ${inc.severity}"></span>
@@ -191,26 +249,50 @@ registerView('dashboard', {
           ${sevBadge(inc.severity)}
           ${statusBadge(inc.status)}
         </div>
-        <div class="data-row-meta">
-          <span>${inc.admin_username}</span>
-          <span>·</span>
-          <span>${relTime(inc.created_at)}</span>
+        <div class="data-row-meta"><span>${inc.admin_username}</span><span>·</span>${timeAgo(inc.created_at)}</div>
+      </div>`);
+
+    const events = (eventsRes?.ok ? eventsRes.events || [] : []).map(e => feedItem({
+      who: e.username || 'Deleted user', text: describeEvent(e), code: e.event_type, time: e.created_at }));
+    const audit = (auditRes?.ok ? auditRes.log || [] : []).map(e => feedItem({
+      who: e.admin_username, text: describeAudit(e), code: e.action, time: e.created_at }));
+
+    return html`
+      ${attentionCard(attentionItems(s, health, features), checkedList(health, features))}
+      <div class="dashboard-grid">
+        <div>
+          <div class="table-card">
+            <div class="table-card-header">
+              <div class="table-card-title">🚨 Open incidents</div>
+              <span class="table-card-link" ${actionAttrs('navigate', 'incidents')}>All incidents →</span>
+            </div>
+            ${incidents.length ? incidents : html`<div class="empty-state pad-24">No open incidents</div>`}
+          </div>
+          ${ops ? html`<div class="activity-card">
+            <div class="activity-header split"><span>⚡ App activity</span>
+              <span class="table-card-link" ${actionAttrs('navigate', 'app-events')}>All →</span></div>
+            ${events.length ? events : html`<div class="activity-empty">No recent activity</div>`}
+          </div>` : ''}
         </div>
-      </div>
-    `);
+        <div>
+          ${ops ? html`<div class="activity-card">
+            <div class="activity-header split"><span>📋 Admin actions</span>
+              <span class="table-card-link" ${actionAttrs('navigate', 'audit-log')}>All →</span></div>
+            ${audit.length ? audit : html`<div class="activity-empty">No recent admin actions</div>`}
+          </div>` : ''}
+        </div>
+      </div>`;
+  },
+});
 
-    // Dashboard returns plain numbers per push status.
-    const pushSent    = (pq.sent    ?? 0);
-    const pushPending = (pq.pending ?? 0);
-    const pushFailed  = (pq.failed  ?? 0);
-    const pushDead    = (pq.dead    ?? 0);
+// ── Growth: how the app is used ───────────────────────────────────────────────
 
-    const events = appEventsRes.ok ? (appEventsRes.events || []) : [];
-    const auditItems = (auditRes.ok ? (auditRes.log || []) : []).map(entry => activityItem({
-      tone: auditTone(entry.action, 'green'), who: entry.admin_username,
-      code: entry.action, id: entry.target_id, time: entry.created_at,
-    }));
-
+registerView('growth', {
+  title: 'Growth',
+  async render() {
+    const res = await get('admin_panel_dashboard');
+    if (!res.ok) return html`<div class="empty-state">Failed to load stats.</div>`;
+    const s = res.stats || {};
     return html`
       <div class="stats-grid">
         <div class="stat-card green">
@@ -221,7 +303,7 @@ registerView('dashboard', {
         <div class="stat-card">
           <div class="stat-label">Active users</div>
           <div class="stat-value">${s.active_users ?? 0}</div>
-          <div class="stat-sub">${s.total_users ? Math.round((s.active_users/s.total_users)*100) : 0}% of total</div>
+          <div class="stat-sub">${s.total_users ? Math.round((s.active_users / s.total_users) * 100) : 0}% of total</div>
         </div>
         <div class="stat-card blue">
           <div class="stat-label">Total trips</div>
@@ -231,84 +313,11 @@ registerView('dashboard', {
           <div class="stat-label">Expenses</div>
           <div class="stat-value">${s.total_expenses ?? 0}</div>
         </div>
-        <div class="stat-card ${pushFailed + pushDead > 0 ? 'amber' : ''}">
-          <div class="stat-label">Push pending</div>
-          <div class="stat-value">${pushPending}</div>
-          <div class="stat-sub ${pushFailed > 0 ? 'text-red' : ''}">${pushFailed} failed · ${pushDead} dead</div>
-        </div>
-        <div class="stat-card ${(s.open_incidents ?? 0) > 0 ? 'red' : ''}">
-          <div class="stat-label">Open incidents</div>
-          <div class="stat-value">${s.open_incidents ?? 0}</div>
-        </div>
       </div>
-
       ${renderGrowth(s.growth)}
-
       <div class="dashboard-grid">
-        <div>
-          ${renderDeletionFeedback(s.account_deletion_feedback)}
-          ${renderFeatureUsage(s.feature_usage)}
-          <div class="table-card">
-            <div class="table-card-header">
-              <div class="table-card-title">🚨 Open Incidents</div>
-              <span class="table-card-link" ${actionAttrs('navigate', 'incidents')}>View all →</span>
-            </div>
-            ${incidentCards.length ? incidentCards : html`<div class="empty-state pad-24">No open incidents — all clear ✓</div>`}
-          </div>
-
-          <div class="table-card dashboard-audit-table">
-            <div class="table-card-header">
-              <div class="table-card-title">⚡ Recent Activity</div>
-              <span class="table-card-link" ${actionAttrs('navigate', 'app-events')}>View all →</span>
-            </div>
-            ${events.length ? html`
-            <table>
-              <thead><tr><th>Event</th><th>User</th><th>Entity</th><th>Time</th></tr></thead>
-              <tbody>
-                ${events.map(e => html`
-                  <tr>
-                    <td class="mono-cell text-${eventTone(e.event_type)}">${e.event_type}</td>
-                    <td class="text-muted">${e.username || '—'}</td>
-                    <td class="text-muted">${e.entity_type ?? ''}${e.entity_id ? ` #${e.entity_id}` : ''}</td>
-                    <td class="text-muted small">${relTime(e.created_at)}</td>
-                  </tr>`)}
-              </tbody>
-            </table>` : html`<div class="empty-state pad-24">No recent activity yet</div>`}
-          </div>
-        </div>
-
-        <div>
-          <div class="push-health-card">
-            <div class="push-health-header">🔔 Push Queue Health</div>
-            <div class="push-mini-grid">
-              <div class="push-mini">
-                <div class="push-mini-label">Pending</div>
-                <div class="push-mini-val text-${pushTone(pushPending, 'amber', 'dim')}">${pushPending}</div>
-              </div>
-              <div class="push-mini">
-                <div class="push-mini-label">Sent</div>
-                <div class="push-mini-val text-green-soft">${pushSent}</div>
-              </div>
-              <div class="push-mini">
-                <div class="push-mini-label">Failed</div>
-                <div class="push-mini-val text-${pushTone(pushFailed, 'red', 'muted')}">${pushFailed}</div>
-              </div>
-              <div class="push-mini">
-                <div class="push-mini-label">Dead</div>
-                <div class="push-mini-val text-${pushTone(pushDead, 'red', 'muted')}">${pushDead}</div>
-              </div>
-            </div>
-          </div>
-
-          <div class="activity-card">
-            <div class="activity-header split">
-              <span>📋 Recent Audit</span>
-              <span class="table-card-link" ${actionAttrs('navigate', 'audit-log')}>View all →</span>
-            </div>
-            ${auditItems.length ? auditItems : html`<div class="activity-empty">No recent audit</div>`}
-          </div>
-        </div>
-      </div>
-    `;
+        <div>${renderDeletionFeedback(s.account_deletion_feedback)}</div>
+        <div>${renderFeatureUsage(s.feature_usage)}</div>
+      </div>`;
   },
 });

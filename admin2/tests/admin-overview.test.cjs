@@ -82,7 +82,15 @@ for (const width of [1280, 390]) {
     try {
       const { page, errors, requests } = await openPanel(browser, width);
 
-      // Dashboard: three 30-day charts with a hover tooltip and a table view.
+      // Today: the attention list names the failed backup and missing limit and links to System.
+      await page.locator('.attention').waitFor();
+      const attention = await page.locator('.attention').textContent();
+      assert.ok(attention.includes('Database & files backup failed'), attention);
+      assert.ok(attention.includes('Security limits not working: upload_daily_usage'), attention);
+      assert.equal(await page.locator('.nav-item.active').getAttribute('data-view'), 'dashboard');
+
+      // Growth: three 30-day charts with a hover tooltip and a table view.
+      await page.evaluate(() => admin.navigate('growth'));
       await page.locator('.growth-chart').first().waitFor();
       assert.equal(await page.locator('.growth-chart').count(), 3);
       assert.equal(await page.locator('.growth-chart').first().locator('.growth-col').count(), 30);
@@ -113,14 +121,41 @@ for (const width of [1280, 390]) {
       await page.evaluate(() => admin.navigate('users'));
       await page.locator('.user-card').first().waitFor();
 
-      // User detail: devices, timeline and sign out everywhere.
+      // User page: its own address, tabs, reload and the back button keep the place.
       await page.locator('.user-card [data-action="openUserDetail"]').first().click();
-      await page.locator('.user-timeline').waitFor();
-      assert.ok((await page.locator('#modal-body').textContent()).includes('3 members'));
+      await page.locator('.user-page-head').waitFor();
+      assert.equal(await page.evaluate(() => location.hash), '#/users/12');
+      assert.equal(await page.locator('#user-panel-overview .danger-zone [data-action="deleteUser"]').count(), 1);
+      await page.getByRole('tab', { name: /^Trips/ }).click();
+      assert.ok((await page.locator('#user-panel-trips').textContent()).includes('3 members'));
+      await page.getByRole('tab', { name: /^Activity/ }).click();
+      assert.equal(await page.evaluate(() => location.hash), '#/users/12?tab=activity');
+      await page.reload();
+      await page.locator('#user-panel-activity .user-timeline').waitFor();
+      await exposeAdmin(page);
+      assert.equal(await page.locator('#user-panel-trips').isHidden(), true);
+      assert.ok(await noOverflow(page));
       await page.click('[data-action="signOutEverywhere"]');
       await page.locator('#modal-footer [type="submit"]').click();
       await page.waitForFunction(() => [...document.querySelectorAll('.toast')].some(t => t.textContent.includes('1 session(s) signed out')));
       assert.deepEqual(requests.find(r => r.action === 'admin_panel_user_sign_out_everywhere').body, { user_id: 12 });
+      await page.goBack();
+      await page.locator('#user-results .user-card').first().waitFor();
+      assert.equal(await page.evaluate(() => location.hash), '#/users');
+
+      // Top-bar search (desktop): text searches the list, a number opens that user.
+      if (width >= 769) {
+        await page.fill('#global-search-input', 'anna');
+        await page.press('#global-search-input', 'Enter');
+        await page.waitForFunction(() => location.hash === '#/users?q=anna');
+        await page.locator('#user-results .cl-item, #user-results .user-card').first().waitFor();
+        assert.equal(await page.inputValue('#user-search-inp'), 'anna');
+        assert.ok(requests.some(r => r.action === 'admin_panel_user_search' && r.query.q === 'anna'));
+        await page.fill('#global-search-input', '#12');
+        await page.press('#global-search-input', 'Enter');
+        await page.locator('.user-page-head').waitFor();
+        assert.equal(await page.evaluate(() => location.hash), '#/users/12');
+      }
 
       // System health: states are labelled, not colour only.
       await page.evaluate(() => admin.navigate('system'));

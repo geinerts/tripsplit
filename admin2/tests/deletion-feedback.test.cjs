@@ -31,7 +31,7 @@ for (const width of [1440, 390]) {
       await page.goto('https://ops.splyto.test/admin2/');
       await exposeAdmin(page);
       await page.locator('#auth-screen.visible').waitFor();
-      await page.evaluate(() => {admin.state.user={id:1,username:'Test admin',role:'superadmin'};admin.showApp();admin.navigate('dashboard');});
+      await page.evaluate(() => {admin.state.user={id:1,username:'Test admin',role:'superadmin'};admin.showApp();admin.navigate('growth');});
       const card = page.locator('.deletion-feedback');
       await card.waitFor();
       assert.equal(await card.locator('.deletion-donut-total strong').textContent(),'20');
@@ -42,11 +42,11 @@ for (const width of [1440, 390]) {
       fs.mkdirSync(path.join(root,'output/design/account-deletion-admin'),{recursive:true});
       await card.screenshot({path:path.join(root,`output/design/account-deletion-admin/${width}.png`)});
       feedback = {available:true,total_selections:0,reasons:[]};
-      await page.evaluate(()=>admin.navigate('dashboard'));
+      await page.evaluate(()=>admin.navigate('growth'));
       await card.getByText('No reasons collected yet.',{exact:true}).waitFor();
       assert.equal(await card.locator('.deletion-donut circle').count(),1);
       feedback = {available:false,total_selections:null,reasons:[]};
-      await page.evaluate(()=>admin.navigate('dashboard'));
+      await page.evaluate(()=>admin.navigate('growth'));
       await card.getByText(/Reason statistics are unavailable/).waitFor();
       assert.equal(await card.locator('.deletion-donut').count(),0);
       const hostile = await page.evaluate(()=>String(admin.renderDeletionFeedback({available:true,reasons:[{code:'other',count:'<img src=x onerror=alert(1)>'}]})));

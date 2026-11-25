@@ -30,7 +30,7 @@ for (const width of [1440, 390]) {
       await page.goto('https://ops.splyto.test/admin2/');
       await exposeAdmin(page);
       await page.locator('#auth-screen.visible').waitFor();
-      await page.evaluate(() => {admin.state.user={id:1,username:'Test admin',role:'superadmin'};admin.showApp();admin.navigate('dashboard');});
+      await page.evaluate(() => {admin.state.user={id:1,username:'Test admin',role:'superadmin'};admin.showApp();admin.navigate('growth');});
       const card = page.locator('.feature-usage');
       await card.waitFor();
       assert.equal(await card.locator('tbody tr').count(),9);
@@ -39,10 +39,10 @@ for (const width of [1440, 390]) {
       assert.deepEqual(await picker.allTextContents(),['12','4']);
       assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth > innerWidth),false);
       usage = {available:true,months:[]};
-      await page.evaluate(()=>admin.navigate('dashboard'));
+      await page.evaluate(()=>admin.navigate('growth'));
       await card.getByText('No feature use counted yet.',{exact:true}).waitFor();
       usage = {available:false,months:[]};
-      await page.evaluate(()=>admin.navigate('dashboard'));
+      await page.evaluate(()=>admin.navigate('growth'));
       await card.getByText(/Usage totals are unavailable/).waitFor();
       const hostile = await page.evaluate(()=>String(admin.renderFeatureUsage({available:true,months:[{month:'<img src=x>',counts:[{feature:'random_pick',count:'<img src=x>'}]}]})));
       assert.equal(hostile.includes('<img'),false);

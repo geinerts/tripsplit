@@ -11,7 +11,7 @@
     content="default-src 'self'; base-uri 'none'; frame-ancestors 'none'; object-src 'none'; form-action 'self'; connect-src 'self'; img-src 'self' data:; style-src 'self'; script-src 'self'; font-src 'self' data:"
   />
   <link rel="icon" type="image/svg+xml" href="assets/splyto-mark-v2.svg"/>
-  <link rel="stylesheet" href="app.css?v=17"/>
+  <link rel="stylesheet" href="app.css?v=19"/>
 </head>
 <body>
 
@@ -95,43 +95,34 @@
 
     <div class="sidebar-section">
       <div class="sidebar-section-label">Overview</div>
-      <div class="nav-item" data-view="dashboard"><span class="nav-icon">📊</span> Dashboard</div>
+      <div class="nav-item" data-view="dashboard"><span class="nav-icon">📊</span> Today</div>
+      <div class="nav-item" data-view="growth"><span class="nav-icon">📈</span> Growth</div>
     </div>
 
     <div class="sidebar-divider"></div>
 
     <div class="sidebar-section">
-      <div class="sidebar-section-label">Support</div>
+      <div class="sidebar-section-label">People</div>
       <div class="nav-item" data-view="users"><span class="nav-icon">👤</span> Users</div>
       <div class="nav-item" data-view="premium" id="nav-premium" hidden><span class="nav-icon">⭐</span> Premium</div>
-      <div class="nav-item" data-view="partners" id="nav-partners" hidden><span class="nav-icon">🤝</span> Partners</div>
-      <div class="nav-item" data-view="push-queue"><span class="nav-icon">🔔</span> Push Queue</div>
     </div>
 
     <div class="sidebar-divider"></div>
 
     <div class="sidebar-section">
       <div class="sidebar-section-label">Operations</div>
-      <div class="nav-item" data-view="system" id="nav-system" hidden><span class="nav-icon">🩺</span> System</div>
+      <div class="nav-item" data-view="system" id="nav-system" hidden><span class="nav-icon">🩺</span> System &amp; push</div>
       <div class="nav-item" data-view="incidents" id="nav-incidents"><span class="nav-icon">🚨</span> Incidents</div>
-      <div class="nav-item" data-view="app-events"><span class="nav-icon">⚡</span> App Events</div>
-      <div class="nav-item" data-view="audit-log"><span class="nav-icon">📋</span> Audit Log</div>
+      <div class="nav-item" data-view="app-events" id="nav-logs" hidden><span class="nav-icon">📋</span> Logs</div>
     </div>
 
     <div class="sidebar-divider"></div>
 
-    <div class="sidebar-section" id="admin-users-section" hidden>
-      <div class="sidebar-section-label">Admin</div>
-      <div class="nav-item" data-view="security" id="nav-security" hidden><span class="nav-icon">🛡️</span> Security</div>
-      <div class="nav-item" data-view="features" id="nav-features" hidden><span class="nav-icon">🧪</span> Features</div>
-      <div class="nav-item" data-view="admin-users"><span class="nav-icon">🔑</span> Admin Users</div>
-      <div class="sidebar-divider"></div>
-    </div>
-
     <div class="sidebar-section">
-      <div class="sidebar-section-label">Account</div>
-      <div class="nav-item" data-view="my-account"><span class="nav-icon">⚙️</span> My Account</div>
-      <div class="nav-item" data-view="sessions"><span class="nav-icon">💻</span> Sessions</div>
+      <div class="sidebar-section-label">Settings</div>
+      <div class="nav-item" data-view="features" id="nav-features" hidden><span class="nav-icon">🧪</span> Features</div>
+      <div class="nav-item" data-view="admin-users" id="nav-admin-users" hidden><span class="nav-icon">🔑</span> Admin users</div>
+      <div class="nav-item" data-view="my-account"><span class="nav-icon">⚙️</span> My account</div>
     </div>
 
     <div class="sidebar-user" id="sidebar-user">
@@ -151,8 +142,11 @@
       <div class="topbar-breadcrumb">
         <span class="topbar-root">Splyto</span>
         <span class="topbar-sep">/</span>
-        <h1 id="page-title">Dashboard</h1>
+        <h1 id="page-title">Today</h1>
       </div>
+      <form class="global-search" id="global-search" role="search">
+        <input type="search" id="global-search-input" placeholder="Find user: name, email or ID" aria-label="Find a user by name, email or ID" autocomplete="off"/>
+      </form>
       <div id="topbar-actions"></div>
       <button class="topbar-pill" id="topbar-status" type="button" title="Open incidents">
         <span class="topbar-pill-dot"></span>
@@ -178,6 +172,6 @@
 <!-- ── Toast container ──────────────────────────────────────────────────────── -->
 <div id="toast-container"></div>
 
-<script type="module" src="app.js?v=23"></script>
+<script type="module" src="app.js?v=25"></script>
 </body>
 </html>

@@ -1,8 +1,8 @@
 // The signed-in frame: sidebar by role, topbar clock and the open-incident count.
-import { get } from './core/api.js?v=23';
-import { html, appendHtml } from './core/html.js?v=23';
-import { navigate } from './core/router.js?v=23';
-import { can, state } from './core/state.js?v=23';
+import { get } from './core/api.js?v=25';
+import { html, appendHtml } from './core/html.js?v=25';
+import { navigate } from './core/router.js?v=25';
+import { can, state } from './core/state.js?v=25';
 
 function updateClock() {
   const el = document.getElementById('topbar-time');
@@ -19,14 +19,15 @@ export function showApp() {
   document.getElementById('auth-screen').classList.remove('visible');
   document.getElementById('app').hidden = false;
   if (!state.user) return;
-  for (const id of ['nav-premium', 'nav-partners', 'nav-security', 'nav-features']) {
-    document.getElementById(id).hidden = !can('superadmin', 'admin');
-  }
-  document.getElementById('nav-system').hidden = !can('superadmin', 'admin', 'ops');
+  const show = (id, ...roles) => { document.getElementById(id).hidden = !can(...roles); };
+  show('nav-premium', 'superadmin', 'admin');
+  show('nav-features', 'superadmin', 'admin');
+  show('nav-system', 'superadmin', 'admin', 'ops');
+  show('nav-logs', 'superadmin', 'admin', 'ops');
+  show('nav-admin-users', 'superadmin');
   document.getElementById('sidebar-avatar').textContent = state.user.username.slice(0, 2).toUpperCase();
   document.getElementById('sidebar-username').textContent = state.user.username;
   document.getElementById('sidebar-role').textContent     = state.user.role;
-  document.getElementById('admin-users-section').hidden = state.user.role !== 'superadmin';
 }
 
 // The topbar pill reflects open incidents; it is not a live health check.
@@ -39,6 +40,19 @@ function renderIncidentStatus(count) {
 }
 
 document.getElementById('topbar-status').addEventListener('click', () => navigate('incidents'));
+
+// Find a user from any page: a number (optionally #12) opens that user, text searches names and emails.
+document.getElementById('global-search').addEventListener('submit', e => {
+  e.preventDefault();
+  const input = document.getElementById('global-search-input');
+  const query = input.value.trim();
+  if (!query) return;
+  const id = /^#?(\d+)$/.exec(query)?.[1];
+  input.value = '';
+  input.blur();
+  if (id) navigate('users', { id });
+  else navigate('users', { q: query });
+});
 
 export async function pollIncidents() {
   if (!state.user) return;
