@@ -44,9 +44,9 @@ engine agreement and passing tests do not guarantee linguistic accuracy.
 Portuguese uses DeepL's Portugal variant plus contextual terminology corrections.
 No translation service or models are bundled with the app or used at runtime.
 
-The bundled Privacy policy screen is temporarily removed pending the website
-version. The English, Latvian and Spanish drafts remain in
-`mobile/assets/legal/` as source material, but are not bundled with the app.
+The app has no bundled privacy policy. The only privacy policy is the English
+`privacy.html` on the website (splyto.eu/privacy); the old drafts in
+`mobile/assets/legal/` were removed on 2026-11-25.
 Map place names
 are supplied by the map provider/offline map dataset independently of the app's
 message catalogs. Native OS permission descriptions have separate iOS/Android

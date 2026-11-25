@@ -139,8 +139,7 @@ deleted original can stay in a backup for up to 14 days.
 
 Originals can show more than the person meant to display, so the policy must say that
 Splyto keeps the uncropped version to allow later editing, that it is private, and when
-it is deleted. This updates `privacy.html` and `mobile/assets/legal/privacy_{en,lv,es}.json`
-before release.
+it is deleted. This updates `privacy.html` before release.
 
 ## Deployment
 
