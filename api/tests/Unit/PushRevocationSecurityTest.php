@@ -28,7 +28,7 @@ final class PushRevocationSecurityTest extends TestCase
         $root = __DIR__ . '/../../lib/actions/';
         $reset = (string) file_get_contents($root . 'password_reset_actions.php');
         $auth = (string) file_get_contents($root . 'auth_actions.php');
-        $admin = (string) file_get_contents($root . 'admin_panel_actions.php');
+        $admin = (string) file_get_contents($root . 'admin_panel/users.php');
 
         self::assertStringContainsString('revoke_sessions_and_push_for_user($pdo, $userId);', $reset);
         self::assertSame(2, substr_count($auth, 'revoke_sessions_and_push_for_user($pdo, $userId);'));

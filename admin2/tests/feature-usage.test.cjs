@@ -2,6 +2,7 @@ const { test } = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
+const { exposeAdmin, fulfillAdmin } = require('./admin-page.cjs');
 const { chromium } = require('playwright');
 const root = path.resolve(__dirname, '../..');
 
@@ -24,13 +25,12 @@ for (const width of [1440, 390]) {
           if (action === 'admin_panel_dashboard') return route.fulfill({json:{ok:true,stats:{feature_usage:usage}}});
           return route.fulfill({json:{ok:true,log:[],events:[]}});
         }
-        const file = {'/admin2/':'admin2/index.html','/admin2/app.js':'admin2/app.js','/admin2/app.css':'admin2/app.css'}[url.pathname];
-        if (!file) return route.abort();
-        return route.fulfill({body:fs.readFileSync(path.join(root,file)),contentType:file.endsWith('.js')?'text/javascript':file.endsWith('.css')?'text/css':'text/html'});
+        return fulfillAdmin(route, url);
       });
       await page.goto('https://ops.splyto.test/admin2/');
+      await exposeAdmin(page);
       await page.locator('#auth-screen.visible').waitFor();
-      await page.evaluate(() => {state.user={id:1,username:'Test admin',role:'superadmin'};showApp();navigate('dashboard');});
+      await page.evaluate(() => {admin.state.user={id:1,username:'Test admin',role:'superadmin'};admin.showApp();admin.navigate('dashboard');});
       const card = page.locator('.feature-usage');
       await card.waitFor();
       assert.equal(await card.locator('tbody tr').count(),9);
@@ -39,12 +39,12 @@ for (const width of [1440, 390]) {
       assert.deepEqual(await picker.allTextContents(),['12','4']);
       assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth > innerWidth),false);
       usage = {available:true,months:[]};
-      await page.evaluate(()=>navigate('dashboard'));
+      await page.evaluate(()=>admin.navigate('dashboard'));
       await card.getByText('No feature use counted yet.',{exact:true}).waitFor();
       usage = {available:false,months:[]};
-      await page.evaluate(()=>navigate('dashboard'));
+      await page.evaluate(()=>admin.navigate('dashboard'));
       await card.getByText(/Usage totals are unavailable/).waitFor();
-      const hostile = await page.evaluate(()=>renderFeatureUsage({available:true,months:[{month:'<img src=x>',counts:[{feature:'random_pick',count:'<img src=x>'}]}]}));
+      const hostile = await page.evaluate(()=>String(admin.renderFeatureUsage({available:true,months:[{month:'<img src=x>',counts:[{feature:'random_pick',count:'<img src=x>'}]}]})));
       assert.equal(hostile.includes('<img'),false);
       assert.deepEqual(errors,[]);
     } finally {await browser.close();}

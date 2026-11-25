@@ -4,6 +4,7 @@ const { test } = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
+const { adminSources, exposeAdmin, fulfillAdmin } = require('./admin-page.cjs');
 const vm = require('node:vm');
 const { execFileSync } = require('node:child_process');
 const root = path.resolve(__dirname, '../..');
@@ -175,7 +176,7 @@ test('admin actions render and operate under CSP without executing untrusted dat
       role: 'support', is_active: 1, account_status: 'active', created_at: '2026-01-01 00:00:00' };
     page.on('pageerror', error => errors.push(error.message));
     page.on('console', message => {
-      if (/Executing inline|Refused to execute/.test(message.text())) violations.push(message.text());
+      if (/Executing inline|Refused to (execute|apply|load)/.test(message.text())) violations.push(message.text());
     });
     await page.route('**/*', async route => {
       const url = new URL(route.request().url());
@@ -193,15 +194,12 @@ test('admin actions render and operate under CSP without executing untrusted dat
         };
         return route.fulfill({ json: responses[action] || { ok: true } });
       }
-      const files = { '/admin2/': 'admin2/index.html', '/admin2/app.js': 'admin2/app.js', '/admin2/app.css': 'admin2/app.css' };
-      const file = files[url.pathname];
-      if (!file) return route.abort();
-      return route.fulfill({ body: fs.readFileSync(path.join(root, file)),
-        contentType: file.endsWith('.js') ? 'text/javascript' : file.endsWith('.css') ? 'text/css' : 'text/html' });
+      return fulfillAdmin(route, url);
     });
     await page.goto('http://splyto.test/admin2/');
+    await exposeAdmin(page);
     await page.locator('#auth-screen.visible').waitFor();
-    await page.evaluate(() => { state.user = { id: 1, username: 'Test', role: 'superadmin' }; showApp(); navigate('users'); });
+    await page.evaluate(() => { admin.state.user = { id: 1, username: 'Test', role: 'superadmin' }; admin.showApp(); admin.navigate('users'); });
     await page.locator('#user-search-btn').click();
     await page.locator('[data-action="suspendUser"]').waitFor();
     assert.equal(await page.locator('.cl-title').textContent(), name);
@@ -223,19 +221,19 @@ test('admin actions render and operate under CSP without executing untrusted dat
     assert.equal(await page.locator('#modal-title').textContent(), 'User: ' + name);
     await page.locator('[data-action="closeModal"]').click();
     assert.equal(await page.locator('#modal-backdrop.open').count(), 0);
-    await page.evaluate(() => navigate('admin-users'));
+    await page.evaluate(() => admin.navigate('admin-users'));
     await page.locator('[data-action="editAdminUser"]').click();
     assert.equal(await page.locator('#modal-title').textContent(), 'Edit: ' + name);
     await page.locator('[data-action="saveAdminUser"]').click();
     await page.locator('#modal-backdrop').waitFor({ state: 'hidden' });
     assert.equal(requests.find(r => r.action === 'admin_panel_update_admin_user').body.id, 42);
-    await page.evaluate(() => navigate('sessions'));
+    await page.evaluate(() => admin.navigate('sessions'));
     await page.locator('[data-action="revokeSession"]').click();
     await page.locator('#modal-footer [type="submit"]').click();
     await page.waitForFunction(() => [...document.querySelectorAll('.toast')].some(el => el.textContent === 'Session revoked'));
     assert.equal(requests.find(r => r.action === 'admin_panel_revoke_session').body.session_id, name);
     for (const view of ['audit-log', 'app-events']) {
-      await page.evaluate(view => navigate(view), view);
+      await page.evaluate(view => admin.navigate(view), view);
       await page.locator('.cl-meta').waitFor();
       assert.ok((await page.locator('.cl-meta').textContent()).includes(target));
       assert.equal(await page.locator('#page-content img').count(), 0);
@@ -246,25 +244,30 @@ test('admin actions render and operate under CSP without executing untrusted dat
     for (const rejectOld of [false, true]) {
       await page.evaluate(async rejectOld => {
         let settleOld;
-        registerView('slow-regression', {
+        admin.registerView('slow-regression', {
           title: 'Slow',
           render: () => new Promise((resolve, reject) => {
-            settleOld = () => rejectOld ? reject(new Error('Old failure')) : resolve('Old content');
+            settleOld = () => rejectOld ? reject(new Error('Old failure')) : resolve(admin.html`Old content`);
           }),
           init: () => { window.staleViewInitialized = true; },
         });
-        registerView('latest-regression', { title: 'Latest', render: () => '<div id="latest-view">Latest</div>' });
-        const oldNavigation = navigate('slow-regression');
+        admin.registerView('latest-regression', { title: 'Latest', render: () => admin.html`<div id="latest-view">Latest</div>` });
+        const oldNavigation = admin.navigate('slow-regression');
         await Promise.resolve();
-        await navigate('latest-regression');
+        await admin.navigate('latest-regression');
         settleOld();
         await oldNavigation;
       }, rejectOld);
       assert.equal(await page.locator('#latest-view').textContent(), 'Latest');
       assert.equal(await page.evaluate(() => window.staleViewInitialized), undefined);
     }
-    const source = fs.readFileSync(path.join(root, 'admin2/app.js'), 'utf8');
-    assert.doesNotMatch(source, /\bon\w+\s*=/i);
+    for (const file of adminSources()) {
+      const source = fs.readFileSync(file, 'utf8');
+      assert.doesNotMatch(source, /\bon\w+\s*=/i, file);
+      // Markup reaches the DOM only through html`` (js/core/html.js) and never carries inline styles.
+      if (!file.endsWith(path.join('core', 'html.js'))) assert.doesNotMatch(source, /innerHTML|outerHTML|insertAdjacentHTML|document\.write/, file);
+      assert.doesNotMatch(source, /style="/, file);
+    }
   } finally {
     await browser.close();
   }

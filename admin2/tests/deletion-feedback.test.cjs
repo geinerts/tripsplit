@@ -2,6 +2,7 @@ const { test } = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
+const { exposeAdmin, fulfillAdmin } = require('./admin-page.cjs');
 const { chromium } = require('playwright');
 const root = path.resolve(__dirname, '../..');
 
@@ -25,13 +26,12 @@ for (const width of [1440, 390]) {
           if (action === 'admin_panel_dashboard') return route.fulfill({json:{ok:true,stats:{account_deletion_feedback:feedback}}});
           return route.fulfill({json:{ok:true,log:[],events:[]}});
         }
-        const file = {'/admin2/':'admin2/index.html','/admin2/app.js':'admin2/app.js','/admin2/app.css':'admin2/app.css'}[url.pathname];
-        if (!file) return route.abort();
-        return route.fulfill({body:fs.readFileSync(path.join(root,file)),contentType:file.endsWith('.js')?'text/javascript':file.endsWith('.css')?'text/css':'text/html'});
+        return fulfillAdmin(route, url);
       });
       await page.goto('https://ops.splyto.test/admin2/');
+      await exposeAdmin(page);
       await page.locator('#auth-screen.visible').waitFor();
-      await page.evaluate(() => {state.user={id:1,username:'Test admin',role:'superadmin'};showApp();navigate('dashboard');});
+      await page.evaluate(() => {admin.state.user={id:1,username:'Test admin',role:'superadmin'};admin.showApp();admin.navigate('dashboard');});
       const card = page.locator('.deletion-feedback');
       await card.waitFor();
       assert.equal(await card.locator('.deletion-donut-total strong').textContent(),'20');
@@ -42,14 +42,14 @@ for (const width of [1440, 390]) {
       fs.mkdirSync(path.join(root,'output/design/account-deletion-admin'),{recursive:true});
       await card.screenshot({path:path.join(root,`output/design/account-deletion-admin/${width}.png`)});
       feedback = {available:true,total_selections:0,reasons:[]};
-      await page.evaluate(()=>navigate('dashboard'));
+      await page.evaluate(()=>admin.navigate('dashboard'));
       await card.getByText('No reasons collected yet.',{exact:true}).waitFor();
       assert.equal(await card.locator('.deletion-donut circle').count(),1);
       feedback = {available:false,total_selections:null,reasons:[]};
-      await page.evaluate(()=>navigate('dashboard'));
+      await page.evaluate(()=>admin.navigate('dashboard'));
       await card.getByText(/Reason statistics are unavailable/).waitFor();
       assert.equal(await card.locator('.deletion-donut').count(),0);
-      const hostile = await page.evaluate(()=>renderDeletionFeedback({available:true,reasons:[{code:'other',count:'<img src=x onerror=alert(1)>'}]}));
+      const hostile = await page.evaluate(()=>String(admin.renderDeletionFeedback({available:true,reasons:[{code:'other',count:'<img src=x onerror=alert(1)>'}]})));
       assert.equal(hostile.includes('<img'),false);
       assert.deepEqual(errors,[]);
     } finally {await browser.close();}
