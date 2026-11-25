@@ -25,7 +25,7 @@ Claude Security plugin (`/claude-security`).
    - Friends after removing user search: `api/lib/actions/friends/*`.
 2. **Quick split authorization**: `api/lib/actions/quick_splits_actions.php`, with
    `api/lib/http/action_router.php`. Already deployed, so this is urgent.
-3. **Admin panel front end**: `admin2/app.js`, `admin2/index.html` (XSS from user-entered
+3. **Admin panel front end**: `admin2/index.html`, `admin2/app.js` and `admin2/js/` (XSS from user-entered
    names and notes, admin session handling). Never scanned.
 4. **Public PHP pages outside `api/`**: `friend.php`, `invite.php`, `share-image.php`
    (no sign-in, they handle links and images). Never scanned.

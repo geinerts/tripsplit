@@ -2,6 +2,7 @@ const { test } = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
+const { exposeAdmin, fulfillAdmin } = require('./admin-page.cjs');
 const { chromium } = require('playwright');
 const root = path.resolve(__dirname, '../..');
 
@@ -49,21 +50,19 @@ for (const viewport of [{width:1280,height:900}, {width:390,height:844}]) {
           }
           return route.fulfill({json:{ok:true}});
         }
-        const files = {'/admin2/':'admin2/index.html','/admin2/app.js':'admin2/app.js','/admin2/app.css':'admin2/app.css'};
-        const file = files[url.pathname];
-        if (!file) return route.abort();
-        return route.fulfill({body:fs.readFileSync(path.join(root,file)),contentType:file.endsWith('.js')?'text/javascript':file.endsWith('.css')?'text/css':'text/html'});
+        return fulfillAdmin(route, url);
       });
       await page.goto('https://splyto.test/admin2/');
+      await exposeAdmin(page);
       await page.locator('#auth-screen.visible').waitFor();
-      await page.evaluate(() => {state.user={id:1,username:'Test admin',role:'superadmin'};showApp();navigate('partners');});
+      await page.evaluate(() => {admin.state.user={id:1,username:'Test admin',role:'superadmin'};admin.showApp();admin.navigate('partners');});
       await page.locator('#partner-create').click();
       await page.locator('[name="name"]').fill(hostile);
       await page.locator('[name="reason"]').fill('Partnership pilot');
       await page.locator('#premium-form [type="submit"]').click();
       await page.locator('#modal-backdrop').waitFor({state:'hidden'});
       assert.equal(await page.locator('#premium-results tbody td').first().textContent(),hostile);
-      await page.evaluate(() => openUserDetail(7));
+      await page.evaluate(() => admin.openUserDetail(7));
       await page.getByRole('button',{name:'Grant Premium',exact:true}).click();
       await page.locator('[name="source"]').selectOption('partner');
       await page.locator('[name="partner_id"]').selectOption('1');
@@ -93,12 +92,12 @@ for (const viewport of [{width:1280,height:900}, {width:390,height:844}]) {
       await page.locator('summary').click();
       assert.ok(await page.getByText('Collaboration ended',{exact:true}).count());
       await page.getByRole('button',{name:'Close',exact:true}).click();
-      await page.evaluate(()=>navigate('premium',{partnerId:1}));
+      await page.evaluate(()=>admin.navigate('premium',{partnerId:1}));
       await page.locator('#premium-status').selectOption('expiring');
       await page.waitForFunction(()=>document.querySelector('#premium-results table'));
       assert.ok(queries.some(q=>q.status==='expiring'&&q.partner_id==='1'));
       canManage=false;
-      await page.evaluate(()=>openUserDetail(7));
+      await page.evaluate(()=>admin.openUserDetail(7));
       assert.equal(await page.getByRole('button',{name:'Grant Premium',exact:true}).count(),0);
       assert.equal(await page.evaluate(()=>window.xss),undefined);
       assert.deepEqual(errors,[]);
@@ -137,14 +136,12 @@ for (const viewport of [{width:1280,height:900}, {width:390,height:844}]) {
           }
           return route.fulfill({json:{ok:true}});
         }
-        const files = {'/admin2/':'admin2/index.html','/admin2/app.js':'admin2/app.js','/admin2/app.css':'admin2/app.css'};
-        const file = files[url.pathname];
-        if (!file) return route.abort();
-        return route.fulfill({body:fs.readFileSync(path.join(root,file)),contentType:file.endsWith('.js')?'text/javascript':file.endsWith('.css')?'text/css':'text/html'});
+        return fulfillAdmin(route, url);
       });
       await page.goto('https://splyto.test/admin2/');
+      await exposeAdmin(page);
       await page.locator('#auth-screen.visible').waitFor();
-      await page.evaluate(() => {state.user={id:1,username:'Test admin',role:'superadmin'};showApp();openUserDetail(7);});
+      await page.evaluate(() => {admin.state.user={id:1,username:'Test admin',role:'superadmin'};admin.showApp();admin.openUserDetail(7);});
       await page.getByRole('button',{name:'Grant trip Premium',exact:true}).first().click();
       await page.locator('#premium-form').getByText(tripName,{exact:true}).waitFor();
       await page.locator('[name="source"]').selectOption('compensation');
@@ -164,7 +161,7 @@ for (const viewport of [{width:1280,height:900}, {width:390,height:844}]) {
       assert.equal(mutations[1].trip_grant_id,1);
       assert.equal(mutations[1].version,1);
       canManage=false;
-      await page.evaluate(()=>openUserDetail(7));
+      await page.evaluate(()=>admin.openUserDetail(7));
       await page.getByText('Oslo',{exact:true}).waitFor();
       assert.equal(await page.getByRole('button',{name:'Grant trip Premium',exact:true}).count(),0);
       assert.equal(await page.evaluate(()=>window.xss),undefined);

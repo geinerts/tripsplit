@@ -339,7 +339,7 @@ final class PremiumGrantTest extends TestCase
 
     public function test_admin_detail_query_has_explicit_private_data_allowlist(): void
     {
-        $source = file_get_contents(__DIR__ . '/../../lib/actions/admin_panel_actions.php');
+        $source = file_get_contents(__DIR__ . '/../../lib/actions/admin_panel/users.php');
         $detail = explode('function admin_panel_user_suspend_action', explode('function admin_panel_user_detail_action', $source)[1])[0];
         self::assertStringNotContainsString('SELECT *', $detail);
         self::assertStringNotContainsString('token_preview', $detail);

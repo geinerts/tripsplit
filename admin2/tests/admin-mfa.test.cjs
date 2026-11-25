@@ -4,6 +4,7 @@ const { test } = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
+const { exposeAdmin, fulfillAdmin } = require('./admin-page.cjs');
 const root = path.resolve(__dirname, '../..');
 
 // Synthetic setup keys for the mocked API.
@@ -48,13 +49,10 @@ async function openPanel(browser, width) {
       }
       return route.fulfill({ json });
     }
-    const files = { '/admin2/': 'admin2/index.html', '/admin2/app.js': 'admin2/app.js', '/admin2/app.css': 'admin2/app.css' };
-    const file = files[url.pathname];
-    if (!file) return route.abort();
-    return route.fulfill({ body: fs.readFileSync(path.join(root, file)),
-      contentType: file.endsWith('.js') ? 'text/javascript' : file.endsWith('.css') ? 'text/css' : 'text/html' });
+    return fulfillAdmin(route, url);
   });
   await page.goto('http://splyto.test/admin2/');
+  await exposeAdmin(page);
   return { page, errors, requests };
 }
 
@@ -89,7 +87,7 @@ for (const width of [1280, 390]) {
       assert.equal(await page.locator('#enroll-secret').textContent(), '');
 
       // My Account offers replacement only; 2FA cannot be turned off.
-      await page.evaluate(() => navigate('my-account'));
+      await page.evaluate(() => admin.navigate('my-account'));
       await page.locator('[data-action="replace2fa"]').click();
       assert.equal(await page.locator('[data-action="disable2fa"]').count(), 0);
       await page.fill('#replace-2fa-password', 'password-1234');

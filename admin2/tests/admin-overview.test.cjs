@@ -4,6 +4,7 @@ const { test } = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
+const { exposeAdmin, fulfillAdmin } = require('./admin-page.cjs');
 const root = path.resolve(__dirname, '../..');
 
 const hostile = '<img src=x onerror=window.xss=1>';
@@ -64,13 +65,10 @@ async function openPanel(browser, width) {
       };
       return route.fulfill({ json: responses[action] || { ok: true } });
     }
-    const files = { '/admin2/': 'admin2/index.html', '/admin2/app.js': 'admin2/app.js', '/admin2/app.css': 'admin2/app.css' };
-    const file = files[url.pathname];
-    if (!file) return route.abort();
-    return route.fulfill({ body: fs.readFileSync(path.join(root, file)),
-      contentType: file.endsWith('.js') ? 'text/javascript' : file.endsWith('.css') ? 'text/css' : 'text/html' });
+    return fulfillAdmin(route, url);
   });
   await page.goto('http://splyto.test/admin2/');
+  await exposeAdmin(page);
   await page.locator('#app').waitFor();
   return { page, errors, requests };
 }
@@ -94,7 +92,7 @@ for (const width of [1280, 390]) {
       assert.ok(await noOverflow(page));
 
       // Users: filters reach the API, the grid layout is remembered.
-      await page.evaluate(() => navigate('users'));
+      await page.evaluate(() => admin.navigate('users'));
       await page.locator('.cl-item').first().waitFor();
       await page.selectOption('#user-sort', 'last_active');
       await page.selectOption('#user-platform-filter', 'ios');
@@ -111,8 +109,8 @@ for (const width of [1280, 390]) {
       assert.equal(await page.locator('.user-card .user-avatar').first().textContent(), 'AO');
       assert.ok((await page.locator('.user-card').nth(1).textContent()).includes('No session use'));
       assert.ok(await noOverflow(page));
-      await page.evaluate(() => navigate('dashboard'));
-      await page.evaluate(() => navigate('users'));
+      await page.evaluate(() => admin.navigate('dashboard'));
+      await page.evaluate(() => admin.navigate('users'));
       await page.locator('.user-card').first().waitFor();
 
       // User detail: devices, timeline and sign out everywhere.
@@ -125,7 +123,7 @@ for (const width of [1280, 390]) {
       assert.deepEqual(requests.find(r => r.action === 'admin_panel_user_sign_out_everywhere').body, { user_id: 12 });
 
       // System health: states are labelled, not colour only.
-      await page.evaluate(() => navigate('system'));
+      await page.evaluate(() => admin.navigate('system'));
       await page.locator('.cl-item').first().waitFor();
       const systemText = await page.locator('#page-content').textContent();
       for (const label of ['Failed', 'OK', 'No data yet', '1 need attention', '90%', 'abc1234',
@@ -135,7 +133,7 @@ for (const width of [1280, 390]) {
       assert.ok(await noOverflow(page));
 
       // Feature flags: mode is labelled, other modes are offered, allowed accounts listed.
-      await page.evaluate(() => navigate('features'));
+      await page.evaluate(() => admin.navigate('features'));
       await page.locator('.feature-card').waitFor();
       const featuresText = await page.locator('#page-content').textContent();
       for (const label of ['AI receipt reading', 'Allowed accounts only', 'Off for everyone', 'Everyone',
@@ -146,7 +144,7 @@ for (const width of [1280, 390]) {
       assert.ok(await noOverflow(page));
 
       // Security overview.
-      await page.evaluate(() => navigate('security'));
+      await page.evaluate(() => admin.navigate('security'));
       await page.locator('table').waitFor();
       const securityText = await page.locator('#page-content').textContent();
       assert.ok(securityText.includes('Wrong password'));

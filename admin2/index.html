@@ -8,10 +8,10 @@
   <meta name="referrer" content="no-referrer"/>
   <meta
     http-equiv="Content-Security-Policy"
-    content="default-src 'self'; base-uri 'none'; frame-ancestors 'none'; object-src 'none'; form-action 'self'; connect-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self'; font-src 'self' data:"
+    content="default-src 'self'; base-uri 'none'; frame-ancestors 'none'; object-src 'none'; form-action 'self'; connect-src 'self'; img-src 'self' data:; style-src 'self'; script-src 'self'; font-src 'self' data:"
   />
   <link rel="icon" type="image/svg+xml" href="assets/splyto-mark-v2.svg"/>
-  <link rel="stylesheet" href="app.css?v=16"/>
+  <link rel="stylesheet" href="app.css?v=17"/>
 </head>
 <body>
 
@@ -31,13 +31,13 @@
         <label class="form-label" for="inp-password">Password</label>
         <input class="form-input" id="inp-password" type="password" autocomplete="current-password" placeholder="••••••••••••" required/>
       </div>
-      <p id="login-error" style="color:var(--red);font-size:13px;margin-bottom:12px;display:none;"></p>
+      <p id="login-error" class="form-error" role="alert" hidden></p>
       <button class="btn btn-primary btn-full" type="submit" id="login-btn">Sign in</button>
     </form>
   </div>
 
   <!-- 2FA form -->
-  <div class="auth-card" id="totp-card" style="display:none;">
+  <div class="auth-card" id="totp-card" hidden>
     <img class="auth-logo" src="assets/splyto-logo-dark-v2.svg" alt="Splyto" width="120" height="47"/>
     <h2>Two-factor auth</h2>
     <p class="auth-subtitle">Enter the 6-digit code from your authenticator app</p>
@@ -47,14 +47,14 @@
         <input class="form-input" id="inp-totp" type="text" inputmode="numeric" pattern="[0-9]{6}"
                maxlength="6" placeholder="000000" autocomplete="one-time-code" required/>
       </div>
-      <p id="totp-error" style="color:var(--red);font-size:13px;margin-bottom:12px;display:none;"></p>
+      <p id="totp-error" class="form-error" role="alert" hidden></p>
       <button class="btn btn-primary btn-full" type="submit" id="totp-btn">Verify</button>
-      <button class="btn btn-ghost btn-full" type="button" id="back-to-login-btn" style="margin-top:8px;">← Back to login</button>
+      <button class="btn btn-ghost btn-full mt-8" type="button" id="back-to-login-btn">← Back to login</button>
     </form>
   </div>
 
   <!-- Mandatory 2FA enrolment -->
-  <div class="auth-card" id="enroll-card" style="display:none;">
+  <div class="auth-card" id="enroll-card" hidden>
     <img class="auth-logo" src="assets/splyto-logo-dark-v2.svg" alt="Splyto" width="120" height="47"/>
     <h2>Set up two-factor auth</h2>
     <p class="auth-subtitle">Two-factor authentication is required for every admin account.</p>
@@ -65,7 +65,7 @@
       </div>
       <button class="btn btn-primary btn-full" type="submit" id="enroll-start-btn">Show setup key</button>
     </form>
-    <form id="enroll-confirm-form" style="display:none;">
+    <form id="enroll-confirm-form" hidden>
       <p class="auth-subtitle">Add a new account in your authenticator app and enter this setup key manually.</p>
       <div class="setup-key" id="enroll-secret"></div>
       <div class="form-group">
@@ -75,13 +75,13 @@
       </div>
       <button class="btn btn-primary btn-full" type="submit" id="enroll-confirm-btn">Confirm &amp; continue</button>
     </form>
-    <p id="enroll-error" style="color:var(--red);font-size:13px;margin-top:12px;display:none;"></p>
-    <button class="btn btn-ghost btn-full" type="button" id="enroll-back-btn" style="margin-top:8px;">← Back to login</button>
+    <p id="enroll-error" class="form-error after" role="alert" hidden></p>
+    <button class="btn btn-ghost btn-full mt-8" type="button" id="enroll-back-btn">← Back to login</button>
   </div>
 </div>
 
 <!-- ── Main app ─────────────────────────────────────────────────────────────── -->
-<div id="app" style="display:none;">
+<div id="app" hidden>
 
   <!-- Mobile sidebar overlay -->
   <div id="sidebar-overlay" class="sidebar-overlay"></div>
@@ -103,8 +103,8 @@
     <div class="sidebar-section">
       <div class="sidebar-section-label">Support</div>
       <div class="nav-item" data-view="users"><span class="nav-icon">👤</span> Users</div>
-      <div class="nav-item" data-view="premium" id="nav-premium" style="display:none"><span class="nav-icon">⭐</span> Premium</div>
-      <div class="nav-item" data-view="partners" id="nav-partners" style="display:none"><span class="nav-icon">🤝</span> Partners</div>
+      <div class="nav-item" data-view="premium" id="nav-premium" hidden><span class="nav-icon">⭐</span> Premium</div>
+      <div class="nav-item" data-view="partners" id="nav-partners" hidden><span class="nav-icon">🤝</span> Partners</div>
       <div class="nav-item" data-view="push-queue"><span class="nav-icon">🔔</span> Push Queue</div>
     </div>
 
@@ -112,7 +112,7 @@
 
     <div class="sidebar-section">
       <div class="sidebar-section-label">Operations</div>
-      <div class="nav-item" data-view="system" id="nav-system" style="display:none"><span class="nav-icon">🩺</span> System</div>
+      <div class="nav-item" data-view="system" id="nav-system" hidden><span class="nav-icon">🩺</span> System</div>
       <div class="nav-item" data-view="incidents" id="nav-incidents"><span class="nav-icon">🚨</span> Incidents</div>
       <div class="nav-item" data-view="app-events"><span class="nav-icon">⚡</span> App Events</div>
       <div class="nav-item" data-view="audit-log"><span class="nav-icon">📋</span> Audit Log</div>
@@ -120,10 +120,10 @@
 
     <div class="sidebar-divider"></div>
 
-    <div class="sidebar-section" id="admin-users-section" style="display:none;">
+    <div class="sidebar-section" id="admin-users-section" hidden>
       <div class="sidebar-section-label">Admin</div>
-      <div class="nav-item" data-view="security" id="nav-security" style="display:none"><span class="nav-icon">🛡️</span> Security</div>
-      <div class="nav-item" data-view="features" id="nav-features" style="display:none"><span class="nav-icon">🧪</span> Features</div>
+      <div class="nav-item" data-view="security" id="nav-security" hidden><span class="nav-icon">🛡️</span> Security</div>
+      <div class="nav-item" data-view="features" id="nav-features" hidden><span class="nav-icon">🧪</span> Features</div>
       <div class="nav-item" data-view="admin-users"><span class="nav-icon">🔑</span> Admin Users</div>
       <div class="sidebar-divider"></div>
     </div>
@@ -178,6 +178,6 @@
 <!-- ── Toast container ──────────────────────────────────────────────────────── -->
 <div id="toast-container"></div>
 
-<script src="app.js?v=22"></script>
+<script type="module" src="app.js?v=23"></script>
 </body>
 </html>
