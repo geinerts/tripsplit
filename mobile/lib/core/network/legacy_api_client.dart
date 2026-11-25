@@ -269,9 +269,9 @@ class LegacyApiClient implements SlowApiClient {
         requestId: resolvedRequestId,
       );
 
-      if (error.isNetworkError ||
-          (error.statusCode ?? 0) >= 500 ||
-          (error.statusCode ?? 0) == 401) {
+      // Only server faults go to crash reports. Being offline, timeouts and an
+      // expired session (401) are normal on a trip and would only be noise.
+      if (!error.isNetworkError && (error.statusCode ?? 0) >= 500) {
         unawaited(
           AppMonitoring.captureHandledException(
             error,

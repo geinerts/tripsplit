@@ -49,7 +49,7 @@ select all purposes that apply, as in the table.
 | Browsing History, Search History | Friend search is not stored as a history. |
 | Purchases | No in-app purchases yet. Add when paid Premium launches. |
 | Advertising Data | No ads. |
-| Crash Data | Sentry SDK is built in, but release builds have no DSN, so nothing is sent. If a DSN is ever added, declare Crash Data, Performance Data and Other Diagnostic Data (App Functionality) and update `privacy.html`. |
+| Crash Data | **Collected once the Sentry DSN is in the release config** (planned 2026-11-25). Purpose: App Functionality. Linked to the user (the account number is attached), not used for tracking. Performance Data is not collected while `TRIPSPLIT_MONITORING_TRACE_SAMPLE_RATE` is 0. Until the DSN ships, nothing is sent and this stays undeclared. Google Play Data safety: tick "Crash logs" under App info and performance. `privacy.html` already describes it in the draft of 2026-11-25. |
 | Other Data Types | — |
 
 ## Privacy policy URL
