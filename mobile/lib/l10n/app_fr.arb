@@ -2232,5 +2232,15 @@
   "yearSummarySeasonNotice": "Le bilan de l’année précédente est disponible du 1er janvier au 31 mars.",
   "expenseItemsClearAll": "Supprimer tous les articles",
   "receiptRetakePhoto": "Reprendre",
-  "receiptUsePhoto": "Utiliser la photo"
+  "receiptUsePhoto": "Utiliser la photo",
+  "expenseSplitPersonal": "Personnel",
+  "expenseSplitPersonalHint": "Uniquement pour la personne qui paie. Hors total du voyage et hors dettes.",
+  "expenseFilterOnlyPersonal": "Personnelles uniquement",
+  "expensePersonalLabel": "Dépense personnelle",
+  "expenseLockedPersonal": "Dépense personnelle",
+  "expensePersonalNoDebts": "N'affecte pas les dettes",
+  "expenseLockedExplain": "Seule la personne qui l'a ajoutée peut l'ouvrir.",
+  "expensePersonalDetailsNote": "Personnelle : hors total du voyage et hors dettes. Les autres ne voient que le montant.",
+  "workspacePersonalSpentLine": "Personnel {personal} · Total dépensé {total}",
+  "analyticsPersonalLine": "Dépenses personnelles {amount}"
 }

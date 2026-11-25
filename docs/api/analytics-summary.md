@@ -71,6 +71,10 @@ A trip without expenses is included with empty lists. All amounts are in the tri
   highest first, then newest. `amount_cents` is the full amount in the first list and the
   user's part in the second. The notes in these lists are the only expense notes in the response.
 
+- `personal_cents`: the requesting user's own personal expenses in that trip. Personal
+  expenses (`docs/api/personal-expenses.md`) are left out of every other field above. Servers
+  before that change don't send it; the app reads it as 0.
+
 The response has no receipts, exchange rates, split details or other members' parts.
 
 ## Errors

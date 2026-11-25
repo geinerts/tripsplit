@@ -860,7 +860,7 @@
   "youSettledForExpense": "Du har reglerat din del av den här utgiften.",
   "youShouldPay": "Du bör betala {amount}",
   "youShouldReceive": "Du bör ta emot {amount}",
-  "yourShare": "Din aktie",
+  "yourShare": "Din andel",
   "yourTrips": "Dina resor",
   "homeYourActiveTrips": "Dina aktiva resor",
   "quickSplitsTitle": "Snabbdelningar",
@@ -2232,5 +2232,15 @@
   "yearSummarySeasonNotice": "Din sammanfattning av föregående år är tillgänglig från 1 januari till 31 mars.",
   "expenseItemsClearAll": "Ta bort alla poster",
   "receiptRetakePhoto": "Ta om",
-  "receiptUsePhoto": "Använd bild"
+  "receiptUsePhoto": "Använd bild",
+  "expenseSplitPersonal": "Personlig",
+  "expenseSplitPersonalHint": "Bara för den som betalar. Ingår inte i resans totalsumma eller skulder.",
+  "expenseFilterOnlyPersonal": "Bara personliga",
+  "expensePersonalLabel": "Personlig utgift",
+  "expenseLockedPersonal": "Personlig utgift",
+  "expensePersonalNoDebts": "Påverkar inte skulder",
+  "expenseLockedExplain": "Bara den som lade till den kan öppna den.",
+  "expensePersonalDetailsNote": "Personlig: ingår inte i resans totalsumma eller skulder. Andra ser bara beloppet.",
+  "workspacePersonalSpentLine": "Personligt {personal} · Totalt spenderat {total}",
+  "analyticsPersonalLine": "Personliga utgifter {amount}"
 }

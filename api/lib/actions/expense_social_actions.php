@@ -1,6 +1,8 @@
 <?php
 declare(strict_types=1);
 
+require_once __DIR__ . '/../helpers/helper_personal_expense.php';
+
 // ---------------------------------------------------------------------------
 // Allowed emoji for expense reactions (preset whitelist).
 // ---------------------------------------------------------------------------
@@ -9,11 +11,12 @@ const ALLOWED_EXPENSE_REACTIONS = ['😂', '👍', '😤', '🤩', '💸', '😅
 // ---------------------------------------------------------------------------
 // Helper: assert the expense belongs to the current trip, return expense row.
 // ---------------------------------------------------------------------------
-function get_expense_for_trip(PDO $pdo, int $expenseId, int $tripId): array
+// A personal expense is open only to its payer (docs/api/personal-expenses.md).
+function get_expense_for_trip(PDO $pdo, int $expenseId, int $tripId, int $viewerId = 0): array
 {
     $expensesTable = table_name('expenses');
     $stmt = $pdo->prepare(
-        'SELECT id, note FROM ' . $expensesTable . '
+        'SELECT id, note, paid_by, ' . expense_is_personal_select($pdo, '') . ' FROM ' . $expensesTable . '
          WHERE id = :id AND trip_id = :trip_id
          LIMIT 1'
     );
@@ -21,6 +24,13 @@ function get_expense_for_trip(PDO $pdo, int $expenseId, int $tripId): array
     $row = $stmt->fetch();
     if (!$row) {
         json_out(['ok' => false, 'error' => 'Expense not found.'], 404);
+    }
+    if ((int) ($row['is_personal'] ?? 0) === 1 && !expense_personal_visible_to(
+        (int) ($row['paid_by'] ?? 0),
+        $viewerId,
+        trip_guest_ids_for_actor($pdo, $tripId, $viewerId)
+    )) {
+        json_out(['ok' => false, 'error' => 'Personal expense is locked.'], 403);
     }
     return (array) $row;
 }
@@ -500,7 +510,7 @@ function list_expense_comment_reactions_action(): void
         json_out(['ok' => false, 'error' => 'expense_id is required.'], 400);
     }
 
-    get_expense_for_trip($pdo, $expenseId, $tripId);
+    get_expense_for_trip($pdo, $expenseId, $tripId, (int) $me['id']);
 
     $reactionsTable = table_name('expense_comment_reactions');
     $usersTable     = table_name('users');
@@ -577,7 +587,7 @@ function toggle_expense_comment_reaction_action(): void
         json_out(['ok' => false, 'error' => 'Invalid emoji.'], 400);
     }
 
-    get_expense_for_trip($pdo, $expenseId, $tripId);
+    get_expense_for_trip($pdo, $expenseId, $tripId, (int) $me['id']);
     get_comment_for_trip_expense($pdo, $commentId, $tripId, $expenseId);
 
     $reactionsTable = table_name('expense_comment_reactions');
@@ -644,7 +654,7 @@ function list_expense_reactions_action(): void
         json_out(['ok' => false, 'error' => 'expense_id is required.'], 400);
     }
 
-    get_expense_for_trip($pdo, $expenseId, $tripId);
+    get_expense_for_trip($pdo, $expenseId, $tripId, (int) $me['id']);
 
     $reactionsTable = table_name('expense_reactions');
     $usersTable     = table_name('users');
@@ -716,7 +726,7 @@ function toggle_expense_reaction_action(): void
         json_out(['ok' => false, 'error' => 'Invalid emoji.'], 400);
     }
 
-    get_expense_for_trip($pdo, $expenseId, $tripId);
+    get_expense_for_trip($pdo, $expenseId, $tripId, (int) $me['id']);
 
     $reactionsTable = table_name('expense_reactions');
 
@@ -769,7 +779,7 @@ function list_expense_comments_action(): void
         json_out(['ok' => false, 'error' => 'expense_id is required.'], 400);
     }
 
-    get_expense_for_trip($pdo, $expenseId, $tripId);
+    get_expense_for_trip($pdo, $expenseId, $tripId, (int) $me['id']);
 
     $commentsTable = table_name('expense_comments');
     $usersTable    = table_name('users');
@@ -864,7 +874,7 @@ function add_expense_comment_action(): void
     }
     ensure_text_has_no_links($commentBody, 'Comment');
 
-    $expense = get_expense_for_trip($pdo, $expenseId, $tripId);
+    $expense = get_expense_for_trip($pdo, $expenseId, $tripId, (int) $me['id']);
     $parentComment = null;
     if ($parentCommentId > 0) {
         $parentComment = get_comment_for_trip_expense(
@@ -904,10 +914,14 @@ function add_expense_comment_action(): void
     ]);
     $commentId = (int) $pdo->lastInsertId();
 
-    app_event($pdo, $userId, 'expense.comment_added', 'expense', $expenseId, $tripId, [
+    $commentEvent = [
         'comment_id' => $commentId,
         'note' => trim((string) ($expense['note'] ?? '')),
-    ]);
+    ];
+    if ((int) ($expense['is_personal'] ?? 0) === 1) {
+        $commentEvent['is_personal'] = true;
+    }
+    app_event($pdo, $userId, 'expense.comment_added', 'expense', $expenseId, $tripId, $commentEvent);
 
     save_expense_comment_mentions(
         $pdo,
@@ -1043,7 +1057,7 @@ function update_expense_comment_action(): void
             $pdo,
             $tripId,
             $commentExpenseId,
-            (string) (get_expense_for_trip($pdo, $commentExpenseId, $tripId)['note'] ?? ''),
+            (string) (get_expense_for_trip($pdo, $commentExpenseId, $tripId, (int) $me['id'])['note'] ?? ''),
             $commentId,
             $userId,
             $commentBody,

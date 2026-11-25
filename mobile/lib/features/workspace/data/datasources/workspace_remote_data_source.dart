@@ -147,6 +147,7 @@ abstract class WorkspaceRemoteDataSource {
     double extraAmount = 0,
     String? subcategory,
     int? paidBy,
+    bool isPersonal = false,
     String? receiptPath,
     String? clientMutationId,
   });
@@ -167,6 +168,7 @@ abstract class WorkspaceRemoteDataSource {
     String? subcategory,
     bool subcategorySet = true,
     int? paidBy,
+    bool? isPersonal,
     String? receiptPath,
     bool removeReceipt,
     String? clientMutationId,
@@ -554,6 +556,7 @@ class WorkspaceRemoteDataSourceImpl implements WorkspaceRemoteDataSource {
     double extraAmount = 0,
     String? subcategory,
     int? paidBy,
+    bool isPersonal = false,
     String? receiptPath,
     String? clientMutationId,
   }) {
@@ -571,6 +574,7 @@ class WorkspaceRemoteDataSourceImpl implements WorkspaceRemoteDataSource {
       extraAmount: extraAmount,
       subcategory: subcategory,
       paidBy: paidBy,
+      isPersonal: isPersonal,
       receiptPath: receiptPath,
       clientMutationId: clientMutationId,
     );
@@ -593,6 +597,7 @@ class WorkspaceRemoteDataSourceImpl implements WorkspaceRemoteDataSource {
     String? subcategory,
     bool subcategorySet = true,
     int? paidBy,
+    bool? isPersonal,
     String? receiptPath,
     bool removeReceipt = false,
     String? clientMutationId,
@@ -613,6 +618,7 @@ class WorkspaceRemoteDataSourceImpl implements WorkspaceRemoteDataSource {
       subcategory: subcategory,
       subcategorySet: subcategorySet,
       paidBy: paidBy,
+      isPersonal: isPersonal,
       receiptPath: receiptPath,
       removeReceipt: removeReceipt,
       clientMutationId: clientMutationId,

@@ -2232,5 +2232,15 @@
   "yearSummarySeasonNotice": "Souhrn předchozího roku je dostupný od 1. ledna do 31. března.",
   "expenseItemsClearAll": "Smazat všechny položky",
   "receiptRetakePhoto": "Vyfotit znovu",
-  "receiptUsePhoto": "Použít fotku"
+  "receiptUsePhoto": "Použít fotku",
+  "expenseSplitPersonal": "Osobní",
+  "expenseSplitPersonalHint": "Jen pro toho, kdo platí. Nepočítá se do součtu výletu ani do dluhů.",
+  "expenseFilterOnlyPersonal": "Jen osobní",
+  "expensePersonalLabel": "Osobní výdaj",
+  "expenseLockedPersonal": "Osobní výdaj",
+  "expensePersonalNoDebts": "Neovlivňuje dluhy",
+  "expenseLockedExplain": "Otevřít ho může jen ten, kdo ho přidal.",
+  "expensePersonalDetailsNote": "Osobní: nepočítá se do součtu výletu ani do dluhů. Ostatní vidí jen částku.",
+  "workspacePersonalSpentLine": "Osobní {personal} · Celkem utraceno {total}",
+  "analyticsPersonalLine": "Osobní výdaje {amount}"
 }

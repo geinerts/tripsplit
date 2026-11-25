@@ -1,6 +1,8 @@
 <?php
 declare(strict_types=1);
 
+require_once __DIR__ . '/../helpers/helper_personal_expense.php';
+
 require_once __DIR__ . '/../helpers/helper_expense_subcategory.php';
 
 function workspace_parse_since_cursor(): int
@@ -156,7 +158,8 @@ function workspace_load_trip_users(PDO $pdo, int $tripId): array
     return $rows;
 }
 
-function workspace_load_trip_expenses(PDO $pdo, int $tripId, int $limit = 300): array
+/** Personal expenses of others come back locked; `$viewerId` 0 locks every personal one. */
+function workspace_load_trip_expenses(PDO $pdo, int $tripId, int $limit = 300, int $viewerId = 0): array
 {
     $expensesTable = table_name('expenses');
     $usersTable = table_name('users');
@@ -195,6 +198,7 @@ function workspace_load_trip_expenses(PDO $pdo, int $tripId, int $limit = 300): 
             e.expense_date,
             e.created_at,
             e.receipt_path,
+            ' . expense_is_personal_select($pdo) . ',
             e.paid_by AS paid_by_id,
             u.nickname AS paid_by_nickname
          FROM ' . $expensesTable . ' e
@@ -260,6 +264,7 @@ function workspace_load_trip_expenses(PDO $pdo, int $tripId, int $limit = 300): 
     }
     unset($row);
     attach_expense_items($pdo, $rows);
+    apply_personal_expense_visibility($pdo, $tripId, $viewerId, $rows);
 
     return $rows;
 }
@@ -449,6 +454,8 @@ function list_trip_activity_action(): void
         $rows = array_slice($rows, 0, $limit);
     }
 
+    $viewerId = (int) ($me['id'] ?? 0);
+    $guestIds = null;
     $events = [];
     foreach ($rows as $row) {
         $payload = [];
@@ -457,6 +464,13 @@ function list_trip_activity_action(): void
             $decoded = json_decode($rawPayload, true);
             if (is_array($decoded)) {
                 $payload = $decoded;
+            }
+        }
+        if (($payload['is_personal'] ?? false) === true
+            && str_starts_with((string) ($row['event_type'] ?? ''), 'expense.')) {
+            $guestIds ??= trip_guest_ids_for_actor($pdo, $tripId, $viewerId);
+            if (!expense_personal_visible_to((int) ($row['actor_user_id'] ?? 0), $viewerId, $guestIds)) {
+                $payload = lock_personal_activity_payload($payload);
             }
         }
 
@@ -671,7 +685,7 @@ function workspace_snapshot_action(): void
     }
 
     $users = workspace_load_trip_users($pdo, $tripId);
-    $expenses = workspace_load_trip_expenses($pdo, $tripId, 300);
+    $expenses = workspace_load_trip_expenses($pdo, $tripId, 300, $userId);
     $orders = workspace_load_trip_orders($pdo, $tripId, 30);
     $tripNotifications = workspace_load_trip_notifications($pdo, $tripId, $userId, 50);
     $readyToSettle = load_trip_ready_to_settle_state($pdo, $tripId, $userId);
@@ -696,5 +710,6 @@ function workspace_snapshot_action(): void
         'notifications' => $tripNotifications['notifications'],
         'unread_count' => (int) ($tripNotifications['unread_count'] ?? 0),
         'ready_to_settle' => $readyToSettle,
+        'personal_total_cents' => personal_expense_total_cents($pdo, $tripId, $userId),
     ]);
 }

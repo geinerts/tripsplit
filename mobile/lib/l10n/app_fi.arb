@@ -2232,5 +2232,15 @@
   "yearSummarySeasonNotice": "Edellisen vuoden yhteenveto on saatavilla 1. tammikuuta–31. maaliskuuta.",
   "expenseItemsClearAll": "Poista kaikki rivit",
   "receiptRetakePhoto": "Ota uudelleen",
-  "receiptUsePhoto": "Käytä kuvaa"
+  "receiptUsePhoto": "Käytä kuvaa",
+  "expenseSplitPersonal": "Henkilökohtainen",
+  "expenseSplitPersonalHint": "Vain maksajalle. Ei kuulu matkan kokonaissummaan eikä velkoihin.",
+  "expenseFilterOnlyPersonal": "Vain henkilökohtaiset",
+  "expensePersonalLabel": "Henkilökohtainen kulu",
+  "expenseLockedPersonal": "Henkilökohtainen kulu",
+  "expensePersonalNoDebts": "Ei vaikuta velkoihin",
+  "expenseLockedExplain": "Vain sen lisännyt henkilö voi avata sen.",
+  "expensePersonalDetailsNote": "Henkilökohtainen: ei kuulu matkan kokonaissummaan eikä velkoihin. Muut näkevät vain summan.",
+  "workspacePersonalSpentLine": "Henkilökohtaiset {personal} · Yhteensä käytetty {total}",
+  "analyticsPersonalLine": "Henkilökohtaiset kulut {amount}"
 }

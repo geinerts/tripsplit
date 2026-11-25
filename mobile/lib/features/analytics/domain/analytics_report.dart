@@ -92,6 +92,7 @@ class AnalyticsTripSummary {
     this.members = const [],
     this.largestByTotal = const [],
     this.largestByShare = const [],
+    this.personalCents = 0,
   });
   factory AnalyticsTripSummary.fromMap(Map<String, dynamic> map) =>
       AnalyticsTripSummary(
@@ -107,12 +108,19 @@ class AnalyticsTripSummary {
           map['largest_by_share'],
           AnalyticsLargestExpense.fromMap,
         ),
+        personalCents: map['personal_cents'] == null
+            ? 0
+            : _intValue(map['personal_cents']),
       );
   final int tripId;
   final String currencyCode;
   final List<AnalyticsBucket> buckets;
   final List<AnalyticsMember> members;
   final List<AnalyticsLargestExpense> largestByTotal, largestByShare;
+
+  /// The user's own personal expenses in this trip, which are left out of
+  /// every figure above. 0 from servers without personal expenses.
+  final int personalCents;
 }
 
 /// Keeps summaries for [trips] only. A currency that differs means the two
@@ -160,6 +168,12 @@ class AnalyticsReport {
     0,
     (sum, b) => sum + (personal ? b.sharedExpenseCount : b.expenseCount),
   );
+
+  /// Own personal expenses, kept apart. The server gives one total per trip,
+  /// so there is none to show for a single month.
+  int get personalCents => month != null
+      ? 0
+      : _trips.fold(0, (sum, trip) => sum + trip.personalCents);
   Map<String, int> get categories => _group((b) => b.category);
   Map<String, int> get days => _group((b) => b.date);
 

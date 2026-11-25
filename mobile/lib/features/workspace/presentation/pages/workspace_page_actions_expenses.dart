@@ -81,6 +81,7 @@ extension _WorkspacePageExpensesActions on _WorkspacePageState {
                     extraAmount: form.extraAmount,
                     subcategory: form.subcategory,
                     paidBy: form.paidBy,
+                    isPersonal: form.isPersonal,
                     receiptPath: receipt?.path,
                   )
                 : await widget.workspaceController.updateExpense(
@@ -98,6 +99,7 @@ extension _WorkspacePageExpensesActions on _WorkspacePageState {
                     extraAmount: form.extraAmount,
                     subcategory: form.subcategory,
                     paidBy: form.paidBy,
+                    isPersonal: form.isPersonal,
                     receiptPath: receipt?.path,
                     removeReceipt: form.removeReceipt,
                   );

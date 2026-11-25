@@ -1,6 +1,8 @@
 <?php
 declare(strict_types=1);
 
+require_once __DIR__ . '/../helpers/helper_personal_expense.php';
+
 require_once __DIR__ . '/trip_invitations.php';
 require_once __DIR__ . '/../helpers/helper_trip_budget.php';
 require_once __DIR__ . '/../helpers/helper_quick_start.php';
@@ -189,7 +191,7 @@ function trip_user_paid_in_preferred_currency_cents(
             e.created_at
          FROM ' . $expensesTable . ' e
          WHERE e.trip_id = :trip_id
-           AND e.paid_by = :user_id'
+           AND e.paid_by = :user_id' . expense_group_only_sql($pdo, 'e')
     );
     $stmt->execute([
         'trip_id' => $tripId,
@@ -320,20 +322,20 @@ function trips_action(): void
             (
               SELECT COALESCE(SUM(CAST(ROUND(e.amount * 100) AS SIGNED)), 0)
               FROM ' . $expensesTable . ' e
-              WHERE e.trip_id = t.id
+              WHERE e.trip_id = t.id' . expense_group_only_sql($pdo, 'e') . '
             ) AS total_amount_cents,
             (
               SELECT COALESCE(SUM(CAST(ROUND(e2.amount * 100) AS SIGNED)), 0)
               FROM ' . $expensesTable . ' e2
               WHERE e2.trip_id = t.id
-                AND e2.paid_by = tm.user_id
+                AND e2.paid_by = tm.user_id' . expense_group_only_sql($pdo, 'e2') . '
             ) AS my_paid_cents,
             (
               SELECT COALESCE(SUM(ep.owed_cents), 0)
               FROM ' . $participantsTable . ' ep
               JOIN ' . $expensesTable . ' e3 ON e3.id = ep.expense_id
               WHERE e3.trip_id = t.id
-                AND ep.user_id = tm.user_id
+                AND ep.user_id = tm.user_id' . expense_group_only_sql($pdo, 'e3') . '
             ) AS my_owed_cents,
             (
               SELECT COUNT(*)

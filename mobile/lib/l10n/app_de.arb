@@ -2232,5 +2232,15 @@
   "yearSummarySeasonNotice": "Dein Rückblick auf das Vorjahr ist vom 1. Januar bis zum 31. März verfügbar.",
   "expenseItemsClearAll": "Alle Positionen löschen",
   "receiptRetakePhoto": "Erneut aufnehmen",
-  "receiptUsePhoto": "Foto verwenden"
+  "receiptUsePhoto": "Foto verwenden",
+  "expenseSplitPersonal": "Persönlich",
+  "expenseSplitPersonalHint": "Nur für die zahlende Person. Nicht in der Reisesumme oder den Schulden.",
+  "expenseFilterOnlyPersonal": "Nur persönliche",
+  "expensePersonalLabel": "Persönliche Ausgabe",
+  "expenseLockedPersonal": "Persönliche Ausgabe",
+  "expensePersonalNoDebts": "Beeinflusst keine Schulden",
+  "expenseLockedExplain": "Nur die Person, die sie hinzugefügt hat, kann sie öffnen.",
+  "expensePersonalDetailsNote": "Persönlich: nicht in der Reisesumme oder den Schulden. Andere sehen nur den Betrag.",
+  "workspacePersonalSpentLine": "Persönlich {personal} · Insgesamt ausgegeben {total}",
+  "analyticsPersonalLine": "Persönliche Ausgaben {amount}"
 }

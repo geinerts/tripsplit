@@ -5621,4 +5621,38 @@ class AppLocalizationsLv extends AppLocalizations {
 
   @override
   String get receiptUsePhoto => 'Izmantot foto';
+
+  @override
+  String get expenseSplitPersonal => 'Personīgs';
+
+  @override
+  String get expenseSplitPersonalHint => 'Tikai maksātājam. Neietilpst ceļojuma kopsummā un parādos.';
+
+  @override
+  String get expenseFilterOnlyPersonal => 'Tikai personīgie';
+
+  @override
+  String get expensePersonalLabel => 'Personīgs izdevums';
+
+  @override
+  String get expenseLockedPersonal => 'Personīgs izdevums';
+
+  @override
+  String get expensePersonalNoDebts => 'Neietekmē parādus';
+
+  @override
+  String get expenseLockedExplain => 'To var atvērt tikai tas, kas to pievienoja.';
+
+  @override
+  String get expensePersonalDetailsNote => 'Personīgs: neietilpst ceļojuma kopsummā un parādos. Citi redz tikai summu.';
+
+  @override
+  String workspacePersonalSpentLine(String personal, String total) {
+    return 'Personīgie $personal · Kopā iztērēts $total';
+  }
+
+  @override
+  String analyticsPersonalLine(String amount) {
+    return 'Personīgie izdevumi $amount';
+  }
 }

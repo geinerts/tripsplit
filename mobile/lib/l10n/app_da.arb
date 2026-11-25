@@ -2232,5 +2232,15 @@
   "yearSummarySeasonNotice": "Din oversigt over det foregående år er tilgængelig fra 1. januar til 31. marts.",
   "expenseItemsClearAll": "Slet alle poster",
   "receiptRetakePhoto": "Tag om",
-  "receiptUsePhoto": "Brug foto"
+  "receiptUsePhoto": "Brug foto",
+  "expenseSplitPersonal": "Personlig",
+  "expenseSplitPersonalHint": "Kun for den, der betaler. Ikke med i rejsens total eller gæld.",
+  "expenseFilterOnlyPersonal": "Kun personlige",
+  "expensePersonalLabel": "Personlig udgift",
+  "expenseLockedPersonal": "Personlig udgift",
+  "expensePersonalNoDebts": "Påvirker ikke gæld",
+  "expenseLockedExplain": "Kun den, der tilføjede den, kan åbne den.",
+  "expensePersonalDetailsNote": "Personlig: ikke med i rejsens total eller gæld. Andre ser kun beløbet.",
+  "workspacePersonalSpentLine": "Personlig {personal} · I alt brugt {total}",
+  "analyticsPersonalLine": "Personlige udgifter {amount}"
 }

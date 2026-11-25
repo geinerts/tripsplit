@@ -310,7 +310,9 @@ void main() {
       tester.getTopLeft(find.byKey(const ValueKey('notification-3'))).dy,
       greaterThan(earlierY),
     );
-    expect(find.byKey(const ValueKey('notification-unread-3')), findsNothing);
+    // Unread when the sheet opened: still marked after the automatic read.
+    expect(find.byKey(const ValueKey('notification-unread-3')), findsOneWidget);
+    expect(find.byKey(const ValueKey('notification-unread-2')), findsNothing);
     expect(find.text('AP'), findsNWidgets(3));
   });
   testWidgets(
@@ -366,8 +368,15 @@ void main() {
       );
       w.pendingMark!.complete(0);
       await tester.pumpAndSettle();
-      expect(find.byKey(const ValueKey('notification-unread-1')), findsNothing);
-      expect(find.byKey(const ValueKey('notification-unread-3')), findsNothing);
+      // Read on the server, but the new rows stay marked while it is open.
+      expect(
+        find.byKey(const ValueKey('notification-unread-1')),
+        findsOneWidget,
+      );
+      expect(
+        find.byKey(const ValueKey('notification-unread-3')),
+        findsOneWidget,
+      );
       expect(find.text('Today'), findsOneWidget);
       expect(find.text('Earlier'), findsOneWidget);
       expect(counts.last, 0);
@@ -597,6 +606,35 @@ void main() {
     expect(find.text('Fuel'), findsOneWidget);
     // Without an answer callback there are no buttons.
     expect(find.byKey(const ValueKey('notification-actions-1')), findsNothing);
+  });
+
+  testWidgets('the name is bold and what they did is not', (tester) async {
+    await _mount(tester, _Workspace()..inbox = _page(answerable()));
+    final t = _t(tester);
+    final rich = tester.widget<RichText>(
+      find.descendant(
+        of: find.byKey(const ValueKey('notification-3')),
+        matching: find.text(
+          t.notificationHeadlineExpense('Marta Kalnīte'),
+          findRichText: true,
+        ),
+      ),
+    );
+    final weights = <String, FontWeight?>{};
+    rich.text.visitChildren((span) {
+      if (span is TextSpan && span.text != null) {
+        weights[span.text!.trim()] =
+            span.style?.fontWeight ?? (rich.text as TextSpan).style?.fontWeight;
+      }
+      return true;
+    });
+    expect(weights['Marta Kalnīte'], isNot(FontWeight.w400));
+    expect(
+      weights.entries
+          .where((e) => e.key != 'Marta Kalnīte' && e.key.isNotEmpty)
+          .map((e) => e.value),
+      everyElement(FontWeight.w400),
+    );
   });
 
   testWidgets('✕ and ✓ answer from the list and show the result', (

@@ -352,6 +352,7 @@ class WorkspaceController {
     double extraAmount = 0,
     String? subcategory,
     int? paidBy,
+    bool isPersonal = false,
     String? receiptPath,
   }) {
     return _repository.addExpense(
@@ -368,6 +369,7 @@ class WorkspaceController {
       extraAmount: extraAmount,
       subcategory: subcategory,
       paidBy: paidBy,
+      isPersonal: isPersonal,
       receiptPath: receiptPath,
     );
   }
@@ -387,6 +389,7 @@ class WorkspaceController {
     double extraAmount = 0,
     String? subcategory,
     int? paidBy,
+    bool? isPersonal,
     String? receiptPath,
     bool removeReceipt = false,
   }) {
@@ -405,6 +408,7 @@ class WorkspaceController {
       extraAmount: extraAmount,
       subcategory: subcategory,
       paidBy: paidBy,
+      isPersonal: isPersonal,
       receiptPath: receiptPath,
       removeReceipt: removeReceipt,
     );

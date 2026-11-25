@@ -25,13 +25,21 @@ extension _WorkspacePageExpensesTab on _WorkspacePageState {
     final users = {for (final user in snapshot.users) user.id: user};
     final query = _expenseSearchQuery.trim().toLowerCase();
     final hasFilters =
-        _expenseFilterCategory != null || _expenseFilterUserId != 0;
+        _expenseFilterCategory != null ||
+        _expenseFilterUserId != 0 ||
+        _expenseFilterPersonal;
     final isSearching = query.isNotEmpty || hasFilters;
     final expenses = source
         .where((expense) {
+          // A locked row has no category of its own to match.
           return (_expenseFilterCategory == null ||
-                  ExpenseCategoryCatalog.normalizeStored(expense.category) ==
-                      _expenseFilterCategory) &&
+                  (!expense.isLocked &&
+                      ExpenseCategoryCatalog.normalizeStored(
+                            expense.category,
+                          ) ==
+                          _expenseFilterCategory)) &&
+              (!_expenseFilterPersonal ||
+                  (expense.isPersonal && !expense.isLocked)) &&
               (_expenseFilterUserId == 0 ||
                   expense.paidById == _expenseFilterUserId) &&
               (query.isEmpty ||
@@ -141,6 +149,7 @@ extension _WorkspacePageExpensesTab on _WorkspacePageState {
                       _updateState(() {
                         _expenseFilterCategory = null;
                         _expenseFilterUserId = 0;
+                        _expenseFilterPersonal = false;
                       });
                     },
                     child: Text(
@@ -238,7 +247,8 @@ extension _WorkspacePageExpensesTab on _WorkspacePageState {
     final categories = <String>{
       for (final option in ExpenseCategoryCatalog.builtIn) option.key,
       for (final expense in _expensesFeed)
-        ExpenseCategoryCatalog.normalizeStored(expense.category),
+        if (!expense.isLocked)
+          ExpenseCategoryCatalog.normalizeStored(expense.category),
       ?_expenseFilterCategory,
     }.toList(growable: false);
     final payers = <int, String>{
@@ -264,11 +274,14 @@ extension _WorkspacePageExpensesTab on _WorkspacePageState {
         payers: payers,
         category: _expenseFilterCategory,
         payerId: _expenseFilterUserId,
-        onChanged: (category, payerId) {
+        personalOnly: _expenseFilterPersonal,
+        showPersonal: !widget.trip.isSolo,
+        onChanged: (category, payerId, personalOnly) {
           if (!mounted) return;
           _updateState(() {
             _expenseFilterCategory = category;
             _expenseFilterUserId = payerId;
+            _expenseFilterPersonal = personalOnly;
           });
         },
       ),
@@ -289,7 +302,9 @@ extension _WorkspacePageExpensesTab on _WorkspacePageState {
     // The category (and type) is always the title; the note goes under it.
     // Who paid shows as a small face on the icon, the split mode in details.
     final payerName = (payer?.preferredName ?? expense.paidByNickname).trim();
-    final details = expense.note.trim();
+    final details = expense.isLocked
+        ? context.l10n.expensePersonalNoDebts
+        : expense.note.trim();
     final amount = AppFormatters.displayCurrencyFromCents(
       context,
       (expense.amount * 100).round(),
@@ -306,7 +321,7 @@ extension _WorkspacePageExpensesTab on _WorkspacePageState {
       color: Colors.transparent,
       child: InkWell(
         onTap: open,
-        onLongPress: expense.id > 0
+        onLongPress: expense.id > 0 && !expense.isLocked
             ? () =>
                   _showExpenseQuickActions(snapshot: snapshot, expense: expense)
             : null,
@@ -408,16 +423,27 @@ extension _WorkspacePageExpensesTab on _WorkspacePageState {
                           context,
                           expense,
                           size: 16,
-                          child: _expenseCategoryTitle(
-                            context,
-                            expense,
-                            key: ValueKey('expense-title-${expense.id}'),
-                            maxLines: 2,
-                            style: theme.textTheme.titleMedium?.copyWith(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
+                          child: expense.isLocked
+                              ? Text(
+                                  context.l10n.expenseLockedPersonal,
+                                  key: ValueKey('expense-title-${expense.id}'),
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: theme.textTheme.titleMedium?.copyWith(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                )
+                              : _expenseCategoryTitle(
+                                  context,
+                                  expense,
+                                  key: ValueKey('expense-title-${expense.id}'),
+                                  maxLines: 2,
+                                  style: theme.textTheme.titleMedium?.copyWith(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
                         ),
                         if (details.isNotEmpty)
                           Text(
@@ -484,7 +510,12 @@ extension _WorkspacePageExpensesTab on _WorkspacePageState {
                 borderRadius: BorderRadius.circular(size * .28),
               ),
               child: Icon(
-                ExpenseCategoryCatalog.iconFor(expense.category),
+                expense.isLocked
+                    ? Icons.lock_outline_rounded
+                    : ExpenseCategoryCatalog.iconFor(expense.category),
+                key: expense.isLocked
+                    ? ValueKey('expense-locked-${expense.id}')
+                    : null,
                 size: size * .48,
                 color: theme.colorScheme.onSurfaceVariant,
               ),
@@ -520,7 +551,7 @@ extension _WorkspacePageExpensesTab on _WorkspacePageState {
     required WorkspaceSnapshot snapshot,
     required TripExpense expense,
   }) async {
-    if (expense.id <= 0 || _isMutating) {
+    if (expense.id <= 0 || _isMutating || expense.isLocked) {
       return;
     }
     final canManage =
@@ -705,6 +736,8 @@ class _ExpenseFilterMenu extends StatefulWidget {
     required this.category,
     required this.payerId,
     required this.onChanged,
+    this.personalOnly = false,
+    this.showPersonal = false,
   });
 
   final LayerLink link;
@@ -713,7 +746,12 @@ class _ExpenseFilterMenu extends StatefulWidget {
   final Map<int, String> payers;
   final String? category;
   final int payerId;
-  final void Function(String? category, int payerId) onChanged;
+
+  /// Only the current user's own personal expenses; offered in group trips.
+  final bool personalOnly;
+  final bool showPersonal;
+  final void Function(String? category, int payerId, bool personalOnly)
+  onChanged;
 
   @override
   State<_ExpenseFilterMenu> createState() => _ExpenseFilterMenuState();
@@ -723,14 +761,21 @@ class _ExpenseFilterMenuState extends State<_ExpenseFilterMenu> {
   var _page = _ExpenseFilterMenuPage.root;
   late String? _category = widget.category;
   late int _payerId = widget.payerId;
+  late bool _personalOnly = widget.personalOnly;
 
-  void _apply({required String? category, required int payerId}) {
+  void _apply({
+    required String? category,
+    required int payerId,
+    bool? personalOnly,
+  }) {
+    final personal = personalOnly ?? _personalOnly;
     setState(() {
       _category = category;
       _payerId = payerId;
+      _personalOnly = personal;
       _page = _ExpenseFilterMenuPage.root;
     });
-    widget.onChanged(category, payerId);
+    widget.onChanged(category, payerId, personal);
   }
 
   String _categoryLabel(String value) =>
@@ -799,7 +844,7 @@ class _ExpenseFilterMenuState extends State<_ExpenseFilterMenu> {
     final t = context.l10n;
     final category = _category;
     final payerName = widget.payers[_payerId];
-    final active = category != null || _payerId != 0;
+    final active = category != null || _payerId != 0 || _personalOnly;
     return SingleChildScrollView(
       padding: const EdgeInsets.symmetric(vertical: 4),
       child: Column(
@@ -826,6 +871,22 @@ class _ExpenseFilterMenuState extends State<_ExpenseFilterMenu> {
             highlighted: _payerId != 0,
             onTap: () => setState(() => _page = _ExpenseFilterMenuPage.payer),
           ),
+          if (widget.showPersonal) ...[
+            const Divider(height: 1, indent: 16, endIndent: 16),
+            // A switch, apart from the categories: personal expenses keep
+            // their own category.
+            SwitchListTile(
+              key: const ValueKey('expense-filter-personal'),
+              secondary: const Icon(Icons.person_outline_rounded),
+              title: Text(t.expenseFilterOnlyPersonal),
+              value: _personalOnly,
+              onChanged: (on) => _apply(
+                category: _category,
+                payerId: _payerId,
+                personalOnly: on,
+              ),
+            ),
+          ],
           if (active) ...[
             const Divider(height: 1),
             TextButton(
@@ -834,7 +895,8 @@ class _ExpenseFilterMenuState extends State<_ExpenseFilterMenu> {
                 minimumSize: const Size(48, 48),
                 shape: const RoundedRectangleBorder(),
               ),
-              onPressed: () => _apply(category: null, payerId: 0),
+              onPressed: () =>
+                  _apply(category: null, payerId: 0, personalOnly: false),
               child: Text(t.workspaceClearFilters),
             ),
           ],
@@ -1059,25 +1121,33 @@ class _FilterMenuOption extends StatelessWidget {
   }
 }
 
-/// The title with a small ⚡ after it when the expense came from a quick
-/// split, in the list and in the details.
+/// The title with a small mark after it: a person for the user's own
+/// personal expense, ⚡ when it came from a quick split. In the list and in
+/// the details.
 Widget _withQuickSplitMark(
   BuildContext context,
   TripExpense expense, {
   required double size,
   required Widget child,
 }) {
-  if (!expense.fromQuickSplit) return child;
+  final personal = expense.isPersonal && !expense.isLocked;
+  if (!personal && !expense.fromQuickSplit) return child;
   return Row(
     children: [
       Flexible(child: child),
       const SizedBox(width: 4),
       Icon(
-        Icons.bolt_rounded,
-        key: ValueKey('expense-quick-split-${expense.id}'),
+        personal ? Icons.person_outline_rounded : Icons.bolt_rounded,
+        key: ValueKey(
+          personal
+              ? 'expense-personal-${expense.id}'
+              : 'expense-quick-split-${expense.id}',
+        ),
         size: size,
         color: Theme.of(context).colorScheme.primary,
-        semanticLabel: context.l10n.quickSplitLabel,
+        semanticLabel: personal
+            ? context.l10n.expensePersonalLabel
+            : context.l10n.quickSplitLabel,
       ),
     ],
   );

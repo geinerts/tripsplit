@@ -2232,5 +2232,15 @@
   "yearSummarySeasonNotice": "Итоги предыдущего года доступны с 1 января по 31 марта.",
   "expenseItemsClearAll": "Удалить все позиции",
   "receiptRetakePhoto": "Переснять",
-  "receiptUsePhoto": "Использовать фото"
+  "receiptUsePhoto": "Использовать фото",
+  "expenseSplitPersonal": "Личный",
+  "expenseSplitPersonalHint": "Только для того, кто платит. Не входит в итог поездки и долги.",
+  "expenseFilterOnlyPersonal": "Только личные",
+  "expensePersonalLabel": "Личный расход",
+  "expenseLockedPersonal": "Личный расход",
+  "expensePersonalNoDebts": "Не влияет на долги",
+  "expenseLockedExplain": "Открыть его может только тот, кто его добавил.",
+  "expensePersonalDetailsNote": "Личный: не входит в итог поездки и долги. Другие видят только сумму.",
+  "workspacePersonalSpentLine": "Личные {personal} · Всего потрачено {total}",
+  "analyticsPersonalLine": "Личные расходы {amount}"
 }

@@ -5633,4 +5633,38 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get receiptUsePhoto => 'Użyj zdjęcia';
+
+  @override
+  String get expenseSplitPersonal => 'Osobisty';
+
+  @override
+  String get expenseSplitPersonalHint => 'Tylko dla płacącego. Nie wlicza się do sumy wycieczki ani długów.';
+
+  @override
+  String get expenseFilterOnlyPersonal => 'Tylko osobiste';
+
+  @override
+  String get expensePersonalLabel => 'Wydatek osobisty';
+
+  @override
+  String get expenseLockedPersonal => 'Wydatek osobisty';
+
+  @override
+  String get expensePersonalNoDebts => 'Nie wpływa na długi';
+
+  @override
+  String get expenseLockedExplain => 'Otworzyć go może tylko osoba, która go dodała.';
+
+  @override
+  String get expensePersonalDetailsNote => 'Osobisty: nie wlicza się do sumy wycieczki ani długów. Inni widzą tylko kwotę.';
+
+  @override
+  String workspacePersonalSpentLine(String personal, String total) {
+    return 'Osobiste $personal · Łącznie wydano $total';
+  }
+
+  @override
+  String analyticsPersonalLine(String amount) {
+    return 'Wydatki osobiste $amount';
+  }
 }

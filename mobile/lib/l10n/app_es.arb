@@ -2218,5 +2218,15 @@
   "yearSummarySeasonNotice": "El resumen del año anterior está disponible del 1 de enero al 31 de marzo.",
   "expenseItemsClearAll": "Eliminar todos los artículos",
   "receiptRetakePhoto": "Repetir foto",
-  "receiptUsePhoto": "Usar foto"
+  "receiptUsePhoto": "Usar foto",
+  "expenseSplitPersonal": "Personal",
+  "expenseSplitPersonalHint": "Solo para quien paga. No cuenta en el total del viaje ni en las deudas.",
+  "expenseFilterOnlyPersonal": "Solo personales",
+  "expensePersonalLabel": "Gasto personal",
+  "expenseLockedPersonal": "Gasto personal",
+  "expensePersonalNoDebts": "No afecta a las deudas",
+  "expenseLockedExplain": "Solo quien lo añadió puede abrirlo.",
+  "expensePersonalDetailsNote": "Personal: no cuenta en el total del viaje ni en las deudas. Los demás solo ven el importe.",
+  "workspacePersonalSpentLine": "Personal {personal} · Total gastado {total}",
+  "analyticsPersonalLine": "Gastos personales {amount}"
 }

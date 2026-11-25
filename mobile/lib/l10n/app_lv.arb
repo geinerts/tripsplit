@@ -2218,5 +2218,15 @@
   "yearSummarySeasonNotice": "Iepriekšējā gada kopsavilkums ir pieejams no 1. janvāra līdz 31. martam.",
   "expenseItemsClearAll": "Dzēst visas pozīcijas",
   "receiptRetakePhoto": "Fotografēt vēlreiz",
-  "receiptUsePhoto": "Izmantot foto"
+  "receiptUsePhoto": "Izmantot foto",
+  "expenseSplitPersonal": "Personīgs",
+  "expenseSplitPersonalHint": "Tikai maksātājam. Neietilpst ceļojuma kopsummā un parādos.",
+  "expenseFilterOnlyPersonal": "Tikai personīgie",
+  "expensePersonalLabel": "Personīgs izdevums",
+  "expenseLockedPersonal": "Personīgs izdevums",
+  "expensePersonalNoDebts": "Neietekmē parādus",
+  "expenseLockedExplain": "To var atvērt tikai tas, kas to pievienoja.",
+  "expensePersonalDetailsNote": "Personīgs: neietilpst ceļojuma kopsummā un parādos. Citi redz tikai summu.",
+  "workspacePersonalSpentLine": "Personīgie {personal} · Kopā iztērēts {total}",
+  "analyticsPersonalLine": "Personīgie izdevumi {amount}"
 }

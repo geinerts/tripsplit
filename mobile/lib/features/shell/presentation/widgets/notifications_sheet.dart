@@ -73,6 +73,11 @@ class NotificationsSheet extends StatefulWidget {
 class _NotificationsSheetState extends State<NotificationsSheet> {
   List<WorkspaceNotification> _items = [];
   final _readIds = <int>{};
+
+  /// Unread when they reached this sheet. Opening the sheet marks them read
+  /// on the server, but they stay highlighted until it closes or the user
+  /// marks all as read.
+  final _newIds = <int>{};
   bool _loading = false,
       _loadingMore = false,
       _marking = false,
@@ -152,6 +157,9 @@ class _NotificationsSheetState extends State<NotificationsSheet> {
         _cursor = inbox.nextCursor;
         _offset = inbox.nextOffset;
         _unread = inbox.unreadCount.clamp(0, 1 << 31);
+        _newIds.addAll(
+          inbox.notifications.where((n) => !n.isRead).map((n) => n.id),
+        );
         if (!more) {
           _earlierVisible = 5;
           if (!inbox.isCached) _readIds.clear();
@@ -171,6 +179,7 @@ class _NotificationsSheetState extends State<NotificationsSheet> {
         if (denied) {
           _items = [];
           _readIds.clear();
+          _newIds.clear();
           _loaded = false;
           _hasMore = false;
         }
@@ -191,11 +200,12 @@ class _NotificationsSheetState extends State<NotificationsSheet> {
       }
     }
     if (_current(generation) && markOpenedInbox) {
-      await _markAll();
+      await _markAll(keepHighlight: true);
     }
   }
 
-  Future<void> _markAll() async {
+  /// [keepHighlight]: marked because the sheet opened, not by the user.
+  Future<void> _markAll({bool keepHighlight = false}) async {
     if (_busy || _unread == 0) return;
     final generation = ++_generation;
     setState(() {
@@ -209,6 +219,7 @@ class _NotificationsSheetState extends State<NotificationsSheet> {
       if (!_current(generation)) return;
       setState(() {
         _readIds.addAll(_items.map((n) => n.id));
+        if (!keepHighlight) _newIds.clear();
         _unread = count.clamp(0, 1 << 31);
       });
       widget.onUnreadCount(_unread);
@@ -220,6 +231,7 @@ class _NotificationsSheetState extends State<NotificationsSheet> {
                   error.code == 'account_changed')) {
             _items = [];
             _readIds.clear();
+            _newIds.clear();
             _loaded = false;
             _hasMore = false;
           }
@@ -341,8 +353,7 @@ class _NotificationsSheetState extends State<NotificationsSheet> {
     if (amount == null) return const SizedBox.shrink();
     return Text(
       amount,
-      style: theme.textTheme.titleSmall?.copyWith(
-        fontWeight: FontWeight.w600,
+      style: theme.textTheme.bodyLarge?.copyWith(
         fontFeatures: const [FontFeature.tabularFigures()],
       ),
     );
@@ -402,6 +413,31 @@ class _NotificationsSheetState extends State<NotificationsSheet> {
           size: 22,
         );
 
+  /// The person in bold and what they did in normal weight, so the eye finds
+  /// who it is about. A title without the name is bold as a whole.
+  Widget _title(String title, String? actor, bool highlighted) {
+    final base = Theme.of(context).textTheme.bodyLarge;
+    final strong = base?.copyWith(
+      fontWeight: highlighted ? FontWeight.w700 : FontWeight.w600,
+    );
+    final name = actor?.trim() ?? '';
+    final start = name.isEmpty ? -1 : title.indexOf(name);
+    if (start < 0 || title.indexOf(name, start + 1) >= 0) {
+      return Text(title, style: strong);
+    }
+    final end = start + name.length;
+    return Text.rich(
+      TextSpan(
+        style: base?.copyWith(fontWeight: FontWeight.w400),
+        children: [
+          if (start > 0) TextSpan(text: title.substring(0, start)),
+          TextSpan(text: name, style: strong),
+          if (end < title.length) TextSpan(text: title.substring(end)),
+        ],
+      ),
+    );
+  }
+
   Widget _tile(WorkspaceNotification item) {
     final localized = localizeWorkspaceNotification(context, item);
     // Who did what, instead of one title shared by every row of a type.
@@ -424,6 +460,7 @@ class _NotificationsSheetState extends State<NotificationsSheet> {
         ? item.actorAvatarThumbUrl!.trim()
         : (item.actorAvatarUrl ?? '').trim();
     final unread = !item.isRead && !_readIds.contains(item.id);
+    final highlighted = unread || _newIds.contains(item.id);
     final meta = [
       if (item.tripId > 0 && (item.tripName ?? '').trim().isNotEmpty)
         item.tripName!.trim(),
@@ -436,8 +473,18 @@ class _NotificationsSheetState extends State<NotificationsSheet> {
         onTap: _marking || !widget.isAccountCurrent()
             ? null
             : () => Navigator.pop(context, item.copyWith(isRead: !unread)),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 12),
+        borderRadius: BorderRadius.circular(AppDesign.radiusMd),
+        child: Ink(
+          decoration: BoxDecoration(
+            color: highlighted
+                ? Theme.of(context).colorScheme.primary.withValues(alpha: .07)
+                : null,
+            borderRadius: BorderRadius.circular(AppDesign.radiusMd),
+          ),
+          padding: const EdgeInsets.symmetric(
+            vertical: 12,
+            horizontal: AppDesign.spaceSm,
+          ),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -470,12 +517,7 @@ class _NotificationsSheetState extends State<NotificationsSheet> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      title,
-                      style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
+                    _title(title, actor, highlighted),
                     if (detail != null && detail.trim().isNotEmpty)
                       Text(
                         detail,
@@ -503,7 +545,7 @@ class _NotificationsSheetState extends State<NotificationsSheet> {
               const SizedBox(width: 6),
               SizedBox(
                 width: 8,
-                child: unread
+                child: highlighted
                     ? Semantics(
                         label: context.l10n.notificationsUnread,
                         child: Container(
@@ -527,7 +569,7 @@ class _NotificationsSheetState extends State<NotificationsSheet> {
   }
 
   Widget _heading(String title) => Padding(
-    padding: const EdgeInsets.only(top: 12, bottom: 4),
+    padding: const EdgeInsets.fromLTRB(AppDesign.spaceSm, 12, 0, 4),
     child: Text(
       title,
       style: Theme.of(
@@ -537,7 +579,12 @@ class _NotificationsSheetState extends State<NotificationsSheet> {
   );
   List<Widget> _rows(List<WorkspaceNotification> items) => [
     for (var i = 0; i < items.length; i++) ...[
-      if (i > 0) const Divider(height: 1),
+      if (i > 0)
+        const Divider(
+          height: 1,
+          indent: AppDesign.spaceSm,
+          endIndent: AppDesign.spaceSm,
+        ),
       _tile(items[i]),
     ],
   ];
@@ -595,20 +642,25 @@ class _NotificationsSheetState extends State<NotificationsSheet> {
                 shrinkWrap: true,
                 physics: const AlwaysScrollableScrollPhysics(),
                 padding: EdgeInsets.fromLTRB(
-                  20,
+                  AppDesign.spaceMd,
                   0,
-                  20,
+                  AppDesign.spaceMd,
                   16 + MediaQuery.viewPaddingOf(context).bottom,
                 ),
                 children: [
                   if (_cached)
                     Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 8),
+                      padding: const EdgeInsets.all(AppDesign.spaceSm),
                       child: Text(t.notificationsCached),
                     ),
                   if (_error != null) ...[
                     Padding(
-                      padding: const EdgeInsets.only(top: 12),
+                      padding: const EdgeInsets.fromLTRB(
+                        AppDesign.spaceSm,
+                        12,
+                        AppDesign.spaceSm,
+                        0,
+                      ),
                       child: Text(
                         _error!,
                         style: TextStyle(
@@ -677,7 +729,12 @@ class _NotificationsSheetState extends State<NotificationsSheet> {
                     ),
                   if (_moreError != null)
                     Padding(
-                      padding: const EdgeInsets.only(top: 12),
+                      padding: const EdgeInsets.fromLTRB(
+                        AppDesign.spaceSm,
+                        12,
+                        AppDesign.spaceSm,
+                        0,
+                      ),
                       child: Text(
                         _moreError!,
                         style: TextStyle(

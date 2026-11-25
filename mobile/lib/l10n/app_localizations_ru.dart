@@ -5633,4 +5633,38 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get receiptUsePhoto => 'Использовать фото';
+
+  @override
+  String get expenseSplitPersonal => 'Личный';
+
+  @override
+  String get expenseSplitPersonalHint => 'Только для того, кто платит. Не входит в итог поездки и долги.';
+
+  @override
+  String get expenseFilterOnlyPersonal => 'Только личные';
+
+  @override
+  String get expensePersonalLabel => 'Личный расход';
+
+  @override
+  String get expenseLockedPersonal => 'Личный расход';
+
+  @override
+  String get expensePersonalNoDebts => 'Не влияет на долги';
+
+  @override
+  String get expenseLockedExplain => 'Открыть его может только тот, кто его добавил.';
+
+  @override
+  String get expensePersonalDetailsNote => 'Личный: не входит в итог поездки и долги. Другие видят только сумму.';
+
+  @override
+  String workspacePersonalSpentLine(String personal, String total) {
+    return 'Личные $personal · Всего потрачено $total';
+  }
+
+  @override
+  String analyticsPersonalLine(String amount) {
+    return 'Личные расходы $amount';
+  }
 }

@@ -237,6 +237,8 @@ class WorkspaceRemoteParsers {
         _ => null,
       },
       fromQuickSplit: item['from_quick_split'] == true,
+      isPersonal: item['is_personal'] == true,
+      isLocked: item['is_personal'] == true && item['locked'] == true,
     );
   }
 

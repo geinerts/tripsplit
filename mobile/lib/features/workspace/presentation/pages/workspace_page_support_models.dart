@@ -18,6 +18,7 @@ class _ExpenseFormResult {
     this.extraAmount = 0,
     this.paidBy,
     this.subcategory,
+    this.isPersonal = false,
   });
 
   final double amount;
@@ -40,6 +41,9 @@ class _ExpenseFormResult {
 
   /// Optional type within the category, or null.
   final String? subcategory;
+
+  /// Only the payer's own spending: out of the trip total and debts.
+  final bool isPersonal;
 }
 
 class _PickedFile {

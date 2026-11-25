@@ -860,7 +860,7 @@
   "youSettledForExpense": "Ти вже розрахувався за свою частку цієї витрати.",
   "youShouldPay": "Ви повинні платити {amount}",
   "youShouldReceive": "Ви повинні отримувати {amount}",
-  "yourShare": "Ваше повідомлення",
+  "yourShare": "Ваша частка",
   "yourTrips": "Ваші поїздки",
   "homeYourActiveTrips": "Ваші активні поїздки",
   "quickSplitsTitle": "Швидкі поділи",
@@ -2232,5 +2232,15 @@
   "yearSummarySeasonNotice": "Підсумок попереднього року доступний з 1 січня до 31 березня.",
   "expenseItemsClearAll": "Видалити всі позиції",
   "receiptRetakePhoto": "Перезняти",
-  "receiptUsePhoto": "Використати фото"
+  "receiptUsePhoto": "Використати фото",
+  "expenseSplitPersonal": "Особиста",
+  "expenseSplitPersonalHint": "Лише для того, хто платить. Не входить у загальну суму поїздки та борги.",
+  "expenseFilterOnlyPersonal": "Лише особисті",
+  "expensePersonalLabel": "Особиста витрата",
+  "expenseLockedPersonal": "Особиста витрата",
+  "expensePersonalNoDebts": "Не впливає на борги",
+  "expenseLockedExplain": "Відкрити її може лише той, хто її додав.",
+  "expensePersonalDetailsNote": "Особиста: не входить у загальну суму поїздки та борги. Інші бачать лише суму.",
+  "workspacePersonalSpentLine": "Особисті {personal} · Усього витрачено {total}",
+  "analyticsPersonalLine": "Особисті витрати {amount}"
 }

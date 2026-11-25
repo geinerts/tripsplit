@@ -7,6 +7,7 @@ require_once __DIR__ . '/../helpers/helper_trip_guests.php';
 
 require_once __DIR__ . '/../helpers/helper_receipt_ownership.php';
 require_once __DIR__ . '/../helpers/helper_quick_split_origin.php';
+require_once __DIR__ . '/../helpers/helper_personal_expense.php';
 
 function normalize_expense_split_mode($value): string
 {
@@ -727,6 +728,13 @@ function add_expense_action(): void
     if (!is_array($rawSplits)) {
         json_out(['ok' => false, 'error' => 'Invalid splits payload.'], 400);
     }
+    $payerId = resolve_expense_payer_id($pdo, $tripId, $userId, $body, $userId);
+    $isPersonal = expense_personal_requested($pdo, $body, trip_is_solo($trip), $payerId);
+    if ($isPersonal) {
+        $participants = require_valid_trip_member_ids($pdo, (int) $trip['id'], [$payerId], true);
+        $splitMode = 'equal';
+        $rawSplits = [];
+    }
     $itemized = null;
     if ($splitMode === 'itemized') {
         $itemized = parse_expense_items($body, $sourceAmountCents);
@@ -743,7 +751,6 @@ function add_expense_action(): void
         $tripCurrencyCode,
         $itemized
     );
-    $payerId = resolve_expense_payer_id($pdo, $tripId, $userId, $body, $userId);
     $payerName = trim((string) ($me['nickname'] ?? ''));
     if ($payerName === '') {
         $payerName = 'Trip member';
@@ -796,6 +803,10 @@ function add_expense_action(): void
             ]);
         }
         $expenseId = (int) $pdo->lastInsertId();
+        if ($isPersonal) {
+            $pdo->prepare('UPDATE ' . $expensesTable . ' SET is_personal = 1 WHERE id = :id')
+                ->execute(['id' => $expenseId]);
+        }
         if ($subcategory !== null) {
             save_expense_subcategory($pdo, $expenseId, $subcategory);
         }
@@ -882,6 +893,7 @@ function add_expense_action(): void
             'split_mode' => $splitMode,
             'participants_count' => count($participantRows),
             'note' => $note,
+            'is_personal' => $isPersonal,
         ]);
         json_out($responsePayload);
     } catch (Throwable $error) {
@@ -944,7 +956,7 @@ function update_expense_action(): void
         : '\'' . default_trip_currency_code() . '\' AS currency_code, amount AS source_amount, 1.00000000 AS fx_rate_to_trip';
     $ownerStmt = $pdo->prepare(
         'SELECT id, trip_id, paid_by, category, receipt_path, '
-            . expense_subcategory_select($pdo, '') . ', ' . $currencySelect . '
+            . expense_subcategory_select($pdo, '') . ', ' . expense_is_personal_select($pdo, '') . ', ' . $currencySelect . '
          FROM ' . $expensesTable . '
          WHERE id = :id
          LIMIT 1'
@@ -1024,6 +1036,14 @@ function update_expense_action(): void
         json_out(['ok' => false, 'error' => 'Invalid splits payload.'], 400);
     }
     $nextPayerId = resolve_expense_payer_id($pdo, $tripId, $userId, $body, (int) $expense['paid_by']);
+    $isPersonal = expense_personal_request_value($body) === null
+        ? expense_personal_kept((int) ($expense['is_personal'] ?? 0) === 1, $nextPayerId, $participants, $splitMode)
+        : expense_personal_requested($pdo, $body, trip_is_solo($trip), $nextPayerId);
+    if ($isPersonal) {
+        $participants = require_valid_trip_member_ids($pdo, (int) $trip['id'], [$nextPayerId], true);
+        $splitMode = 'equal';
+        $rawSplits = [];
+    }
     $itemized = null;
     if ($splitMode === 'itemized') {
         $itemized = parse_expense_items($body, $sourceAmountCents);
@@ -1097,6 +1117,10 @@ function update_expense_action(): void
         if ($subcategoryChanged) {
             save_expense_subcategory($pdo, $expenseId, $subcategory);
         }
+        if (expenses_personal_column_available($pdo)) {
+            $pdo->prepare('UPDATE ' . $expensesTable . ' SET is_personal = :is_personal WHERE id = :id')
+                ->execute(['is_personal' => $isPersonal ? 1 : 0, 'id' => $expenseId]);
+        }
 
         $deleteParticipants = $pdo->prepare('DELETE FROM ' . $participantsTable . ' WHERE expense_id = :expense_id');
         $deleteParticipants->execute(['expense_id' => $expenseId]);
@@ -1156,6 +1180,7 @@ function update_expense_action(): void
             'participants_count' => count($participantRows),
             'receipt_changed' => $oldReceiptPath !== $nextReceiptPath,
             'note' => $note,
+            'is_personal' => $isPersonal,
         ]);
         json_out($responsePayload);
     } catch (Throwable $error) {
@@ -1214,7 +1239,8 @@ function delete_expense_action(): void
         : '\'' . $tripCurrencyCode . '\' AS currency_code, amount AS source_amount';
 
     $ownerStmt = $pdo->prepare(
-        'SELECT id, trip_id, paid_by, amount, category, note, split_mode, receipt_path, ' . $currencySelect . '
+        'SELECT id, trip_id, paid_by, amount, category, note, split_mode, receipt_path, '
+            . expense_is_personal_select($pdo, '') . ', ' . $currencySelect . '
          FROM ' . $expensesTable . '
          WHERE id = :id
          LIMIT 1'
@@ -1257,6 +1283,7 @@ function delete_expense_action(): void
         'category' => trim((string) ($expense['category'] ?? '')),
         'split_mode' => trim((string) ($expense['split_mode'] ?? '')),
         'note' => trim((string) ($expense['note'] ?? '')),
+        'is_personal' => (int) ($expense['is_personal'] ?? 0) === 1,
     ]);
     json_out($responsePayload);
 }
@@ -1312,6 +1339,7 @@ function list_expenses_action(): void
             e.expense_date,
             e.created_at,
             e.receipt_path,
+            ' . expense_is_personal_select($pdo) . ',
             e.paid_by AS paid_by_id,
             u.nickname AS paid_by_nickname
          FROM ' . $expensesTable . ' e
@@ -1402,6 +1430,7 @@ function list_expenses_action(): void
     unset($row);
     attach_expense_items($pdo, $rows);
     attach_quick_split_origin($pdo, (int) $trip['id'], $rows);
+    apply_personal_expense_visibility($pdo, (int) $trip['id'], (int) ($me['id'] ?? 0), $rows);
 
     $nextCursor = null;
     if ($hasMore && count($rows) > 0) {

@@ -5,6 +5,11 @@ extension _WorkspacePageExpenseSheetActions on _WorkspacePageState {
     required WorkspaceSnapshot snapshot,
     required TripExpense expense,
   }) async {
+    // Only its payer opens a personal expense; others get the reason.
+    if (expense.isLocked) {
+      _showSnack(context.l10n.expenseLockedExplain);
+      return;
+    }
     final usersById = <int, WorkspaceUser>{
       for (final user in snapshot.users) user.id: user,
     };
@@ -39,8 +44,11 @@ extension _WorkspacePageExpenseSheetActions on _WorkspacePageState {
       payerName: payerName,
     )..sort((a, b) => b.owes.compareTo(a.owes));
 
-    final splitLabel = _splitModeShortLabel(context, expense.splitMode);
+    final splitLabel = expense.isPersonal
+        ? context.l10n.expenseSplitPersonal
+        : _splitModeShortLabel(context, expense.splitMode);
     final splitIcon = switch (expense.splitMode.trim().toLowerCase()) {
+      _ when expense.isPersonal => Icons.person_outline_rounded,
       'exact' => Icons.payments_outlined,
       'percent' => Icons.percent_rounded,
       'shares' => Icons.pie_chart_outline_rounded,
@@ -317,6 +325,16 @@ extension _WorkspacePageExpenseSheetActions on _WorkspacePageState {
                               ),
                             if (hasReceipt) receiptChip(),
                           ],
+                        ),
+                      ],
+                      if (expense.isPersonal) ...[
+                        const SizedBox(height: 10),
+                        Text(
+                          context.l10n.expensePersonalDetailsNote,
+                          key: const ValueKey('expense-personal-note'),
+                          style: theme.textTheme.bodySmall?.copyWith(
+                            color: theme.colorScheme.onSurfaceVariant,
+                          ),
                         ),
                       ],
                       if (!widget.trip.isSolo) ...[

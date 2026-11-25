@@ -2232,5 +2232,15 @@
   "yearSummarySeasonNotice": "Je overzicht van het voorgaande jaar is beschikbaar van 1 januari tot en met 31 maart.",
   "expenseItemsClearAll": "Alle items verwijderen",
   "receiptRetakePhoto": "Opnieuw nemen",
-  "receiptUsePhoto": "Foto gebruiken"
+  "receiptUsePhoto": "Foto gebruiken",
+  "expenseSplitPersonal": "Persoonlijk",
+  "expenseSplitPersonalHint": "Alleen voor wie betaalt. Niet in het reistotaal of de schulden.",
+  "expenseFilterOnlyPersonal": "Alleen persoonlijke",
+  "expensePersonalLabel": "Persoonlijke uitgave",
+  "expenseLockedPersonal": "Persoonlijke uitgave",
+  "expensePersonalNoDebts": "Heeft geen invloed op schulden",
+  "expenseLockedExplain": "Alleen wie hem heeft toegevoegd, kan hem openen.",
+  "expensePersonalDetailsNote": "Persoonlijk: niet in het reistotaal of de schulden. Anderen zien alleen het bedrag.",
+  "workspacePersonalSpentLine": "Persoonlijk {personal} · Totaal uitgegeven {total}",
+  "analyticsPersonalLine": "Persoonlijke uitgaven {amount}"
 }

@@ -86,7 +86,8 @@ extension _WorkspacePageExpenseSocialInline on _WorkspacePageState {
     );
 
     for (final expense in expenses) {
-      if (expense.id <= 0) {
+      // Someone else's personal expense: comments and reactions are closed.
+      if (expense.id <= 0 || expense.isLocked) {
         continue;
       }
       final hasReactions = _expenseReactionsByExpenseId.containsKey(expense.id);

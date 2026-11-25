@@ -103,8 +103,10 @@ class _Workspace implements WorkspaceController {
     double extraAmount = 0,
     String? subcategory,
     int? paidBy,
+    bool isPersonal = false,
     String? receiptPath,
   }) async {
+    expect(isPersonal, isFalse);
     savedParticipants = participants;
     savedMode = splitMode;
     expect(splitValues, isEmpty);

@@ -136,7 +136,16 @@ function trip_report_load(PDO $pdo, int $tripId, int $viewerId): ?array
     $stmt = $pdo->prepare('SELECT * FROM ' . table_name('expenses')
         . ' WHERE trip_id = :id ORDER BY expense_date ASC, id ASC');
     $stmt->execute(['id' => $tripId]);
-    $expenses = $stmt->fetchAll();
+    // Personal expenses stay out of the report; the reader's own appear as one total.
+    $expenses = [];
+    $personalCents = 0;
+    foreach ($stmt->fetchAll() as $expense) {
+        if ((int) ($expense['is_personal'] ?? 0) !== 1) {
+            $expenses[] = $expense;
+        } elseif ((int) $expense['paid_by'] === $viewerId) {
+            $personalCents += decimal_to_cents($expense['amount']);
+        }
+    }
 
     $stmt = $pdo->prepare('SELECT p.expense_id, p.user_id, p.owed_cents FROM ' . table_name('expense_participants')
         . ' p JOIN ' . table_name('expenses') . ' e ON e.id = p.expense_id'
@@ -260,6 +269,7 @@ function trip_report_load(PDO $pdo, int $tripId, int $viewerId): ?array
         'ended_at' => $trip['ended_at'] ?? null,
         'destinations' => $destinations,
         'total_cents' => $totalCents,
+        'personal_cents' => $personalCents,
         'expense_count' => count($rows),
         'expenses' => $rows,
         'categories' => $categories,

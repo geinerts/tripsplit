@@ -11,6 +11,7 @@ class _ExpenseFormSetup {
     required this.uploadReceipt,
     required this.currentAccountId,
     this.isSolo = false,
+    this.allowPersonal = false,
     this.soloOwnerId = 0,
     this.typeSources = const [],
     this.loadSavedReceipt,
@@ -21,6 +22,10 @@ class _ExpenseFormSetup {
 
   final int currentUserId;
   final bool isSolo;
+
+  /// Offers the Personal method: group trips only, not solo trips or quick
+  /// splits.
+  final bool allowPersonal;
 
   /// The only participant of a personal trip.
   final int soloOwnerId;
@@ -83,6 +88,7 @@ class _ExpenseFormSeed {
     this.extraAmount = 0,
     this.hasSavedReceipt = false,
     this.receipt,
+    this.isPersonal = false,
   });
 
   factory _ExpenseFormSeed.fromExpense(TripExpense expense) => _ExpenseFormSeed(
@@ -105,6 +111,7 @@ class _ExpenseFormSeed {
     items: expense.items,
     extraAmount: expense.extraAmount,
     hasSavedReceipt: expense.receiptUrl != null,
+    isPersonal: expense.isPersonal,
   );
 
   final bool isEdit;
@@ -124,6 +131,9 @@ class _ExpenseFormSeed {
 
   /// A receipt uploaded before the form opened, e.g. from a quick split.
   final UploadedReceiptData? receipt;
+
+  /// The saved expense is personal; the form opens on Personal.
+  final bool isPersonal;
 }
 
 const _supportedSplitModes = <String>{

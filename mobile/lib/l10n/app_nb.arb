@@ -2232,5 +2232,15 @@
   "yearSummarySeasonNotice": "Oppsummeringen av fjoråret er tilgjengelig fra 1. januar til 31. mars.",
   "expenseItemsClearAll": "Slett alle poster",
   "receiptRetakePhoto": "Ta på nytt",
-  "receiptUsePhoto": "Bruk bilde"
+  "receiptUsePhoto": "Bruk bilde",
+  "expenseSplitPersonal": "Personlig",
+  "expenseSplitPersonalHint": "Bare for den som betaler. Ikke med i turens totalsum eller gjeld.",
+  "expenseFilterOnlyPersonal": "Bare personlige",
+  "expensePersonalLabel": "Personlig utgift",
+  "expenseLockedPersonal": "Personlig utgift",
+  "expensePersonalNoDebts": "Påvirker ikke gjeld",
+  "expenseLockedExplain": "Bare den som la den til, kan åpne den.",
+  "expensePersonalDetailsNote": "Personlig: ikke med i turens totalsum eller gjeld. Andre ser bare beløpet.",
+  "workspacePersonalSpentLine": "Personlig {personal} · Totalt brukt {total}",
+  "analyticsPersonalLine": "Personlige utgifter {amount}"
 }

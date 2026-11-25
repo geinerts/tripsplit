@@ -5609,4 +5609,38 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get receiptUsePhoto => 'Use photo';
+
+  @override
+  String get expenseSplitPersonal => 'Personal';
+
+  @override
+  String get expenseSplitPersonalHint => 'Only for the payer. Not in the trip total or debts.';
+
+  @override
+  String get expenseFilterOnlyPersonal => 'Only personal';
+
+  @override
+  String get expensePersonalLabel => 'Personal expense';
+
+  @override
+  String get expenseLockedPersonal => 'Personal expense';
+
+  @override
+  String get expensePersonalNoDebts => 'Does not affect debts';
+
+  @override
+  String get expenseLockedExplain => 'Only the person who added it can open this.';
+
+  @override
+  String get expensePersonalDetailsNote => 'Personal: not in the trip total or debts. Others see only the amount.';
+
+  @override
+  String workspacePersonalSpentLine(String personal, String total) {
+    return 'Personal $personal · Total spent $total';
+  }
+
+  @override
+  String analyticsPersonalLine(String amount) {
+    return 'Personal expenses $amount';
+  }
 }

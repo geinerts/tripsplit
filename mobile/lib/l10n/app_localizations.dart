@@ -10334,6 +10334,66 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Use photo'**
   String get receiptUsePhoto;
+
+  /// Split method for an expense only the payer has; it is not in the trip total or debts.
+  ///
+  /// In en, this message translates to:
+  /// **'Personal'**
+  String get expenseSplitPersonal;
+
+  /// Short explanation under the Personal split method.
+  ///
+  /// In en, this message translates to:
+  /// **'Only for the payer. Not in the trip total or debts.'**
+  String get expenseSplitPersonalHint;
+
+  /// Expense filter switch that shows only the user's own personal expenses.
+  ///
+  /// In en, this message translates to:
+  /// **'Only personal'**
+  String get expenseFilterOnlyPersonal;
+
+  /// Screen reader label of the person icon on the user's own personal expense.
+  ///
+  /// In en, this message translates to:
+  /// **'Personal expense'**
+  String get expensePersonalLabel;
+
+  /// Title of another member's personal expense, whose details are hidden.
+  ///
+  /// In en, this message translates to:
+  /// **'Personal expense'**
+  String get expenseLockedPersonal;
+
+  /// Line under another member's personal expense in the list.
+  ///
+  /// In en, this message translates to:
+  /// **'Does not affect debts'**
+  String get expensePersonalNoDebts;
+
+  /// Shown when someone taps another member's personal expense.
+  ///
+  /// In en, this message translates to:
+  /// **'Only the person who added it can open this.'**
+  String get expenseLockedExplain;
+
+  /// Note in the details of the user's own personal expense.
+  ///
+  /// In en, this message translates to:
+  /// **'Personal: not in the trip total or debts. Others see only the amount.'**
+  String get expensePersonalDetailsNote;
+
+  /// Trip header line: the user's personal expenses, then their share plus personal expenses.
+  ///
+  /// In en, this message translates to:
+  /// **'Personal {personal} · Total spent {total}'**
+  String workspacePersonalSpentLine(String personal, String total);
+
+  /// Analytics line with the user's personal expenses, which are not in the group figures.
+  ///
+  /// In en, this message translates to:
+  /// **'Personal expenses {amount}'**
+  String analyticsPersonalLine(String amount);
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

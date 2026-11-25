@@ -17,6 +17,7 @@ extension _WorkspacePageDialogs on _WorkspacePageState {
       setup: _ExpenseFormSetup(
         currentUserId: _currentUserId,
         isSolo: trip.isSolo,
+        allowPersonal: !trip.isSolo,
         soloOwnerId: trip.createdBy ?? _currentUserId,
         defaultCurrencyCode: trip.currencyCode,
         subtitle: (formContext, draft) => _expenseFormTripSubtitle(
@@ -206,15 +207,23 @@ Future<_ExpenseFormResult?> _showExpenseFormPage(
     seed?.currencyCode ?? setup.defaultCurrencyCode,
   );
 
+  // A personal expense's only participant is its payer; if it is turned into
+  // a shared one, everyone starts in, as in a new expense.
   final selected = isSolo
       ? <int>{ownerId}
+      : seed?.isPersonal == true
+      ? <int>{}
       : (seed?.participantIds ?? const <int>[]).toSet();
   final rawSplitMode = (seed?.splitMode ?? 'equal').trim().toLowerCase();
   var selectedPayerId = seed?.payerId ?? setup.currentUserId;
   var itemDrafts = seed?.items ?? const <ExpenseItem>[];
   var extraDraft = seed?.extraAmount ?? 0.0;
+  // 'personal' exists only in the form: it is saved as `equal` with the payer
+  // alone and `is_personal` (docs/api/personal-expenses.md).
   var splitMode = isSolo
       ? 'equal'
+      : (seed?.isPersonal == true && setup.allowPersonal)
+      ? 'personal'
       : (_legacySplitMode(rawSplitMode) ? 'exact' : rawSplitMode);
   final splitControllers = <int, TextEditingController>{};
   if (seed != null && splitMode != 'equal' && splitMode != 'itemized') {
@@ -276,6 +285,8 @@ Future<_ExpenseFormResult?> _showExpenseFormPage(
                 return t.expenseAdjustmentsLabel;
               case 'itemized':
                 return t.expenseItemsLabel;
+              case 'personal':
+                return t.expenseSplitPersonal;
               default:
                 return t.equalSplitLabel;
             }
@@ -293,6 +304,8 @@ Future<_ExpenseFormResult?> _showExpenseFormPage(
                 return Icons.exposure_rounded;
               case 'itemized':
                 return Icons.receipt_long_rounded;
+              case 'personal':
+                return Icons.person_outline_rounded;
               default:
                 return Icons.balance_rounded;
             }
@@ -393,13 +406,20 @@ Future<_ExpenseFormResult?> _showExpenseFormPage(
                   ? Icons.category_outlined
                   : ExpenseCategoryCatalog.iconFor(selectedCategoryValue);
               final keyboardOpen = MediaQuery.viewInsetsOf(context).bottom > 0;
-              final activeUsers = users
+              // Who shares it when it is split: the other methods start
+              // from these even while Personal is chosen.
+              final groupUsers = users
                   .where(
                     (user) =>
                         user.id > 0 &&
                         (selected.isEmpty || selected.contains(user.id)),
                   )
                   .toList();
+              final isPersonal = splitMode == 'personal';
+              // A personal expense has only its payer, who may change.
+              final activeUsers = isPersonal
+                  ? users.where((user) => user.id == selectedPayerId).toList()
+                  : groupUsers;
               final payerId = selectedPayerId;
               final payerChoices = setup.payerChoices(users);
               final canChoosePayer = !isSolo && payerChoices.length > 1;
@@ -639,7 +659,7 @@ Future<_ExpenseFormResult?> _showExpenseFormPage(
 
               Future<void> editSplit([String? startMode]) async {
                 final amount = _parseAmount(amountController.text);
-                if (activeUsers.isEmpty) {
+                if (groupUsers.isEmpty) {
                   setDialogState(() {
                     errorText = t.pickAtLeastOneParticipant;
                   });
@@ -651,7 +671,7 @@ Future<_ExpenseFormResult?> _showExpenseFormPage(
                       AppFormPageRoute<_ExpenseSplitDraft>(
                         builder: (_) => _ExpenseSplitPage(
                           child: _ExpenseSplitEditor(
-                            users: activeUsers,
+                            users: groupUsers,
                             amount: amount,
                             currencyCode: selectedCurrencyCode,
                             initialMode: startMode ?? splitMode,
@@ -721,7 +741,7 @@ Future<_ExpenseFormResult?> _showExpenseFormPage(
               // on their own page. Only "By item" works out the amount
               // itself, so the others need it first.
               Future<void> chooseSplitMethod() async {
-                if (activeUsers.isEmpty) {
+                if (groupUsers.isEmpty) {
                   setDialogState(() {
                     errorText = t.pickAtLeastOneParticipant;
                   });
@@ -740,14 +760,21 @@ Future<_ExpenseFormResult?> _showExpenseFormPage(
                         Icons.balance_rounded,
                       ),
                       ..._ExpenseSplitEditorState._modeOptions(context),
+                      if (setup.allowPersonal)
+                        (
+                          'personal',
+                          t.expenseSplitPersonal,
+                          t.expenseSplitPersonalHint,
+                          Icons.person_outline_rounded,
+                        ),
                     ],
                     selected: splitMode,
                   ),
                 );
                 if (picked == null || !context.mounted) return;
-                if (picked == 'equal') {
+                if (picked == 'equal' || picked == 'personal') {
                   setDialogState(() {
-                    splitMode = 'equal';
+                    splitMode = picked;
                     errorText = null;
                   });
                   return;
@@ -1183,6 +1210,26 @@ Future<_ExpenseFormResult?> _showExpenseFormPage(
                                                         active.id == user.id,
                                                   ),
                                                   onChanged: (on) {
+                                                    if (isPersonal) {
+                                                      // Anyone else makes it a
+                                                      // shared, equal expense.
+                                                      if (!on ||
+                                                          user.id ==
+                                                              selectedPayerId) {
+                                                        return;
+                                                      }
+                                                      setDialogState(() {
+                                                        splitMode = 'equal';
+                                                        selected
+                                                          ..clear()
+                                                          ..addAll({
+                                                            selectedPayerId,
+                                                            user.id,
+                                                          });
+                                                        errorText = null;
+                                                      });
+                                                      return;
+                                                    }
                                                     final next = activeUsers
                                                         .map((u) => u.id)
                                                         .toSet();
@@ -1251,6 +1298,8 @@ Future<_ExpenseFormResult?> _showExpenseFormPage(
                                       icon: splitModeIcon(splitMode),
                                       detail: splitMode == 'equal'
                                           ? t.splitHintEqual
+                                          : isPersonal
+                                          ? t.expenseSplitPersonalHint
                                           : splitMode == 'itemized'
                                           ? itemDrafts
                                                 .map((item) => item.name)
@@ -1459,9 +1508,11 @@ Future<_ExpenseFormResult?> _showExpenseFormPage(
                                             return;
                                           }
 
-                                          final participants = selected.toList(
-                                            growable: false,
-                                          )..sort();
+                                          final participants = isPersonal
+                                              ? <int>[selectedPayerId]
+                                              : (selected.toList(
+                                                  growable: false,
+                                                )..sort());
                                           final resolvedParticipants =
                                               participants.isNotEmpty
                                                     ? participants
@@ -1479,7 +1530,8 @@ Future<_ExpenseFormResult?> _showExpenseFormPage(
                                           final splitValues =
                                               <ExpenseSplitValue>[];
 
-                                          if (splitMode != 'equal') {
+                                          if (splitMode != 'equal' &&
+                                              !isPersonal) {
                                             if (resolvedParticipants.isEmpty) {
                                               setDialogState(() {
                                                 errorText =
@@ -1671,7 +1723,10 @@ Future<_ExpenseFormResult?> _showExpenseFormPage(
                                                       ...item.participantIds,
                                                   }.toList()..sort())
                                                 : participants,
-                                            splitMode: splitMode,
+                                            splitMode: isPersonal
+                                                ? 'equal'
+                                                : splitMode,
+                                            isPersonal: isPersonal,
                                             splitValues: splitValues,
                                             paidBy: canChoosePayer
                                                 ? selectedPayerId

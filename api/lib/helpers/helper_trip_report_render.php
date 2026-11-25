@@ -69,6 +69,9 @@ function trip_report_html(array $report, array $s, string $locale, bool $detaile
         $tiles[] = [trip_report_text($s, 'your_share'), $money($viewer['owed_cents'])];
         $tiles[] = [trip_report_text($s, 'your_balance'), $money($viewer['net_cents'], true)];
     }
+    if (!$report['is_solo'] && (int) ($report['personal_cents'] ?? 0) > 0) {
+        $tiles[] = [trip_report_text($s, 'your_personal'), $money((int) $report['personal_cents'])];
+    }
 
     $tileCells = '';
     foreach ($tiles as $tile) {
