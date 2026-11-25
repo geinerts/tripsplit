@@ -5585,4 +5585,38 @@ class AppLocalizationsNb extends AppLocalizations {
 
   @override
   String get expenseSplitAmountFirst => 'Skriv inn beløpet først, eller velg Per vare.';
+
+  @override
+  String get expenseSplitPersonal => 'Personlig';
+
+  @override
+  String get expenseSplitPersonalHint => 'Bare for den som betaler. Ikke med i turens totalsum eller gjeld.';
+
+  @override
+  String get expenseFilterOnlyPersonal => 'Bare personlige';
+
+  @override
+  String get expensePersonalLabel => 'Personlig utgift';
+
+  @override
+  String get expenseLockedPersonal => 'Personlig utgift';
+
+  @override
+  String get expensePersonalNoDebts => 'Påvirker ikke gjeld';
+
+  @override
+  String get expenseLockedExplain => 'Bare den som la den til, kan åpne den.';
+
+  @override
+  String get expensePersonalDetailsNote => 'Personlig: ikke med i turens totalsum eller gjeld. Andre ser bare beløpet.';
+
+  @override
+  String workspacePersonalSpentLine(String personal, String total) {
+    return 'Personlig $personal · Totalt brukt $total';
+  }
+
+  @override
+  String analyticsPersonalLine(String amount) {
+    return 'Personlige utgifter $amount';
+  }
 }

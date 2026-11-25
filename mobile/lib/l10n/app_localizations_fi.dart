@@ -5585,4 +5585,38 @@ class AppLocalizationsFi extends AppLocalizations {
 
   @override
   String get expenseSplitAmountFirst => 'Syötä ensin summa tai valitse Riveittäin.';
+
+  @override
+  String get expenseSplitPersonal => 'Henkilökohtainen';
+
+  @override
+  String get expenseSplitPersonalHint => 'Vain maksajalle. Ei kuulu matkan kokonaissummaan eikä velkoihin.';
+
+  @override
+  String get expenseFilterOnlyPersonal => 'Vain henkilökohtaiset';
+
+  @override
+  String get expensePersonalLabel => 'Henkilökohtainen kulu';
+
+  @override
+  String get expenseLockedPersonal => 'Henkilökohtainen kulu';
+
+  @override
+  String get expensePersonalNoDebts => 'Ei vaikuta velkoihin';
+
+  @override
+  String get expenseLockedExplain => 'Vain sen lisännyt henkilö voi avata sen.';
+
+  @override
+  String get expensePersonalDetailsNote => 'Henkilökohtainen: ei kuulu matkan kokonaissummaan eikä velkoihin. Muut näkevät vain summan.';
+
+  @override
+  String workspacePersonalSpentLine(String personal, String total) {
+    return 'Henkilökohtaiset $personal · Yhteensä käytetty $total';
+  }
+
+  @override
+  String analyticsPersonalLine(String amount) {
+    return 'Henkilökohtaiset kulut $amount';
+  }
 }

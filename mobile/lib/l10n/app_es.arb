@@ -2210,5 +2210,15 @@
   "quickSplitFromAction": "Desde un Quick split",
   "quickSplitFromTitle": "Añadir un Quick split",
   "quickSplitNoneForTrip": "Ningún Quick split tiene solo personas de este viaje.",
-  "expenseSplitAmountFirst": "Introduce primero el importe o elige Por artículos."
+  "expenseSplitAmountFirst": "Introduce primero el importe o elige Por artículos.",
+  "expenseSplitPersonal": "Personal",
+  "expenseSplitPersonalHint": "Solo para quien paga. No cuenta en el total del viaje ni en las deudas.",
+  "expenseFilterOnlyPersonal": "Solo personales",
+  "expensePersonalLabel": "Gasto personal",
+  "expenseLockedPersonal": "Gasto personal",
+  "expensePersonalNoDebts": "No afecta a las deudas",
+  "expenseLockedExplain": "Solo quien lo añadió puede abrirlo.",
+  "expensePersonalDetailsNote": "Personal: no cuenta en el total del viaje ni en las deudas. Los demás solo ven el importe.",
+  "workspacePersonalSpentLine": "Personal {personal} · Total gastado {total}",
+  "analyticsPersonalLine": "Gastos personales {amount}"
 }

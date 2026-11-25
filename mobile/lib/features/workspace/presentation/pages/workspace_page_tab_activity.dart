@@ -331,8 +331,11 @@ extension _WorkspacePageActivityTab on _WorkspacePageState {
         ),
       );
     }
+    // Others get only the amount of a personal expense; it is named so.
     final splitMode = _payloadString(event, 'split_mode');
-    if (splitMode != null && splitMode.isNotEmpty) {
+    if (event.payload['is_personal'] == true) {
+      items.add(context.l10n.expenseSplitPersonal);
+    } else if (splitMode != null && splitMode.isNotEmpty) {
       items.add(_splitModeShortLabel(context, splitMode));
     }
     final status = _payloadString(event, 'status');

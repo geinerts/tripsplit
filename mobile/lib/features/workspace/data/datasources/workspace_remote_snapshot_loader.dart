@@ -272,6 +272,8 @@ class WorkspaceRemoteSnapshotLoader {
       notifications: notifications,
       expenses: expenses,
       orders: orders,
+      personalTotalCents:
+          (balancesResponse['personal_total_cents'] as num?)?.toInt() ?? 0,
     );
   }
 

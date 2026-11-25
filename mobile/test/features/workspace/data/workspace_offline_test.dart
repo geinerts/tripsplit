@@ -49,6 +49,7 @@ class Remote extends Fake implements WorkspaceRemoteDataSource {
             'note': args[#note],
             'expense_date': args[#date],
             'paid_by_id': 7,
+            'is_personal': args[#isPersonal] == true,
           },
         );
         return confirmed[id]!['id'] as int;
@@ -162,6 +163,39 @@ void main() {
       expect(await other.pendingQueueCount(), 0);
     },
   );
+
+  test('a personal expense stays personal through the offline queue', () async {
+    final remote = Remote();
+    final store = WorkspaceLocalStore(
+      AccountLocalStorage(AccountDataSession()..activate(7)),
+    );
+    await store.writeSnapshot(tripId: 1, snapshot: snapshot());
+    final repository = WorkspaceRepositoryImpl(remote, store);
+    final result = await repository.addExpense(
+      tripId: 1,
+      amount: 12,
+      currencyCode: 'EUR',
+      category: 'shopping',
+      note: 'Souvenir',
+      date: '2026-11-25',
+      participants: [7],
+      splitMode: 'equal',
+      splitValues: [],
+      isPersonal: true,
+    );
+    expect(result.queued, isTrue);
+    final pending = (await repository.readCachedSnapshot(tripId: 1))!;
+    expect(pending.expenses.single.isPersonal, isTrue);
+    remote.offline = false;
+    final synced = await repository.loadSnapshot(tripId: 1);
+    expect(synced.expenses.single.isPersonal, isTrue);
+    expect(synced.expenses.single.isLocked, isFalse);
+    // The cache keeps the flag across a restart.
+    final cached = await WorkspaceLocalStore(
+      AccountLocalStorage(AccountDataSession()..activate(7)),
+    ).readSnapshot(tripId: 1);
+    expect(cached!.expenses.single.isPersonal, isTrue);
+  });
 
   test(
     'pending edits and deletes overlay only their trip and do not change server cache',

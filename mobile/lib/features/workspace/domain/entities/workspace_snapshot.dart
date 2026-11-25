@@ -25,6 +25,7 @@ class WorkspaceSnapshot {
     required this.notifications,
     required this.expenses,
     required this.orders,
+    this.personalTotalCents = 0,
   });
 
   final String tripStatus;
@@ -44,6 +45,10 @@ class WorkspaceSnapshot {
   final List<WorkspaceNotification> notifications;
   final List<TripExpense> expenses;
   final List<RandomOrder> orders;
+
+  /// The current user's own personal expenses, in trip cents. They are not in
+  /// [balances], so they are not in the trip total or anyone's share.
+  final int personalTotalCents;
 
   bool get isActive => tripStatus == 'active';
   bool get isSettling => tripStatus == 'settling';
@@ -95,6 +100,7 @@ class WorkspaceSnapshot {
     List<WorkspaceNotification>? notifications,
     List<TripExpense>? expenses,
     List<RandomOrder>? orders,
+    int? personalTotalCents,
   }) {
     return WorkspaceSnapshot(
       tripStatus: tripStatus ?? this.tripStatus,
@@ -116,6 +122,7 @@ class WorkspaceSnapshot {
       notifications: notifications ?? this.notifications,
       expenses: expenses ?? this.expenses,
       orders: orders ?? this.orders,
+      personalTotalCents: personalTotalCents ?? this.personalTotalCents,
     );
   }
 }

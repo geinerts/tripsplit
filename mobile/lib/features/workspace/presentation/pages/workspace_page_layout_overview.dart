@@ -334,6 +334,28 @@ extension _WorkspacePageLayoutOverview on _WorkspacePageState {
             ),
           ),
         ],
+        // Own personal expenses are not in the trip total or the share above.
+        if (!widget.trip.isSolo && snapshot.personalTotalCents > 0) ...[
+          const SizedBox(height: 4),
+          Text(
+            t.workspacePersonalSpentLine(
+              AppFormatters.displayCurrencyFromCents(
+                context,
+                snapshot.personalTotalCents,
+                currencyCode: widget.trip.currencyCode,
+              ),
+              AppFormatters.displayCurrencyFromCents(
+                context,
+                ((mine?.owed ?? 0) * 100).round() + snapshot.personalTotalCents,
+                currencyCode: widget.trip.currencyCode,
+              ),
+            ),
+            key: const ValueKey('workspace-personal-line'),
+            style: theme.textTheme.bodyMedium?.copyWith(
+              color: theme.colorScheme.onSurfaceVariant,
+            ),
+          ),
+        ],
         if (_tripBudgetCents != null) ...[
           const SizedBox(height: 16),
           TripBudgetCard(

@@ -451,6 +451,7 @@ class WorkspaceRepositoryImpl implements WorkspaceRepository {
     double extraAmount = 0,
     String? subcategory,
     int? paidBy,
+    bool isPersonal = false,
     String? receiptPath,
   }) async {
     final mutationId = _newClientMutationId(
@@ -474,6 +475,7 @@ class WorkspaceRepositoryImpl implements WorkspaceRepository {
           extraAmount: extraAmount,
           subcategory: subcategory,
           paidBy: paidBy,
+          isPersonal: isPersonal,
           receiptPath: receiptPath,
           clientMutationId: mutationId,
         );
@@ -493,6 +495,7 @@ class WorkspaceRepositoryImpl implements WorkspaceRepository {
           extraAmount: extraAmount,
           subcategory: subcategory,
           paidBy: paidBy,
+          isPersonal: isPersonal,
           receiptPath: receiptPath,
           mutationId: mutationId,
         );
@@ -519,6 +522,7 @@ class WorkspaceRepositoryImpl implements WorkspaceRepository {
     double extraAmount = 0,
     String? subcategory,
     int? paidBy,
+    bool? isPersonal,
     String? receiptPath,
     bool removeReceipt = false,
   }) {
@@ -543,6 +547,7 @@ class WorkspaceRepositoryImpl implements WorkspaceRepository {
           extraAmount: extraAmount,
           subcategory: subcategory,
           paidBy: paidBy,
+          isPersonal: isPersonal,
           receiptPath: receiptPath,
           removeReceipt: removeReceipt,
           clientMutationId: mutationId,
@@ -564,6 +569,7 @@ class WorkspaceRepositoryImpl implements WorkspaceRepository {
           extraAmount: extraAmount,
           subcategory: subcategory,
           paidBy: paidBy,
+          isPersonal: isPersonal,
           receiptPath: receiptPath,
           removeReceipt: removeReceipt,
           mutationId: mutationId,

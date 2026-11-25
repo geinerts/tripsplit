@@ -195,6 +195,8 @@ TripExpense expense(
   String? receiptUrl,
   String date = '2026-10-21',
   String? subcategory,
+  bool personal = false,
+  bool locked = false,
 }) => TripExpense(
   id: id,
   amount: 24,
@@ -211,6 +213,8 @@ TripExpense expense(
   receiptUrl: receiptUrl,
   participants: [],
   subcategory: subcategory,
+  isPersonal: personal || locked,
+  isLocked: locked,
 );
 WorkspaceSnapshot snapshot({
   List<TripExpense>? expenses,
@@ -547,9 +551,11 @@ class _Workspace implements WorkspaceController {
     double extraAmount = 0,
     String? subcategory,
     int? paidBy,
+    bool isPersonal = false,
     String? receiptPath,
   }) async {
     saves++;
+    savedPersonal = isPersonal;
     savedParticipants = participants;
     savedSplits = splitValues;
     savedItems = items;
@@ -567,6 +573,10 @@ class _Workspace implements WorkspaceController {
   }
 
   MutationResult addResult = const MutationResult(queued: true);
+  bool? savedPersonal;
+  bool? editedPersonal;
+  List<int>? editedParticipants;
+  String? editedMode;
 
   @override
   Future<MutationResult> updateExpense({
@@ -584,11 +594,15 @@ class _Workspace implements WorkspaceController {
     double extraAmount = 0,
     String? subcategory,
     int? paidBy,
+    bool? isPersonal,
     String? receiptPath,
     bool removeReceipt = false,
   }) async {
     edits++;
     editedReceiptRemoved = removeReceipt;
+    editedPersonal = isPersonal;
+    editedParticipants = participants;
+    editedMode = splitMode;
     return const MutationResult(queued: true);
   }
 
@@ -647,11 +661,17 @@ class _Workspace implements WorkspaceController {
     );
   }
 
+  /// Expense ids whose reactions were asked for.
+  final socialRequests = <int>[];
   @override
   Future<List<ExpenseReaction>> listExpenseReactions({
     required int expenseId,
     required int tripId,
-  }) async => [];
+  }) async {
+    socialRequests.add(expenseId);
+    return [];
+  }
+
   @override
   Future<List<ExpenseComment>> listExpenseComments({
     required int expenseId,
@@ -7000,6 +7020,256 @@ void main() {
         await capture(listKey, '$mode-list');
         controller.dispose();
       }
+    });
+  });
+  group('personal expenses', () {
+    Future<_Workspace> openAddForm(WidgetTester tester) async {
+      final commands = WorkspacePageCommandController();
+      final controller = _Workspace();
+      await _mount(tester, controller, commands: commands);
+      await tester.pumpAndSettle();
+      commands.requestOpenAddExpense();
+      await tester.pumpAndSettle();
+      await tester.enterText(
+        find.byKey(const ValueKey('expense-form-amount')),
+        '10',
+      );
+      await selectExpenseFood(tester);
+      await visibleTap(
+        tester,
+        find.byKey(const ValueKey('expense-custom-split')),
+      );
+      await tester.tap(find.byKey(const ValueKey('split-mode-personal')));
+      await tester.pumpAndSettle();
+      return controller;
+    }
+
+    testWidgets('Personal keeps only the payer and saves the flag', (
+      tester,
+    ) async {
+      final controller = await openAddForm(tester);
+      final me = find.byKey(const ValueKey('expense-participant-7'));
+      final anna = find.byKey(const ValueKey('expense-participant-8'));
+      await tester.ensureVisible(me);
+      expect(tester.widget<AppPersonToggle>(me).selected, isTrue);
+      expect(tester.widget<AppPersonToggle>(anna).selected, isFalse);
+      expect(find.text('Personal'), findsOneWidget);
+      // Tapping the payer does not take them out.
+      await tester.tap(me);
+      await tester.pumpAndSettle();
+      expect(tester.widget<AppPersonToggle>(me).selected, isTrue);
+      await tester.tap(find.widgetWithText(ElevatedButton, 'Add'));
+      await tester.pumpAndSettle();
+      expect(controller.saves, 1);
+      expect(controller.savedPersonal, isTrue);
+      expect(controller.savedParticipants, [7]);
+      expect(controller.savedMode, 'equal');
+      expect(controller.savedSplits, isEmpty);
+      await disposePage(tester);
+    });
+
+    testWidgets('picking someone else turns Personal back into Equal', (
+      tester,
+    ) async {
+      final controller = await openAddForm(tester);
+      final anna = find.byKey(const ValueKey('expense-participant-8'));
+      await tester.ensureVisible(anna);
+      await tester.tap(anna);
+      await tester.pumpAndSettle();
+      expect(tester.widget<AppPersonToggle>(anna).selected, isTrue);
+      expect(find.text('Equal split'), findsOneWidget);
+      await tester.tap(find.widgetWithText(ElevatedButton, 'Add'));
+      await tester.pumpAndSettle();
+      expect(controller.savedPersonal, isFalse);
+      expect(controller.savedParticipants, [7, 8]);
+      expect(controller.savedMode, 'equal');
+      await disposePage(tester);
+    });
+
+    testWidgets('others see a locked row; own rows show a person mark', (
+      tester,
+    ) async {
+      final controller = _Workspace()
+        ..data = snapshot(
+          expenses: [
+            expense(1, personal: true, name: 'Souvenir'),
+            expense(2, payer: 8, locked: true, name: ''),
+            expense(3, payer: 8),
+          ],
+        );
+      await _mount(tester, controller);
+      await tester.pumpAndSettle();
+      await tester.scrollUntilVisible(
+        find.byKey(const ValueKey('expense-row-3')),
+        200,
+        scrollable: find.byType(Scrollable).first,
+      );
+      await tester.pumpAndSettle();
+      expect(find.byKey(const ValueKey('expense-personal-1')), findsOneWidget);
+      expect(find.byKey(const ValueKey('expense-locked-2')), findsOneWidget);
+      expect(
+        tester.widget<Text>(find.byKey(const ValueKey('expense-title-2'))).data,
+        'Personal expense',
+      );
+      expect(find.text('Does not affect debts'), findsOneWidget);
+      // A locked row opens nothing, not even the quick actions.
+      await tester.tap(find.byKey(const ValueKey('expense-row-2')));
+      await tester.pumpAndSettle();
+      expect(
+        find.text('Only the person who added it can open this.'),
+        findsOneWidget,
+      );
+      await tester.longPress(find.byKey(const ValueKey('expense-row-2')));
+      await tester.pumpAndSettle();
+      expect(find.byKey(const ValueKey('expense-actions-sheet')), findsNothing);
+      // Comments and reactions of a locked expense are never asked for.
+      expect(controller.socialRequests, isNot(contains(2)));
+      await disposePage(tester);
+    });
+
+    testWidgets('Only personal shows the own personal expenses', (
+      tester,
+    ) async {
+      final controller = _Workspace()
+        ..data = snapshot(
+          expenses: [
+            expense(1, personal: true, category: 'shopping'),
+            expense(2, payer: 8, locked: true, name: ''),
+            expense(3, payer: 8, category: 'other'),
+          ],
+        );
+      await _mount(tester, controller);
+      await tester.pumpAndSettle();
+      await tester.ensureVisible(find.byKey(const ValueKey('expense-filters')));
+      await tester.tap(find.byKey(const ValueKey('expense-filters')));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const ValueKey('expense-filter-personal')));
+      await tester.pumpAndSettle();
+      expect(find.byKey(const ValueKey('expense-row-1')), findsOneWidget);
+      expect(find.byKey(const ValueKey('expense-row-2')), findsNothing);
+      expect(find.byKey(const ValueKey('expense-row-3')), findsNothing);
+      // The locked row has no category, so "Other" doesn't find it.
+      await tester.tap(find.byKey(const ValueKey('expense-filters-clear')));
+      await tester.pumpAndSettle();
+      await tester.tap(
+        find.byKey(const ValueKey('expense-filter-category-row')),
+      );
+      await tester.pumpAndSettle();
+      await showInFilterMenu(
+        tester,
+        find.byKey(const ValueKey('expense-filter-category-other')),
+      );
+      await tester.tap(
+        find.byKey(const ValueKey('expense-filter-category-other')),
+      );
+      await tester.pumpAndSettle();
+      expect(find.byKey(const ValueKey('expense-row-2')), findsNothing);
+      expect(find.byKey(const ValueKey('expense-row-3')), findsOneWidget);
+      await disposePage(tester);
+    });
+
+    testWidgets('the header adds own personal expenses to what was spent', (
+      tester,
+    ) async {
+      final controller = _Workspace()
+        ..data = snapshot().copyWith(personalTotalCents: 3000);
+      await _mount(tester, controller);
+      await tester.pumpAndSettle();
+      expect(
+        tester.widget<Text>(find.byKey(const ValueKey('workspace-total'))).data,
+        contains('1,000.00'),
+      );
+      expect(
+        tester.widget<Text>(find.byKey(const ValueKey('workspace-share'))).data,
+        contains('400.00'),
+      );
+      expect(
+        tester
+            .widget<Text>(find.byKey(const ValueKey('workspace-personal-line')))
+            .data,
+        'Personal €30.00 · Total spent €430.00',
+      );
+      await disposePage(tester);
+    });
+
+    testWidgets('no personal line without personal expenses', (tester) async {
+      await _mount(tester, _Workspace());
+      await tester.pumpAndSettle();
+      expect(
+        find.byKey(const ValueKey('workspace-personal-line')),
+        findsNothing,
+      );
+      await disposePage(tester);
+    });
+
+    testWidgets('a personal expense turned Equal is shared by everyone', (
+      tester,
+    ) async {
+      final controller = _Workspace()
+        ..data = snapshot(expenses: [expense(1, personal: true)]);
+      await _mount(tester, controller);
+      await tester.pumpAndSettle();
+      await tester.scrollUntilVisible(
+        find.byKey(const ValueKey('expense-row-1')),
+        200,
+        scrollable: find.byType(Scrollable).first,
+      );
+      await tester.pumpAndSettle();
+      await tester.longPress(find.byKey(const ValueKey('expense-row-1')));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Edit expense'));
+      await tester.pumpAndSettle();
+      await visibleTap(
+        tester,
+        find.byKey(const ValueKey('expense-custom-split')),
+      );
+      await tester.tap(find.byKey(const ValueKey('split-mode-equal')));
+      await tester.pumpAndSettle();
+      final anna = find.byKey(const ValueKey('expense-participant-8'));
+      await tester.ensureVisible(anna);
+      expect(tester.widget<AppPersonToggle>(anna).selected, isTrue);
+      await tester.tap(find.widgetWithText(ElevatedButton, 'Save'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 400));
+      await tester.tap(find.text('Save').last);
+      await tester.pumpAndSettle();
+      await tester.pump(const Duration(seconds: 1));
+      await tester.pumpAndSettle();
+      expect(controller.edits, 1);
+      expect(controller.editedPersonal, isFalse);
+      // Empty means everyone in the trip, as for a new expense.
+      expect(controller.editedParticipants, isEmpty);
+      await disposePage(tester);
+    });
+
+    testWidgets('editing a personal expense keeps it personal', (tester) async {
+      final controller = _Workspace()
+        ..data = snapshot(expenses: [expense(1, personal: true)]);
+      await _mount(tester, controller);
+      await tester.pumpAndSettle();
+      await tester.scrollUntilVisible(
+        find.byKey(const ValueKey('expense-row-1')),
+        200,
+        scrollable: find.byType(Scrollable).first,
+      );
+      await tester.pumpAndSettle();
+      await tester.longPress(find.byKey(const ValueKey('expense-row-1')));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Edit expense'));
+      await tester.pumpAndSettle();
+      expect(find.text('Personal'), findsOneWidget);
+      await tester.tap(find.widgetWithText(ElevatedButton, 'Save'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 400));
+      await tester.tap(find.text('Save').last);
+      await tester.pumpAndSettle();
+      await tester.pump(const Duration(seconds: 1));
+      await tester.pumpAndSettle();
+      expect(controller.edits, 1);
+      expect(controller.editedPersonal, isTrue);
+      expect(controller.editedParticipants, [7]);
+      expect(controller.editedMode, 'equal');
+      await disposePage(tester);
     });
   });
 }

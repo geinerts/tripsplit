@@ -189,6 +189,14 @@ extension _AnalyticsPageWidgets on _AnalyticsPageState {
                         ),
                       ),
                   ],
+                  if (report.personalCents > 0 && (_personal || !_byTrip))
+                    Text(
+                      t.analyticsPersonalLine(_money(report.personalCents)),
+                      key: const ValueKey('analytics-personal'),
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        color: AppDesign.mutedColor(context),
+                      ),
+                    ),
                   const SizedBox(height: 12),
                   if (!_byTrip || (_personal && report.expenseCount == 0))
                     _summaryMetrics(report),

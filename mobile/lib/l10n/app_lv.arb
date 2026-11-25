@@ -2210,5 +2210,15 @@
   "quickSplitFromAction": "No Quick split",
   "quickSplitFromTitle": "Pievienot Quick split",
   "quickSplitNoneForTrip": "Nav neviena Quick split tikai ar šī ceļojuma cilvēkiem.",
-  "expenseSplitAmountFirst": "Vispirms ievadi summu vai izvēlies \"Pa pozīcijām\"."
+  "expenseSplitAmountFirst": "Vispirms ievadi summu vai izvēlies \"Pa pozīcijām\".",
+  "expenseSplitPersonal": "Personīgs",
+  "expenseSplitPersonalHint": "Tikai maksātājam. Neietilpst ceļojuma kopsummā un parādos.",
+  "expenseFilterOnlyPersonal": "Tikai personīgie",
+  "expensePersonalLabel": "Personīgs izdevums",
+  "expenseLockedPersonal": "Personīgs izdevums",
+  "expensePersonalNoDebts": "Neietekmē parādus",
+  "expenseLockedExplain": "To var atvērt tikai tas, kas to pievienoja.",
+  "expensePersonalDetailsNote": "Personīgs: neietilpst ceļojuma kopsummā un parādos. Citi redz tikai summu.",
+  "workspacePersonalSpentLine": "Personīgie {personal} · Kopā iztērēts {total}",
+  "analyticsPersonalLine": "Personīgie izdevumi {amount}"
 }

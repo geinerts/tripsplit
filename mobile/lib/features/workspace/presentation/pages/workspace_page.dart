@@ -244,6 +244,9 @@ class _WorkspacePageState extends State<WorkspacePage> {
   int _pendingQueueCount = 0;
   int _expenseFilterUserId = 0;
   String? _expenseFilterCategory;
+
+  /// Only the current user's own personal expenses.
+  bool _expenseFilterPersonal = false;
   final TextEditingController _expenseSearchController =
       TextEditingController();
   String _expenseSearchQuery = '';

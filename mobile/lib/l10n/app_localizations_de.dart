@@ -5585,4 +5585,38 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get expenseSplitAmountFirst => 'Gib zuerst den Betrag ein oder wähle Nach Posten.';
+
+  @override
+  String get expenseSplitPersonal => 'Persönlich';
+
+  @override
+  String get expenseSplitPersonalHint => 'Nur für die zahlende Person. Nicht in der Reisesumme oder den Schulden.';
+
+  @override
+  String get expenseFilterOnlyPersonal => 'Nur persönliche';
+
+  @override
+  String get expensePersonalLabel => 'Persönliche Ausgabe';
+
+  @override
+  String get expenseLockedPersonal => 'Persönliche Ausgabe';
+
+  @override
+  String get expensePersonalNoDebts => 'Beeinflusst keine Schulden';
+
+  @override
+  String get expenseLockedExplain => 'Nur die Person, die sie hinzugefügt hat, kann sie öffnen.';
+
+  @override
+  String get expensePersonalDetailsNote => 'Persönlich: nicht in der Reisesumme oder den Schulden. Andere sehen nur den Betrag.';
+
+  @override
+  String workspacePersonalSpentLine(String personal, String total) {
+    return 'Persönlich $personal · Insgesamt ausgegeben $total';
+  }
+
+  @override
+  String analyticsPersonalLine(String amount) {
+    return 'Persönliche Ausgaben $amount';
+  }
 }

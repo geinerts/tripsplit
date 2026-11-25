@@ -99,6 +99,9 @@ WorkspaceSnapshot withPendingExpenses(
       subcategory: payload.containsKey('subcategory')
           ? payload['subcategory'] as String?
           : previous?.subcategory,
+      isPersonal: payload.containsKey('is_personal')
+          ? payload['is_personal'] == true
+          : previous?.isPersonal ?? false,
     );
     if (previous == null) {
       expenses.insert(0, expense);

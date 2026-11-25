@@ -5585,4 +5585,38 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get expenseSplitAmountFirst => 'Vul eerst het bedrag in of kies Per item.';
+
+  @override
+  String get expenseSplitPersonal => 'Persoonlijk';
+
+  @override
+  String get expenseSplitPersonalHint => 'Alleen voor wie betaalt. Niet in het reistotaal of de schulden.';
+
+  @override
+  String get expenseFilterOnlyPersonal => 'Alleen persoonlijke';
+
+  @override
+  String get expensePersonalLabel => 'Persoonlijke uitgave';
+
+  @override
+  String get expenseLockedPersonal => 'Persoonlijke uitgave';
+
+  @override
+  String get expensePersonalNoDebts => 'Heeft geen invloed op schulden';
+
+  @override
+  String get expenseLockedExplain => 'Alleen wie hem heeft toegevoegd, kan hem openen.';
+
+  @override
+  String get expensePersonalDetailsNote => 'Persoonlijk: niet in het reistotaal of de schulden. Anderen zien alleen het bedrag.';
+
+  @override
+  String workspacePersonalSpentLine(String personal, String total) {
+    return 'Persoonlijk $personal · Totaal uitgegeven $total';
+  }
+
+  @override
+  String analyticsPersonalLine(String amount) {
+    return 'Persoonlijke uitgaven $amount';
+  }
 }

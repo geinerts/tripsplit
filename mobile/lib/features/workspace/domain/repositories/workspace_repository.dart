@@ -150,6 +150,7 @@ abstract class WorkspaceRepository {
     double extraAmount = 0,
     String? subcategory,
     int? paidBy,
+    bool isPersonal = false,
     String? receiptPath,
   });
 
@@ -168,6 +169,7 @@ abstract class WorkspaceRepository {
     double extraAmount = 0,
     String? subcategory,
     int? paidBy,
+    bool? isPersonal,
     String? receiptPath,
     bool removeReceipt,
   });

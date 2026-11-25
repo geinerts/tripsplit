@@ -2224,5 +2224,15 @@
   "quickSplitFromAction": "Da un Quick split",
   "quickSplitFromTitle": "Aggiungi un Quick split",
   "quickSplitNoneForTrip": "Nessun Quick split ha solo persone di questo viaggio.",
-  "expenseSplitAmountFirst": "Inserisci prima l’importo o scegli Per voce."
+  "expenseSplitAmountFirst": "Inserisci prima l’importo o scegli Per voce.",
+  "expenseSplitPersonal": "Personale",
+  "expenseSplitPersonalHint": "Solo per chi paga. Non conta nel totale del viaggio né nei debiti.",
+  "expenseFilterOnlyPersonal": "Solo personali",
+  "expensePersonalLabel": "Spesa personale",
+  "expenseLockedPersonal": "Spesa personale",
+  "expensePersonalNoDebts": "Non influisce sui debiti",
+  "expenseLockedExplain": "Solo chi l'ha aggiunta può aprirla.",
+  "expensePersonalDetailsNote": "Personale: non conta nel totale del viaggio né nei debiti. Gli altri vedono solo l'importo.",
+  "workspacePersonalSpentLine": "Personale {personal} · Totale speso {total}",
+  "analyticsPersonalLine": "Spese personali {amount}"
 }

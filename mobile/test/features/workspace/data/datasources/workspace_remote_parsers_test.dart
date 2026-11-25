@@ -57,6 +57,32 @@ void main() {
     );
   });
 
+  test('personal and locked expenses, and older servers without them', () {
+    final own = WorkspaceRemoteParsers.parseExpense({
+      'id': 5,
+      'amount': 5,
+      'is_personal': true,
+      'locked': false,
+    });
+    expect([own.isPersonal, own.isLocked], [true, false]);
+    final other = WorkspaceRemoteParsers.parseExpense({
+      'id': 6,
+      'amount': 5,
+      'is_personal': true,
+      'locked': true,
+    });
+    expect([other.isPersonal, other.isLocked], [true, true]);
+    // Locked only means something for a personal expense.
+    final odd = WorkspaceRemoteParsers.parseExpense({
+      'id': 7,
+      'amount': 5,
+      'locked': true,
+    });
+    expect([odd.isPersonal, odd.isLocked], [false, false]);
+    final old = WorkspaceRemoteParsers.parseExpense({'id': 8, 'amount': 5});
+    expect([old.isPersonal, old.isLocked], [false, false]);
+  });
+
   test('from_quick_split marks expenses added from a quick split', () {
     expect(
       WorkspaceRemoteParsers.parseExpense({

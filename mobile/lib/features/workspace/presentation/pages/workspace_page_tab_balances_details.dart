@@ -512,6 +512,8 @@ extension _WorkspacePageBalancesDetails on _WorkspacePageState {
     final t = context.l10n;
     final entries = <_MemberHistoryEntry>[];
     for (final expense in snapshot.expenses) {
+      // Personal expenses change nobody's balance.
+      if (expense.isPersonal) continue;
       final participants = expense.participants.isNotEmpty
           ? [
               for (final person in expense.participants)

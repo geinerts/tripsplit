@@ -13,6 +13,9 @@ payload key as optional, because rows written before a key existed do not have i
 | `expense.created`, `expense.updated` | Expense saved | `amount_cents`, `trip_currency_code`, `expense_currency_code`, `source_amount_cents`, `category`, `split_mode`, `participants_count`, `note`; `receipt_changed` on update |
 | `expense.deleted` | Expense deleted | As above without `participants_count`, `receipt_changed` |
 | `expense.comment_added` | Comment or reply posted | `comment_id`, `note` (the expense's note, never the comment text) |
+
+`expense.*` events of a personal expense also carry `is_personal: true`. Anyone but its payer
+gets only `amount_cents`, `trip_currency_code` and `is_personal` (`docs/api/personal-expenses.md`).
 | `trip.created` | Trip created | See handler |
 | `trip.updated` | Trip details actually changed. A save with no changes writes nothing. | `name_changed`, `currency_changed`, `image_changed`, `budget_changed`, `destinations_changed` (booleans only, no values) |
 | `trip.members_added` | Legacy rows only | `members_added_count` |

@@ -27,6 +27,7 @@ class WorkspaceSnapshotCodec {
     return <String, dynamic>{
       'trip_status': snapshot.tripStatus,
       'budget_cents': snapshot.budgetCents,
+      'personal_total_cents': snapshot.personalTotalCents,
       'budget_loaded': snapshot.budgetLoaded,
       'trip_ended_at': snapshot.tripEndedAt,
       'trip_archived_at': snapshot.tripArchivedAt,
@@ -151,6 +152,8 @@ class WorkspaceSnapshotCodec {
               'extra_amount': expense.extraAmount,
               'subcategory': expense.subcategory,
               'from_quick_split': expense.fromQuickSplit,
+              'is_personal': expense.isPersonal,
+              'locked': expense.isLocked,
               'participants': expense.participants
                   .map(
                     (participant) => <String, dynamic>{
@@ -357,6 +360,8 @@ class WorkspaceSnapshotCodec {
             extraAmount: (item['extra_amount'] as num?)?.toDouble() ?? 0,
             subcategory: item['subcategory'] as String?,
             fromQuickSplit: item['from_quick_split'] == true,
+            isPersonal: item['is_personal'] == true,
+            isLocked: item['is_personal'] == true && item['locked'] == true,
           );
         })
         .toList(growable: false);
@@ -406,6 +411,7 @@ class WorkspaceSnapshotCodec {
     return WorkspaceSnapshot(
       tripStatus: tripStatus,
       budgetCents: (map['budget_cents'] as num?)?.toInt(),
+      personalTotalCents: (map['personal_total_cents'] as num?)?.toInt() ?? 0,
       budgetLoaded: map['budget_loaded'] == true,
       tripEndedAt: map['trip_ended_at'] as String?,
       tripArchivedAt: map['trip_archived_at'] as String?,

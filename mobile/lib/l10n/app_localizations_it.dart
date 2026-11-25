@@ -5585,4 +5585,38 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get expenseSplitAmountFirst => 'Inserisci prima l’importo o scegli Per voce.';
+
+  @override
+  String get expenseSplitPersonal => 'Personale';
+
+  @override
+  String get expenseSplitPersonalHint => 'Solo per chi paga. Non conta nel totale del viaggio né nei debiti.';
+
+  @override
+  String get expenseFilterOnlyPersonal => 'Solo personali';
+
+  @override
+  String get expensePersonalLabel => 'Spesa personale';
+
+  @override
+  String get expenseLockedPersonal => 'Spesa personale';
+
+  @override
+  String get expensePersonalNoDebts => 'Non influisce sui debiti';
+
+  @override
+  String get expenseLockedExplain => 'Solo chi l\'ha aggiunta può aprirla.';
+
+  @override
+  String get expensePersonalDetailsNote => 'Personale: non conta nel totale del viaggio né nei debiti. Gli altri vedono solo l\'importo.';
+
+  @override
+  String workspacePersonalSpentLine(String personal, String total) {
+    return 'Personale $personal · Totale speso $total';
+  }
+
+  @override
+  String analyticsPersonalLine(String amount) {
+    return 'Spese personali $amount';
+  }
 }

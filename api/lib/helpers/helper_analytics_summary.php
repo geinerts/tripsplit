@@ -1,6 +1,8 @@
 <?php
 declare(strict_types=1);
 
+require_once __DIR__ . '/helper_personal_expense.php';
+
 const ANALYTICS_LARGEST_LIMIT = 5;
 
 /** Thrown when totals would otherwise rest on a guessed share. */
@@ -121,7 +123,7 @@ function analytics_summary_build(PDO $pdo, int $userId): array
 
     $expensesStmt = $pdo->prepare(
         'SELECT e.id, e.amount, e.category, e.note, e.split_mode, e.expense_date, e.paid_by,
-                u.nickname AS paid_by_nickname
+                ' . expense_is_personal_select($pdo) . ', u.nickname AS paid_by_nickname
          FROM ' . $expensesTable . ' e
          JOIN ' . $usersTable . ' u ON u.id = e.paid_by
          WHERE e.trip_id = :trip_id'
@@ -139,7 +141,16 @@ function analytics_summary_build(PDO $pdo, int $userId): array
     foreach ($tripsStmt->fetchAll() as $trip) {
         $tripId = (int) $trip['id'];
         $expensesStmt->execute(['trip_id' => $tripId]);
-        $expenses = $expensesStmt->fetchAll();
+        // Personal expenses stay out of the group figures; only the user's own are counted, apart.
+        $expenses = [];
+        $personalCents = 0;
+        foreach ($expensesStmt->fetchAll() as $expense) {
+            if ((int) ($expense['is_personal'] ?? 0) !== 1) {
+                $expenses[] = $expense;
+            } elseif ((int) $expense['paid_by'] === $userId) {
+                $personalCents += decimal_to_cents($expense['amount']);
+            }
+        }
         $participantsStmt->execute(['trip_id' => $tripId]);
         $participantsByExpense = [];
         foreach ($participantsStmt->fetchAll() as $participant) {
@@ -148,7 +159,8 @@ function analytics_summary_build(PDO $pdo, int $userId): array
         $summaries[] = [
             'trip_id' => $tripId,
             'currency_code' => normalize_currency_code($trip['currency_code'] ?? default_trip_currency_code()),
-        ] + analytics_trip_summary($expenses, $participantsByExpense, $userId);
+        ] + analytics_trip_summary($expenses, $participantsByExpense, $userId)
+            + ['personal_cents' => $personalCents];
     }
     return $summaries;
 }

@@ -254,4 +254,40 @@ void main() {
       throwsStateError,
     );
   });
+
+  test('own personal expenses are kept apart, for all time only', () {
+    final withPersonal = AnalyticsTripSummary.fromMap({
+      'trip_id': 1,
+      'currency_code': 'EUR',
+      'buckets': [],
+      'members': [],
+      'largest_by_total': [],
+      'largest_by_share': [],
+      'personal_cents': 1500,
+    });
+    final older = AnalyticsTripSummary.fromMap({
+      'trip_id': 2,
+      'currency_code': 'EUR',
+      'buckets': [],
+      'members': [],
+      'largest_by_total': [],
+      'largest_by_share': [],
+    });
+    expect(older.personalCents, 0);
+    final all = AnalyticsReport(source: [withPersonal, older], currency: 'EUR');
+    expect(all.personalCents, 1500);
+    expect(all.totalCents, 0);
+    expect(
+      AnalyticsReport(
+        source: [withPersonal],
+        currency: 'EUR',
+        month: '2026-10',
+      ).personalCents,
+      0,
+    );
+    expect(
+      AnalyticsReport(source: [withPersonal], currency: 'USD').personalCents,
+      0,
+    );
+  });
 }

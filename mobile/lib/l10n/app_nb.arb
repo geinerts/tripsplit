@@ -2224,5 +2224,15 @@
   "quickSplitFromAction": "Fra et Quick split",
   "quickSplitFromTitle": "Legg til et Quick split",
   "quickSplitNoneForTrip": "Ingen Quick split har bare personer fra denne reisen.",
-  "expenseSplitAmountFirst": "Skriv inn beløpet først, eller velg Per vare."
+  "expenseSplitAmountFirst": "Skriv inn beløpet først, eller velg Per vare.",
+  "expenseSplitPersonal": "Personlig",
+  "expenseSplitPersonalHint": "Bare for den som betaler. Ikke med i turens totalsum eller gjeld.",
+  "expenseFilterOnlyPersonal": "Bare personlige",
+  "expensePersonalLabel": "Personlig utgift",
+  "expenseLockedPersonal": "Personlig utgift",
+  "expensePersonalNoDebts": "Påvirker ikke gjeld",
+  "expenseLockedExplain": "Bare den som la den til, kan åpne den.",
+  "expensePersonalDetailsNote": "Personlig: ikke med i turens totalsum eller gjeld. Andre ser bare beløpet.",
+  "workspacePersonalSpentLine": "Personlig {personal} · Totalt brukt {total}",
+  "analyticsPersonalLine": "Personlige utgifter {amount}"
 }

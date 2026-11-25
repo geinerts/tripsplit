@@ -2224,5 +2224,15 @@
   "quickSplitFromAction": "Из Quick split",
   "quickSplitFromTitle": "Добавить Quick split",
   "quickSplitNoneForTrip": "Нет Quick split только с людьми из этой поездки.",
-  "expenseSplitAmountFirst": "Сначала введите сумму или выберите «По позициям»."
+  "expenseSplitAmountFirst": "Сначала введите сумму или выберите «По позициям».",
+  "expenseSplitPersonal": "Личный",
+  "expenseSplitPersonalHint": "Только для того, кто платит. Не входит в итог поездки и долги.",
+  "expenseFilterOnlyPersonal": "Только личные",
+  "expensePersonalLabel": "Личный расход",
+  "expenseLockedPersonal": "Личный расход",
+  "expensePersonalNoDebts": "Не влияет на долги",
+  "expenseLockedExplain": "Открыть его может только тот, кто его добавил.",
+  "expensePersonalDetailsNote": "Личный: не входит в итог поездки и долги. Другие видят только сумму.",
+  "workspacePersonalSpentLine": "Личные {personal} · Всего потрачено {total}",
+  "analyticsPersonalLine": "Личные расходы {amount}"
 }

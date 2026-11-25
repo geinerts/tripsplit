@@ -2463,5 +2463,58 @@
   "quickSplitFromAction": "From a quick split",
   "quickSplitFromTitle": "Add a quick split",
   "quickSplitNoneForTrip": "No quick split has only this trip's people.",
-  "expenseSplitAmountFirst": "Enter the amount first, or choose By item."
+  "expenseSplitAmountFirst": "Enter the amount first, or choose By item.",
+  "expenseSplitPersonal": "Personal",
+  "@expenseSplitPersonal": {
+    "description": "Split method for an expense only the payer has; it is not in the trip total or debts."
+  },
+  "expenseSplitPersonalHint": "Only for the payer. Not in the trip total or debts.",
+  "@expenseSplitPersonalHint": {
+    "description": "Short explanation under the Personal split method."
+  },
+  "expenseFilterOnlyPersonal": "Only personal",
+  "@expenseFilterOnlyPersonal": {
+    "description": "Expense filter switch that shows only the user's own personal expenses."
+  },
+  "expensePersonalLabel": "Personal expense",
+  "@expensePersonalLabel": {
+    "description": "Screen reader label of the person icon on the user's own personal expense."
+  },
+  "expenseLockedPersonal": "Personal expense",
+  "@expenseLockedPersonal": {
+    "description": "Title of another member's personal expense, whose details are hidden."
+  },
+  "expensePersonalNoDebts": "Does not affect debts",
+  "@expensePersonalNoDebts": {
+    "description": "Line under another member's personal expense in the list."
+  },
+  "expenseLockedExplain": "Only the person who added it can open this.",
+  "@expenseLockedExplain": {
+    "description": "Shown when someone taps another member's personal expense."
+  },
+  "expensePersonalDetailsNote": "Personal: not in the trip total or debts. Others see only the amount.",
+  "@expensePersonalDetailsNote": {
+    "description": "Note in the details of the user's own personal expense."
+  },
+  "workspacePersonalSpentLine": "Personal {personal} · Total spent {total}",
+  "@workspacePersonalSpentLine": {
+    "description": "Trip header line: the user's personal expenses, then their share plus personal expenses.",
+    "placeholders": {
+      "personal": {
+        "type": "String"
+      },
+      "total": {
+        "type": "String"
+      }
+    }
+  },
+  "analyticsPersonalLine": "Personal expenses {amount}",
+  "@analyticsPersonalLine": {
+    "description": "Analytics line with the user's personal expenses, which are not in the group figures.",
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  }
 }

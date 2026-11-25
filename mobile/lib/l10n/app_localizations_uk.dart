@@ -1800,7 +1800,7 @@ class AppLocalizationsUk extends AppLocalizations {
   }
 
   @override
-  String get yourShare => 'Ваше повідомлення';
+  String get yourShare => 'Ваша частка';
 
   @override
   String get yourTrips => 'Ваші поїздки';
@@ -5609,4 +5609,38 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get expenseSplitAmountFirst => 'Спершу введіть суму або виберіть «За позиціями».';
+
+  @override
+  String get expenseSplitPersonal => 'Особиста';
+
+  @override
+  String get expenseSplitPersonalHint => 'Лише для того, хто платить. Не входить у загальну суму поїздки та борги.';
+
+  @override
+  String get expenseFilterOnlyPersonal => 'Лише особисті';
+
+  @override
+  String get expensePersonalLabel => 'Особиста витрата';
+
+  @override
+  String get expenseLockedPersonal => 'Особиста витрата';
+
+  @override
+  String get expensePersonalNoDebts => 'Не впливає на борги';
+
+  @override
+  String get expenseLockedExplain => 'Відкрити її може лише той, хто її додав.';
+
+  @override
+  String get expensePersonalDetailsNote => 'Особиста: не входить у загальну суму поїздки та борги. Інші бачать лише суму.';
+
+  @override
+  String workspacePersonalSpentLine(String personal, String total) {
+    return 'Особисті $personal · Усього витрачено $total';
+  }
+
+  @override
+  String analyticsPersonalLine(String amount) {
+    return 'Особисті витрати $amount';
+  }
 }

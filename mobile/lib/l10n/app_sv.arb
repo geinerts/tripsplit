@@ -860,7 +860,7 @@
   "youSettledForExpense": "Du har reglerat din del av den här utgiften.",
   "youShouldPay": "Du bör betala {amount}",
   "youShouldReceive": "Du bör ta emot {amount}",
-  "yourShare": "Din aktie",
+  "yourShare": "Din andel",
   "yourTrips": "Dina resor",
   "homeYourActiveTrips": "Dina aktiva resor",
   "quickSplitsTitle": "Snabbdelningar",
@@ -2224,5 +2224,15 @@
   "quickSplitFromAction": "Från en Quick split",
   "quickSplitFromTitle": "Lägg till en Quick split",
   "quickSplitNoneForTrip": "Ingen Quick split har bara personer från den här resan.",
-  "expenseSplitAmountFirst": "Ange beloppet först eller välj Per rad."
+  "expenseSplitAmountFirst": "Ange beloppet först eller välj Per rad.",
+  "expenseSplitPersonal": "Personlig",
+  "expenseSplitPersonalHint": "Bara för den som betalar. Ingår inte i resans totalsumma eller skulder.",
+  "expenseFilterOnlyPersonal": "Bara personliga",
+  "expensePersonalLabel": "Personlig utgift",
+  "expenseLockedPersonal": "Personlig utgift",
+  "expensePersonalNoDebts": "Påverkar inte skulder",
+  "expenseLockedExplain": "Bara den som lade till den kan öppna den.",
+  "expensePersonalDetailsNote": "Personlig: ingår inte i resans totalsumma eller skulder. Andra ser bara beloppet.",
+  "workspacePersonalSpentLine": "Personligt {personal} · Totalt spenderat {total}",
+  "analyticsPersonalLine": "Personliga utgifter {amount}"
 }

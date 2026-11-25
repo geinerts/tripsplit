@@ -324,6 +324,7 @@ class WorkspaceRemoteMutationApi {
     double extraAmount = 0,
     String? subcategory,
     int? paidBy,
+    bool isPersonal = false,
     String? receiptPath,
     String? clientMutationId,
   }) async {
@@ -353,6 +354,7 @@ class WorkspaceRemoteMutationApi {
         if (extraAmount > 0) 'extra_amount': extraAmount,
         'subcategory': ?subcategory,
         'paid_by': ?paidBy,
+        if (isPersonal) 'is_personal': true,
         if (receiptPath != null && receiptPath.trim().isNotEmpty)
           'receipt_path': receiptPath,
       },
@@ -377,6 +379,7 @@ class WorkspaceRemoteMutationApi {
     String? subcategory,
     bool subcategorySet = true,
     int? paidBy,
+    bool? isPersonal,
     String? receiptPath,
     bool removeReceipt = false,
     String? clientMutationId,
@@ -409,6 +412,8 @@ class WorkspaceRemoteMutationApi {
         // Always sent: null removes the type, omitted keeps it (old queue).
         if (subcategorySet) 'subcategory': subcategory,
         'paid_by': ?paidBy,
+        // Omitted only by updates queued before personal expenses existed.
+        'is_personal': ?isPersonal,
         if (receiptPath != null && receiptPath.trim().isNotEmpty)
           'receipt_path': receiptPath,
         if (removeReceipt) 'remove_receipt': true,

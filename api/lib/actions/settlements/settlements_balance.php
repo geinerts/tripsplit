@@ -1,6 +1,9 @@
 <?php
 declare(strict_types=1);
 
+// Personal expenses stay out of balances: docs/api/personal-expenses.md.
+require_once __DIR__ . '/../../helpers/helper_personal_expense.php';
+
 function compute_trip_balance_data(PDO $pdo, int $tripId): array
 {
     $usersTable = table_name('users');
@@ -40,7 +43,7 @@ function compute_trip_balance_data(PDO $pdo, int $tripId): array
     $expensesStmt = $pdo->prepare(
         'SELECT id, amount, paid_by
          FROM ' . $expensesTable . '
-         WHERE trip_id = :trip_id
+         WHERE trip_id = :trip_id' . expense_group_only_sql($pdo, '') . '
          ORDER BY id ASC'
     );
     $expensesStmt->execute(['trip_id' => $tripId]);

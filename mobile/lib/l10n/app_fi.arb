@@ -2224,5 +2224,15 @@
   "quickSplitFromAction": "Quick splitistä",
   "quickSplitFromTitle": "Lisää Quick split",
   "quickSplitNoneForTrip": "Yhdessäkään Quick splitissä ei ole vain tämän matkan ihmisiä.",
-  "expenseSplitAmountFirst": "Syötä ensin summa tai valitse Riveittäin."
+  "expenseSplitAmountFirst": "Syötä ensin summa tai valitse Riveittäin.",
+  "expenseSplitPersonal": "Henkilökohtainen",
+  "expenseSplitPersonalHint": "Vain maksajalle. Ei kuulu matkan kokonaissummaan eikä velkoihin.",
+  "expenseFilterOnlyPersonal": "Vain henkilökohtaiset",
+  "expensePersonalLabel": "Henkilökohtainen kulu",
+  "expenseLockedPersonal": "Henkilökohtainen kulu",
+  "expensePersonalNoDebts": "Ei vaikuta velkoihin",
+  "expenseLockedExplain": "Vain sen lisännyt henkilö voi avata sen.",
+  "expensePersonalDetailsNote": "Henkilökohtainen: ei kuulu matkan kokonaissummaan eikä velkoihin. Muut näkevät vain summan.",
+  "workspacePersonalSpentLine": "Henkilökohtaiset {personal} · Yhteensä käytetty {total}",
+  "analyticsPersonalLine": "Henkilökohtaiset kulut {amount}"
 }

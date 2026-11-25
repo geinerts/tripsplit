@@ -53,6 +53,7 @@ class WorkspaceOfflineQueue {
     double extraAmount = 0,
     String? subcategory,
     int? paidBy,
+    bool isPersonal = false,
     String? receiptPath,
     String? mutationId,
   }) {
@@ -84,6 +85,7 @@ class WorkspaceOfflineQueue {
         if (extraAmount > 0) 'extra_amount': extraAmount,
         'subcategory': subcategory,
         'paid_by': ?paidBy,
+        if (isPersonal) 'is_personal': true,
         if (receiptPath != null && receiptPath.trim().isNotEmpty)
           'receipt_path': receiptPath,
       },
@@ -106,6 +108,7 @@ class WorkspaceOfflineQueue {
     double extraAmount = 0,
     String? subcategory,
     int? paidBy,
+    bool? isPersonal,
     String? receiptPath,
     bool removeReceipt = false,
     String? mutationId,
@@ -139,6 +142,7 @@ class WorkspaceOfflineQueue {
         if (extraAmount > 0) 'extra_amount': extraAmount,
         'subcategory': subcategory,
         'paid_by': ?paidBy,
+        'is_personal': ?isPersonal,
         if (receiptPath != null && receiptPath.trim().isNotEmpty)
           'receipt_path': receiptPath,
         if (removeReceipt) 'remove_receipt': true,
@@ -233,6 +237,7 @@ class WorkspaceOfflineQueue {
           extraAmount: (payload['extra_amount'] as num?)?.toDouble() ?? 0,
           subcategory: payload['subcategory'] as String?,
           paidBy: (payload['paid_by'] as num?)?.toInt(),
+          isPersonal: payload['is_personal'] == true,
           receiptPath: payload['receipt_path'] as String?,
           clientMutationId: mutationId,
         );
@@ -255,6 +260,8 @@ class WorkspaceOfflineQueue {
           // Updates queued by an older version keep the stored type.
           subcategorySet: payload.containsKey('subcategory'),
           paidBy: (payload['paid_by'] as num?)?.toInt(),
+          // Updates queued by an older version keep the stored flag.
+          isPersonal: payload['is_personal'] as bool?,
           receiptPath: payload['receipt_path'] as String?,
           removeReceipt: payload['remove_receipt'] == true,
           clientMutationId: mutationId,

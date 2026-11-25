@@ -22,6 +22,8 @@ class TripExpense {
     this.extraAmount = 0,
     this.subcategory,
     this.fromQuickSplit = false,
+    this.isPersonal = false,
+    this.isLocked = false,
   });
 
   final int id;
@@ -48,4 +50,11 @@ class TripExpense {
 
   /// Added to the trip from a quick split; shown with ⚡.
   final bool fromQuickSplit;
+
+  /// One person's own spending: out of the trip total and the debts.
+  final bool isPersonal;
+
+  /// Someone else's personal expense. The server sends only its amount, date
+  /// and payer, and it can't be opened.
+  final bool isLocked;
 }

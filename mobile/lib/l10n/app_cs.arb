@@ -2224,5 +2224,15 @@
   "quickSplitFromAction": "Z Quick split",
   "quickSplitFromTitle": "Přidat Quick split",
   "quickSplitNoneForTrip": "Žádný Quick split nemá jen lidi z tohoto výletu.",
-  "expenseSplitAmountFirst": "Nejdřív zadej částku, nebo zvol Podle položek."
+  "expenseSplitAmountFirst": "Nejdřív zadej částku, nebo zvol Podle položek.",
+  "expenseSplitPersonal": "Osobní",
+  "expenseSplitPersonalHint": "Jen pro toho, kdo platí. Nepočítá se do součtu výletu ani do dluhů.",
+  "expenseFilterOnlyPersonal": "Jen osobní",
+  "expensePersonalLabel": "Osobní výdaj",
+  "expenseLockedPersonal": "Osobní výdaj",
+  "expensePersonalNoDebts": "Neovlivňuje dluhy",
+  "expenseLockedExplain": "Otevřít ho může jen ten, kdo ho přidal.",
+  "expensePersonalDetailsNote": "Osobní: nepočítá se do součtu výletu ani do dluhů. Ostatní vidí jen částku.",
+  "workspacePersonalSpentLine": "Osobní {personal} · Celkem utraceno {total}",
+  "analyticsPersonalLine": "Osobní výdaje {amount}"
 }

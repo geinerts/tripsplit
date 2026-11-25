@@ -1788,7 +1788,7 @@ class AppLocalizationsSv extends AppLocalizations {
   }
 
   @override
-  String get yourShare => 'Din aktie';
+  String get yourShare => 'Din andel';
 
   @override
   String get yourTrips => 'Dina resor';
@@ -5585,4 +5585,38 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String get expenseSplitAmountFirst => 'Ange beloppet först eller välj Per rad.';
+
+  @override
+  String get expenseSplitPersonal => 'Personlig';
+
+  @override
+  String get expenseSplitPersonalHint => 'Bara för den som betalar. Ingår inte i resans totalsumma eller skulder.';
+
+  @override
+  String get expenseFilterOnlyPersonal => 'Bara personliga';
+
+  @override
+  String get expensePersonalLabel => 'Personlig utgift';
+
+  @override
+  String get expenseLockedPersonal => 'Personlig utgift';
+
+  @override
+  String get expensePersonalNoDebts => 'Påverkar inte skulder';
+
+  @override
+  String get expenseLockedExplain => 'Bara den som lade till den kan öppna den.';
+
+  @override
+  String get expensePersonalDetailsNote => 'Personlig: ingår inte i resans totalsumma eller skulder. Andra ser bara beloppet.';
+
+  @override
+  String workspacePersonalSpentLine(String personal, String total) {
+    return 'Personligt $personal · Totalt spenderat $total';
+  }
+
+  @override
+  String analyticsPersonalLine(String amount) {
+    return 'Personliga utgifter $amount';
+  }
 }

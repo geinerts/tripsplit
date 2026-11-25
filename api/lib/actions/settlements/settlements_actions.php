@@ -75,6 +75,7 @@ function balances_action(): void
         'settlement_progress' => $progress,
         'all_settled' => (bool) ($progress['all_settled'] ?? false),
         'ready_to_settle' => $readyToSettle,
+        'personal_total_cents' => personal_expense_total_cents($pdo, $tripId, (int) $me['id']),
     ]);
 }
 

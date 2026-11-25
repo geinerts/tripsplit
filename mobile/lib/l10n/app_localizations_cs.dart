@@ -5599,4 +5599,38 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get expenseSplitAmountFirst => 'Nejdřív zadej částku, nebo zvol Podle položek.';
+
+  @override
+  String get expenseSplitPersonal => 'Osobní';
+
+  @override
+  String get expenseSplitPersonalHint => 'Jen pro toho, kdo platí. Nepočítá se do součtu výletu ani do dluhů.';
+
+  @override
+  String get expenseFilterOnlyPersonal => 'Jen osobní';
+
+  @override
+  String get expensePersonalLabel => 'Osobní výdaj';
+
+  @override
+  String get expenseLockedPersonal => 'Osobní výdaj';
+
+  @override
+  String get expensePersonalNoDebts => 'Neovlivňuje dluhy';
+
+  @override
+  String get expenseLockedExplain => 'Otevřít ho může jen ten, kdo ho přidal.';
+
+  @override
+  String get expensePersonalDetailsNote => 'Osobní: nepočítá se do součtu výletu ani do dluhů. Ostatní vidí jen částku.';
+
+  @override
+  String workspacePersonalSpentLine(String personal, String total) {
+    return 'Osobní $personal · Celkem utraceno $total';
+  }
+
+  @override
+  String analyticsPersonalLine(String amount) {
+    return 'Osobní výdaje $amount';
+  }
 }
