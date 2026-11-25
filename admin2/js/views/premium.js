@@ -1,11 +1,11 @@
 // Premium is an expiring, audited grant, independent from paid subscriptions
 // (docs/api/trip-premium.md). Changes need verified 2FA and the X-Premium-CSRF token.
-import { API, get } from '../core/api.js?v=24';
-import { actionAttrs, html, setHtml } from '../core/html.js?v=24';
-import { registerActions, registerView } from '../core/router.js?v=24';
-import { can, state } from '../core/state.js?v=24';
-import { modal, toast } from '../core/ui.js?v=24';
-import { openUserDetail } from './users.js?v=24';
+import { API, get } from '../core/api.js?v=25';
+import { actionAttrs, html, setHtml } from '../core/html.js?v=25';
+import { registerActions, registerView } from '../core/router.js?v=25';
+import { can, state } from '../core/state.js?v=25';
+import { modal, sectionTabs, toast } from '../core/ui.js?v=25';
+import { openUserDetail } from './users.js?v=25';
 
 function premiumDate(value) {
   if (!value) return '-';
@@ -53,10 +53,11 @@ export function premiumDetailHtml(premium, user) {
 
 for (const kind of ['premium', 'partners']) {
   registerView(kind, {
-    title: kind === 'premium' ? 'Premium' : 'Partners',
+    title: 'Premium',
+    nav: 'premium',
     async render() {
       if (!can('superadmin', 'admin')) throw new Error('Access denied.');
-      return html`<div class="toolbar"><input class="form-input" id="premium-search" type="search" placeholder="Search ${kind}" aria-label="Search ${kind}">
+      return html`${sectionTabs([['premium', 'Grants'], ['partners', 'Partners']], kind)}<div class="toolbar"><input class="form-input" id="premium-search" type="search" placeholder="Search ${kind}" aria-label="Search ${kind}">
         ${kind === 'premium' ? html`<select class="form-input" id="premium-status" aria-label="Status"><option value="active">Active</option><option value="expiring">Expiring in 14 days</option><option value="expired">Expired</option><option value="revoked">Revoked</option><option value="all">All</option></select>` : ''}
         <button class="btn btn-ghost" id="premium-filter">Filter</button>
         ${kind === 'partners' ? html`<button class="btn btn-primary" id="partner-create" hidden>Add partner</button>` : ''}</div>

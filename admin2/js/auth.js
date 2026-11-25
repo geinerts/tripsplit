@@ -1,10 +1,10 @@
 // Login, mandatory 2FA (verify or first enrolment) and logout.
 // The server decides every step; this only shows the matching card.
-import { get, post } from './core/api.js?v=24';
-import { openCurrentRoute } from './core/router.js?v=24';
-import { state } from './core/state.js?v=24';
-import { toast } from './core/ui.js?v=24';
-import { pollIncidents, showApp } from './shell.js?v=24';
+import { get, post } from './core/api.js?v=25';
+import { openCurrentRoute } from './core/router.js?v=25';
+import { state } from './core/state.js?v=25';
+import { toast } from './core/ui.js?v=25';
+import { pollIncidents, showApp } from './shell.js?v=25';
 
 const $ = id => document.getElementById(id);
 

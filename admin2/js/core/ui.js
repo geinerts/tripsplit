@@ -1,4 +1,4 @@
-import { html, setHtml } from './html.js?v=24';
+import { actionAttrs, html, setHtml } from './html.js?v=25';
 
 // ── Toast ─────────────────────────────────────────────────────────────────────
 
@@ -90,6 +90,40 @@ export function formatBytes(bytes) {
   let unit = 0;
   while (value >= 1024 && unit < units.length - 1) { value /= 1024; unit += 1; }
   return `${value.toFixed(value >= 10 || unit === 0 ? 0 : 1)} ${units[unit]}`;
+}
+
+function parseServerTime(raw) {
+  const iso = String(raw).replace(' ', 'T');
+  return new Date(iso.includes('Z') || iso.includes('+') ? iso : iso + 'Z');
+}
+
+// Relative time with the exact local date and time on hover.
+export function timeAgo(raw) {
+  if (!raw) return html`<span>—</span>`;
+  const date = parseServerTime(raw);
+  const exact = Number.isNaN(date.getTime()) ? String(raw)
+    : date.toLocaleString('lv-LV', { dateStyle: 'medium', timeStyle: 'short' });
+  return html`<time datetime="${Number.isNaN(date.getTime()) ? '' : date.toISOString()}" title="${exact}">${relTime(raw)}</time>`;
+}
+
+// "Today", "Yesterday" or the date, for grouping log entries by local day.
+export function dayLabel(raw) {
+  if (!raw) return '—';
+  const date = parseServerTime(raw);
+  const day = d => new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime();
+  const diff = Math.round((day(new Date()) - day(date)) / 86400000);
+  if (diff === 0) return 'Today';
+  if (diff === 1) return 'Yesterday';
+  return date.toLocaleDateString('lv-LV', { day: '2-digit', month: '2-digit', year: 'numeric' });
+}
+
+// Tabs between related views that share one sidebar item, e.g. Logs.
+// items: [view, label, allowed = true]; each is a real view with its own address.
+export function sectionTabs(items, current) {
+  const visible = items.filter(([, , allowed = true]) => allowed);
+  if (visible.length < 2) return '';
+  return html`<nav class="tabs section-tabs" aria-label="Section">${visible.map(([view, label]) => html`
+    <button type="button" class="tab" ${view === current ? html`aria-current="page"` : ''} ${actionAttrs('navigate', view)}>${label}</button>`)}</nav>`;
 }
 
 // Colour family for audit actions and app event types; maps to .text-* / .bg-* classes.

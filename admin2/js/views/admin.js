@@ -1,16 +1,16 @@
 // Admin accounts, admin sessions and the signed-in admin's own 2FA.
-import { get, post } from '../core/api.js?v=24';
-import { actionAttrs, html } from '../core/html.js?v=24';
-import { navigate, registerActions, registerView } from '../core/router.js?v=24';
-import { state } from '../core/state.js?v=24';
-import { askInModal, modal, relTime, roleBadge, toast } from '../core/ui.js?v=24';
+import { get, post } from '../core/api.js?v=25';
+import { actionAttrs, html } from '../core/html.js?v=25';
+import { navigate, registerActions, registerView } from '../core/router.js?v=25';
+import { state } from '../core/state.js?v=25';
+import { askInModal, modal, relTime, roleBadge, sectionTabs, toast } from '../core/ui.js?v=25';
 
 const ROLES = ['readonly', 'support', 'ops', 'admin', 'superadmin'];
 
 // ── Admin users ───────────────────────────────────────────────────────────────
 
 registerView('admin-users', {
-  title: 'Admin Users',
+  title: 'Admin users',
   async render() {
     const res = await get('admin_panel_admin_users');
     if (!res.ok) return html`<div class="empty-state">Access denied or error: ${res.error}</div>`;
@@ -127,12 +127,16 @@ async function deleteAdminUser(id, username) {
 
 // ── Admin sessions ────────────────────────────────────────────────────────────
 
+const ACCOUNT_TABS = [['my-account', 'Profile'], ['sessions', 'Admin sessions']];
+
 registerView('sessions', {
-  title: 'Active Sessions',
+  title: 'My account',
+  nav: 'my-account',
   async render() {
+    const tabs = sectionTabs(ACCOUNT_TABS, 'sessions');
     const res = await get('admin_panel_active_sessions');
-    if (!res.ok) return html`<div class="empty-state">Error: ${res.error}</div>`;
-    if (!res.sessions.length) return html`<div class="empty-state">No active sessions found.</div>`;
+    if (!res.ok) return html`${tabs}<div class="empty-state">Error: ${res.error}</div>`;
+    if (!res.sessions.length) return html`${tabs}<div class="empty-state">No active sessions found.</div>`;
 
     const rows = res.sessions.map(s => html`
       <tr class="${s.is_current ? 'current-row' : ''}">
@@ -150,6 +154,7 @@ registerView('sessions', {
     `);
 
     return html`
+      ${tabs}
       <div class="table-wrap">
         <table>
           <thead><tr><th>User</th><th>Role</th><th>IP</th><th>User agent</th><th>2FA</th><th>Last active</th><th></th></tr></thead>
@@ -171,10 +176,11 @@ async function revokeSession(sessionId) {
 // ── My account ────────────────────────────────────────────────────────────────
 
 registerView('my-account', {
-  title: 'My Account',
+  title: 'My account',
   async render() {
     const u = state.user;
     return html`
+      ${sectionTabs(ACCOUNT_TABS, 'my-account')}
       <div class="card narrow">
         <div class="card-title">Profile</div>
         <div class="detail-row"><span class="detail-label">Username</span><span class="detail-value">${u?.username}</span></div>

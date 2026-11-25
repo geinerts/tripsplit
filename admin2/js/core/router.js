@@ -1,14 +1,15 @@
-import { html, setHtml } from './html.js?v=24';
-import { state } from './state.js?v=24';
-import { modal, toast } from './ui.js?v=24';
+import { html, setHtml } from './html.js?v=25';
+import { state } from './state.js?v=25';
+import { modal, toast } from './ui.js?v=25';
 
 // ── Views ─────────────────────────────────────────────────────────────────────
 
 const views = {};
 
 // render() returns html`` markup (or a promise of it); init() wires listeners afterwards.
-export function registerView(name, { title, render, init }) {
-  views[name] = { title, render, init };
+// nav: the sidebar item to highlight when the view shares one (default: name).
+export function registerView(name, { title, render, init, nav = name }) {
+  views[name] = { title, render, init, nav };
 }
 
 export function setContent(content) {
@@ -79,11 +80,11 @@ export function navigate(name, data = {}, { history: mode = 'push' } = {}) {
 
   closeSidebar();
 
+  const v = views[name];
   document.querySelectorAll('.nav-item').forEach(el => {
-    el.classList.toggle('active', el.dataset.view === name);
+    el.classList.toggle('active', el.dataset.view === (v?.nav ?? name));
   });
 
-  const v = views[name];
   if (!v) { setContent(html`<div class="empty-state">Unknown view.</div>`); return; }
 
   document.getElementById('page-title').textContent = v.title;

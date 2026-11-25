@@ -19,7 +19,9 @@ only hides controls a role cannot use.
 | `js/core/router.js` | `registerView`, `navigate`, click actions (`registerActions`). Every view has an address (`#/users`, `#/users/12?tab=trips`), so reload, back and copied links keep the place. |
 | `js/shell.js` | Sidebar by role, topbar clock, open-incident count. |
 | `js/auth.js` | Login, 2FA, enrolment, logout and boot. |
-| `js/views/*.js` | One file per area: dashboard, users, features, premium, operations (system, push, incidents), logs (security, audit, app events), admin (admin users, sessions, my account). |
+| `js/views/*.js` | One file per area: dashboard (Today and Growth), users (list and the user page with tabs), features, premium, operations (system, push, incidents), logs (app activity, admin actions, security, with plain-language descriptions), admin (admin users, sessions, my account). |
+
+Related views share one sidebar item and switch with section tabs (`sectionTabs` in `ui.js`, `nav` in `registerView`): Premium (grants, partners), System & push, Logs, My account (profile, admin sessions). **Today** lists only what needs attention (incidents, failed or late jobs, disk, security limits, push failures, AI budget), checked as far as the admin's role allows; **Growth** holds the statistics. The top-bar search opens `#/users?q=…`, or a user page for a number.
 | `app.css` | All styles. The last section holds the classes that replaced inline styles. |
 
 Server side: `api/lib/actions/admin_panel_actions.php` loads the actions from

@@ -1,10 +1,10 @@
-import { get, post } from '../core/api.js?v=24';
-import { actionAttrs, html, join, setHtml } from '../core/html.js?v=24';
-import { navigate, registerActions, registerView, reloadView, routePath } from '../core/router.js?v=24';
-import { can, state } from '../core/state.js?v=24';
-import { askInModal, relTime, statusBadge, toast } from '../core/ui.js?v=24';
-import { userFeaturesHtml } from './features.js?v=24';
-import { premiumDetailHtml } from './premium.js?v=24';
+import { get, post } from '../core/api.js?v=25';
+import { actionAttrs, html, join, setHtml } from '../core/html.js?v=25';
+import { navigate, registerActions, registerView, reloadView, routePath } from '../core/router.js?v=25';
+import { can, state } from '../core/state.js?v=25';
+import { askInModal, relTime, statusBadge, toast } from '../core/ui.js?v=25';
+import { userFeaturesHtml } from './features.js?v=25';
+import { premiumDetailHtml } from './premium.js?v=25';
 
 // Remembered per browser; falls back to the list when storage is unavailable.
 function usersLayout() {
@@ -24,7 +24,7 @@ const usersState = { offset: 0 };
 registerView('users', {
   title: 'Users',
   render(data) {
-    return data.id ? renderUserPage(data) : renderUserList();
+    return data.id ? renderUserPage(data) : renderUserList(data);
   },
   init(data) {
     if (data.id) initUserPage();
@@ -32,13 +32,13 @@ registerView('users', {
   },
 });
 
-async function renderUserList() {
+async function renderUserList(data) {
   const layout = usersLayout();
   const option = (value, label) => html`<option value="${value}">${label}</option>`;
   return html`
     <div class="toolbar">
       <div class="toolbar-search">
-        <input type="search" id="user-search-inp" placeholder="Search by name or email…" aria-label="Search users"/>
+        <input type="search" id="user-search-inp" placeholder="Search by name or email…" aria-label="Search users" value="${data.q || ''}"/>
       </div>
       <button class="btn btn-ghost btn-sm" id="user-search-btn">Search</button>
       <div class="segmented" role="group" aria-label="Layout">
@@ -159,7 +159,13 @@ export async function userSearch(offset = 0) {
   if (!results) return;
   setHtml(results, html`<div class="loading-state"><span class="spinner"></span></div>`);
 
-  const res = await get('admin_panel_user_search', userSearchQuery(offset));
+  const query = userSearchQuery(offset);
+  // Keep the search text in the address so reload and back return to the same results.
+  if (state.view === 'users' && !state.viewData.id) {
+    state.viewData = query.q ? { q: query.q } : {};
+    history.replaceState(null, '', routePath('users', state.viewData));
+  }
+  const res = await get('admin_panel_user_search', query);
   if (!res.ok) { setHtml(results, html`<div class="empty-state">Error: ${res.error}</div>`); return; }
   if (!res.users.length) { setHtml(results, html`<div class="empty-state">No users found.</div>`); return; }
 

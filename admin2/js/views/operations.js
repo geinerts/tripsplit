@@ -1,10 +1,10 @@
 // System health, push queue and incidents.
-import { get, post } from '../core/api.js?v=24';
-import { actionAttrs, html, setHtml } from '../core/html.js?v=24';
-import { navigate, registerActions, registerView } from '../core/router.js?v=24';
-import { can } from '../core/state.js?v=24';
-import { formatBytes, modal, relTime, sevBadge, statusBadge, toast } from '../core/ui.js?v=24';
-import { pollIncidents } from '../shell.js?v=24';
+import { get, post } from '../core/api.js?v=25';
+import { actionAttrs, html, setHtml } from '../core/html.js?v=25';
+import { navigate, registerActions, registerView } from '../core/router.js?v=25';
+import { can } from '../core/state.js?v=25';
+import { formatBytes, modal, relTime, sectionTabs, sevBadge, statusBadge, timeAgo, toast } from '../core/ui.js?v=25';
+import { pollIncidents } from '../shell.js?v=25';
 
 // ── System health (api/lib/helpers/helper_ops_status.php) ─────────────────────
 
@@ -18,8 +18,10 @@ function jobDetails(details) {
     .join(' · ');
 }
 
+const OPS_TABS = [['system', 'Health'], ['push-queue', 'Push queue']];
+
 registerView('system', {
-  title: 'System',
+  title: 'Operations',
   async render() {
     const res = await get('admin_panel_system_health');
     if (!res.ok) return html`<div class="empty-state">${res.error || 'Failed to load system health.'}</div>`;
@@ -49,6 +51,7 @@ registerView('system', {
     });
 
     return html`
+      ${sectionTabs(OPS_TABS, 'system')}
       <div class="stats-grid">
         <div class="stat-card ${problems ? 'red' : 'green'}">
           <div class="stat-label">Scheduled jobs</div>
@@ -95,7 +98,8 @@ registerView('system', {
 // ── Push queue ────────────────────────────────────────────────────────────────
 
 registerView('push-queue', {
-  title: 'Push Queue',
+  title: 'Operations',
+  nav: 'system',
   async render() {
     const res = await get('admin_panel_push_queue', { limit: 50 });
     if (!res.ok) return html`<div class="empty-state">Failed: ${res.error}</div>`;
@@ -126,6 +130,7 @@ registerView('push-queue', {
     `);
 
     return html`
+      ${sectionTabs(OPS_TABS, 'push-queue')}
       <div class="stats-grid compact">
         ${healthCards.length ? healthCards : html`<div class="empty-state">No queue data</div>`}
       </div>
@@ -184,7 +189,7 @@ async function loadIncidents() {
         ${inc.body.slice(0,100)}${inc.body.length>100?'…':''}
       </div>
       <div class="data-row-meta split">
-        <span>${inc.admin_username} · ${relTime(inc.created_at)}</span>
+        <span>${inc.admin_username} · ${timeAgo(inc.created_at)}</span>
         ${inc.status !== 'resolved' && can('superadmin','admin','ops') ? html`
           <div class="btn-row">
             <button class="btn btn-ghost btn-sm" ${actionAttrs('updateIncident', inc.id, 'investigating')}>Investigate</button>
