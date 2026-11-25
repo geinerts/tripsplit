@@ -16,7 +16,7 @@ only hides controls a role cannot use.
 | `js/core/api.js` | `get`/`post` for admin actions. |
 | `js/core/state.js` | Signed-in admin and current view; `can(...roles)`. |
 | `js/core/ui.js` | Toast, modal, `askInModal`, badges, time and byte formatting. |
-| `js/core/router.js` | `registerView`, `navigate`, click actions (`registerActions`). |
+| `js/core/router.js` | `registerView`, `navigate`, click actions (`registerActions`). Every view has an address (`#/users`, `#/users/12?tab=trips`), so reload, back and copied links keep the place. |
 | `js/shell.js` | Sidebar by role, topbar clock, open-incident count. |
 | `js/auth.js` | Login, 2FA, enrolment, logout and boot. |
 | `js/views/*.js` | One file per area: dashboard, users, features, premium, operations (system, push, incidents), logs (security, audit, app events), admin (admin users, sessions, my account). |

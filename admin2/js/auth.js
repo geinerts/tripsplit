@@ -1,10 +1,10 @@
 // Login, mandatory 2FA (verify or first enrolment) and logout.
 // The server decides every step; this only shows the matching card.
-import { get, post } from './core/api.js?v=23';
-import { navigate } from './core/router.js?v=23';
-import { state } from './core/state.js?v=23';
-import { toast } from './core/ui.js?v=23';
-import { pollIncidents, showApp } from './shell.js?v=23';
+import { get, post } from './core/api.js?v=24';
+import { openCurrentRoute } from './core/router.js?v=24';
+import { state } from './core/state.js?v=24';
+import { toast } from './core/ui.js?v=24';
+import { pollIncidents, showApp } from './shell.js?v=24';
 
 const $ = id => document.getElementById(id);
 
@@ -37,7 +37,7 @@ async function enterApp() {
   if (!sessRes.full_auth) { showAuth(sessRes.requires_2fa_enrollment ? 'enroll' : 'login'); return; }
   state.user = sessRes.user;
   showApp();
-  navigate('dashboard');
+  openCurrentRoute();
   pollIncidents();
 }
 
@@ -163,6 +163,6 @@ export async function boot() {
   if (sessState === 'needs_2fa') { showAuth('2fa'); return; }
   if (!sessState) { showAuth('login'); return; }
   showApp();
-  navigate('dashboard');
+  openCurrentRoute();
   pollIncidents();
 }

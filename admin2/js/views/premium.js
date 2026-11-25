@@ -1,11 +1,11 @@
 // Premium is an expiring, audited grant, independent from paid subscriptions
 // (docs/api/trip-premium.md). Changes need verified 2FA and the X-Premium-CSRF token.
-import { API, get } from '../core/api.js?v=23';
-import { actionAttrs, html, setHtml } from '../core/html.js?v=23';
-import { registerActions, registerView } from '../core/router.js?v=23';
-import { can, state } from '../core/state.js?v=23';
-import { modal, toast } from '../core/ui.js?v=23';
-import { openUserDetail } from './users.js?v=23';
+import { API, get } from '../core/api.js?v=24';
+import { actionAttrs, html, setHtml } from '../core/html.js?v=24';
+import { registerActions, registerView } from '../core/router.js?v=24';
+import { can, state } from '../core/state.js?v=24';
+import { modal, toast } from '../core/ui.js?v=24';
+import { openUserDetail } from './users.js?v=24';
 
 function premiumDate(value) {
   if (!value) return '-';

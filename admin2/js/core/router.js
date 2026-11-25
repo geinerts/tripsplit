@@ -1,6 +1,6 @@
-import { html, setHtml } from './html.js?v=23';
-import { state } from './state.js?v=23';
-import { modal, toast } from './ui.js?v=23';
+import { html, setHtml } from './html.js?v=24';
+import { state } from './state.js?v=24';
+import { modal, toast } from './ui.js?v=24';
 
 // ── Views ─────────────────────────────────────────────────────────────────────
 
@@ -46,10 +46,36 @@ document.getElementById('sidebar-overlay').addEventListener('click', closeSideba
 
 // ── Navigation ────────────────────────────────────────────────────────────────
 
-export function navigate(name, data = {}) {
+// Every view has an address: #/name, #/name/id or #/name/id?key=value, so a
+// reload, the back button and a copied link all land on the same view.
+export function routePath(name, data = {}) {
+  const { id, ...rest } = data;
+  const query = new URLSearchParams(Object.entries(rest)
+    .filter(([, value]) => value !== undefined && value !== null && value !== '')).toString();
+  const idPart = id !== undefined && id !== null && id !== '' ? `/${encodeURIComponent(id)}` : '';
+  return `#/${name}${idPart}${query ? `?${query}` : ''}`;
+}
+
+export function parseRoute(hash) {
+  const match = /^#\/([a-z0-9-]+)(?:\/([^/?]+))?(?:\?(.*))?$/i.exec(hash || '');
+  if (!match) return null;
+  const data = Object.fromEntries(new URLSearchParams(match[3] || ''));
+  if (match[2]) data.id = decodeURIComponent(match[2]);
+  return { name: match[1], data };
+}
+
+// history: 'push' adds a browser history entry, 'replace' rewrites the current
+// one, 'none' leaves the address alone (back/forward already changed it).
+export function navigate(name, data = {}, { history: mode = 'push' } = {}) {
   const navigationId = ++state.navigationId;
   state.view     = name;
   state.viewData = data;
+
+  const path = routePath(name, data);
+  if (mode !== 'none' && location.hash !== path) {
+    if (mode === 'replace') history.replaceState(null, '', path);
+    else history.pushState(null, '', path);
+  }
 
   closeSidebar();
 
@@ -76,6 +102,26 @@ export function navigate(name, data = {}) {
       setContent(html`<div class="empty-state">Error: ${err.message}</div>`);
     });
 }
+
+// Opens the view in the address bar, or the dashboard when there is none.
+export function openCurrentRoute() {
+  const route = parseRoute(location.hash);
+  if (route && views[route.name]) return navigate(route.name, route.data, { history: 'replace' });
+  return navigate('dashboard', {}, { history: 'replace' });
+}
+
+// Re-renders the current view without a new history entry.
+export function reloadView() {
+  return navigate(state.view, state.viewData, { history: 'replace' });
+}
+
+window.addEventListener('popstate', () => {
+  if (!state.user) return;
+  modal.close();
+  const route = parseRoute(location.hash);
+  if (route && views[route.name]) navigate(route.name, route.data, { history: 'none' });
+  else navigate('dashboard', {}, { history: 'replace' });
+});
 
 document.querySelectorAll('.nav-item[data-view]').forEach(el => {
   el.addEventListener('click', () => navigate(el.dataset.view));

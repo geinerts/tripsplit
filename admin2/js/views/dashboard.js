@@ -1,7 +1,7 @@
-import { get } from '../core/api.js?v=23';
-import { actionAttrs, html } from '../core/html.js?v=23';
-import { registerView } from '../core/router.js?v=23';
-import { auditTone, eventTone, relTime, sevBadge, statusBadge } from '../core/ui.js?v=23';
+import { get } from '../core/api.js?v=24';
+import { actionAttrs, html } from '../core/html.js?v=24';
+import { registerView } from '../core/router.js?v=24';
+import { auditTone, eventTone, relTime, sevBadge, statusBadge } from '../core/ui.js?v=24';
 
 // Monthly totals of feature use (docs/api/feature-usage-counters.md), not people.
 export function renderFeatureUsage(usage) {

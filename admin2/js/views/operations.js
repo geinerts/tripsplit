@@ -1,10 +1,10 @@
 // System health, push queue and incidents.
-import { get, post } from '../core/api.js?v=23';
-import { actionAttrs, html, setHtml } from '../core/html.js?v=23';
-import { navigate, registerActions, registerView } from '../core/router.js?v=23';
-import { can } from '../core/state.js?v=23';
-import { formatBytes, modal, relTime, sevBadge, statusBadge, toast } from '../core/ui.js?v=23';
-import { pollIncidents } from '../shell.js?v=23';
+import { get, post } from '../core/api.js?v=24';
+import { actionAttrs, html, setHtml } from '../core/html.js?v=24';
+import { navigate, registerActions, registerView } from '../core/router.js?v=24';
+import { can } from '../core/state.js?v=24';
+import { formatBytes, modal, relTime, sevBadge, statusBadge, toast } from '../core/ui.js?v=24';
+import { pollIncidents } from '../shell.js?v=24';
 
 // ── System health (api/lib/helpers/helper_ops_status.php) ─────────────────────
 

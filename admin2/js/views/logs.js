@@ -1,8 +1,8 @@
 // Security overview, admin audit log and app events.
-import { get } from '../core/api.js?v=23';
-import { actionAttrs, html, setHtml } from '../core/html.js?v=23';
-import { registerActions, registerView } from '../core/router.js?v=23';
-import { auditTone, eventTone, relTime } from '../core/ui.js?v=23';
+import { get } from '../core/api.js?v=24';
+import { actionAttrs, html, setHtml } from '../core/html.js?v=24';
+import { registerActions, registerView } from '../core/router.js?v=24';
+import { auditTone, eventTone, relTime } from '../core/ui.js?v=24';
 
 // ── Security ──────────────────────────────────────────────────────────────────
 

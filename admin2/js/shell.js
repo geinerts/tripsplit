@@ -1,8 +1,8 @@
 // The signed-in frame: sidebar by role, topbar clock and the open-incident count.
-import { get } from './core/api.js?v=23';
-import { html, appendHtml } from './core/html.js?v=23';
-import { navigate } from './core/router.js?v=23';
-import { can, state } from './core/state.js?v=23';
+import { get } from './core/api.js?v=24';
+import { html, appendHtml } from './core/html.js?v=24';
+import { navigate } from './core/router.js?v=24';
+import { can, state } from './core/state.js?v=24';
 
 function updateClock() {
   const el = document.getElementById('topbar-time');

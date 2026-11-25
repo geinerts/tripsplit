@@ -1,10 +1,10 @@
 // Feature flags (docs/api/feature-flags.md) and the receipt AI budget.
-import { get, post } from '../core/api.js?v=23';
-import { actionAttrs, html } from '../core/html.js?v=23';
-import { navigate, registerActions, registerView } from '../core/router.js?v=23';
-import { can, state } from '../core/state.js?v=23';
-import { askInModal, relTime, toast } from '../core/ui.js?v=23';
-import { openUserDetail } from './users.js?v=23';
+import { get, post } from '../core/api.js?v=24';
+import { actionAttrs, html } from '../core/html.js?v=24';
+import { navigate, registerActions, registerView } from '../core/router.js?v=24';
+import { can, state } from '../core/state.js?v=24';
+import { askInModal, relTime, toast } from '../core/ui.js?v=24';
+import { openUserDetail } from './users.js?v=24';
 
 const FEATURE_MODE_LABELS = { off: 'Off for everyone', allowlist: 'Allowed accounts only', everyone: 'Everyone' };
 const FEATURE_MODE_BADGES = { off: 'badge-gray', allowlist: 'badge-amber', everyone: 'badge-green' };

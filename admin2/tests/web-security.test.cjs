@@ -217,10 +217,14 @@ test('admin actions render and operate under CSP without executing untrusted dat
     await page.waitForFunction(() => document.querySelector('.pagination')?.textContent.includes('Showing 41'));
     assert.ok(requests.some(r => r.action === 'admin_panel_user_search' && r.offset === '40'));
     await page.locator('[data-action="openUserDetail"]').click();
-    await page.locator('#modal-body [data-action="deleteUser"]').waitFor();
-    assert.equal(await page.locator('#modal-title').textContent(), 'User: ' + name);
-    await page.locator('[data-action="closeModal"]').click();
-    assert.equal(await page.locator('#modal-backdrop.open').count(), 0);
+    await page.locator('#page-content [data-action="deleteUser"]').waitFor();
+    assert.equal(await page.locator('.user-page-name').textContent(), name);
+    await page.locator('.back-link').click();
+    await page.locator('#user-results').waitFor();
+    // A crafted address cannot inject markup or open an unregistered view.
+    await page.evaluate(() => { location.hash = '#/<img src=x onerror=window.xss=4>'; });
+    await page.evaluate(() => { location.hash = '#/users/%3Cimg%20src%3Dx%20onerror%3Dwindow.xss%3D5%3E'; });
+    await page.locator('.user-page-head').waitFor();
     await page.evaluate(() => admin.navigate('admin-users'));
     await page.locator('[data-action="editAdminUser"]').click();
     assert.equal(await page.locator('#modal-title').textContent(), 'Edit: ' + name);

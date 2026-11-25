@@ -1,4 +1,4 @@
-import { html, setHtml } from './html.js?v=23';
+import { html, setHtml } from './html.js?v=24';
 
 // ── Toast ─────────────────────────────────────────────────────────────────────
 

@@ -113,14 +113,27 @@ for (const width of [1280, 390]) {
       await page.evaluate(() => admin.navigate('users'));
       await page.locator('.user-card').first().waitFor();
 
-      // User detail: devices, timeline and sign out everywhere.
+      // User page: its own address, tabs, reload and the back button keep the place.
       await page.locator('.user-card [data-action="openUserDetail"]').first().click();
-      await page.locator('.user-timeline').waitFor();
-      assert.ok((await page.locator('#modal-body').textContent()).includes('3 members'));
+      await page.locator('.user-page-head').waitFor();
+      assert.equal(await page.evaluate(() => location.hash), '#/users/12');
+      assert.equal(await page.locator('#user-panel-overview .danger-zone [data-action="deleteUser"]').count(), 1);
+      await page.getByRole('tab', { name: /^Trips/ }).click();
+      assert.ok((await page.locator('#user-panel-trips').textContent()).includes('3 members'));
+      await page.getByRole('tab', { name: /^Activity/ }).click();
+      assert.equal(await page.evaluate(() => location.hash), '#/users/12?tab=activity');
+      await page.reload();
+      await page.locator('#user-panel-activity .user-timeline').waitFor();
+      await exposeAdmin(page);
+      assert.equal(await page.locator('#user-panel-trips').isHidden(), true);
+      assert.ok(await noOverflow(page));
       await page.click('[data-action="signOutEverywhere"]');
       await page.locator('#modal-footer [type="submit"]').click();
       await page.waitForFunction(() => [...document.querySelectorAll('.toast')].some(t => t.textContent.includes('1 session(s) signed out')));
       assert.deepEqual(requests.find(r => r.action === 'admin_panel_user_sign_out_everywhere').body, { user_id: 12 });
+      await page.goBack();
+      await page.locator('#user-results .user-card').first().waitFor();
+      assert.equal(await page.evaluate(() => location.hash), '#/users');
 
       // System health: states are labelled, not colour only.
       await page.evaluate(() => admin.navigate('system'));

@@ -1,9 +1,9 @@
 // Admin accounts, admin sessions and the signed-in admin's own 2FA.
-import { get, post } from '../core/api.js?v=23';
-import { actionAttrs, html } from '../core/html.js?v=23';
-import { navigate, registerActions, registerView } from '../core/router.js?v=23';
-import { state } from '../core/state.js?v=23';
-import { askInModal, modal, relTime, roleBadge, toast } from '../core/ui.js?v=23';
+import { get, post } from '../core/api.js?v=24';
+import { actionAttrs, html } from '../core/html.js?v=24';
+import { navigate, registerActions, registerView } from '../core/router.js?v=24';
+import { state } from '../core/state.js?v=24';
+import { askInModal, modal, relTime, roleBadge, toast } from '../core/ui.js?v=24';
 
 const ROLES = ['readonly', 'support', 'ops', 'admin', 'superadmin'];
 

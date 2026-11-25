@@ -1322,3 +1322,47 @@ tbody td:first-child { color: var(--fg); }
 .secret-intro { color: var(--fg-dim); font-size: 13px; margin-bottom: 16px; }
 tr.current-row { background: var(--green-dim); }
 .ua-cell { font-size: 11px; color: var(--fg-muted); max-width: 160px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* ── User page (#/users/<id>) ──────────────────────────────────────────────── */
+.back-link {
+  background: none; border: 0; padding: 0; margin-bottom: 14px; cursor: pointer;
+  color: var(--fg-dim); font: inherit; font-size: 13px;
+}
+.back-link:hover, .back-link:focus-visible { color: var(--fg); }
+.user-page-head {
+  display: flex; align-items: center; gap: 14px; flex-wrap: wrap; margin-bottom: 18px;
+}
+.user-page-head .user-avatar { margin: 0; }
+.user-page-name { font-size: 20px; font-weight: 700; color: var(--fg); overflow-wrap: anywhere; }
+.user-page-actions { display: flex; flex-wrap: wrap; gap: 8px; width: 100%; }
+@media (min-width: 900px) { .user-page-actions { width: auto; } }
+
+.tabs {
+  display: flex; gap: 4px; overflow-x: auto; margin-bottom: 16px;
+  border-bottom: 1px solid var(--border); scrollbar-width: none;
+}
+.tab {
+  background: none; border: 0; border-bottom: 2px solid transparent; margin-bottom: -1px;
+  padding: 10px 14px; color: var(--fg-dim); font: inherit; font-size: 13.5px; font-weight: 600;
+  cursor: pointer; white-space: nowrap;
+}
+.tab:hover { color: var(--fg); }
+.tab[aria-selected="true"] { color: var(--fg); border-bottom-color: var(--green); }
+.tab:focus-visible { outline: 2px solid var(--green-border); outline-offset: -2px; }
+.tab-count {
+  display: inline-block; min-width: 18px; padding: 0 6px; margin-left: 4px; border-radius: 9px;
+  background: var(--bg-card-2); color: var(--fg-dim); font-size: 11px; line-height: 18px; text-align: center;
+}
+.tab-panel .card { margin-bottom: 16px; }
+
+.danger-zone {
+  border: 1px solid rgba(239, 68, 68, 0.35); border-radius: var(--radius); padding: 6px 18px; margin-bottom: 16px;
+}
+.danger-zone h3 { color: var(--red); font-size: 13px; text-transform: uppercase; letter-spacing: 0.3px; margin: 10px 0 2px; }
+.danger-row {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 0;
+  border-top: 1px solid var(--border-soft);
+}
+.danger-row:first-of-type { border-top: 0; }
+.danger-row p { color: var(--fg-muted); font-size: 12px; margin-top: 2px; }
+.danger-row .btn { flex-shrink: 0; }

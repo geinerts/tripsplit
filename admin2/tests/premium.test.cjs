@@ -63,6 +63,9 @@ for (const viewport of [{width:1280,height:900}, {width:390,height:844}]) {
       await page.locator('#modal-backdrop').waitFor({state:'hidden'});
       assert.equal(await page.locator('#premium-results tbody td').first().textContent(),hostile);
       await page.evaluate(() => admin.openUserDetail(7));
+      assert.equal(await page.evaluate(()=>location.hash),'#/users/7');
+      await page.getByRole('tab',{name:'Premium'}).click();
+      assert.equal(await page.evaluate(()=>location.hash),'#/users/7?tab=premium');
       await page.getByRole('button',{name:'Grant Premium',exact:true}).click();
       await page.locator('[name="source"]').selectOption('partner');
       await page.locator('[name="partner_id"]').selectOption('1');
@@ -80,7 +83,7 @@ for (const viewport of [{width:1280,height:900}, {width:390,height:844}]) {
       assert.equal(creates[0].partner_id,1);
       await page.screenshot({path:`/tmp/splyto-premium-admin-${viewport.width}.png`,fullPage:true});
       assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth > innerWidth),false);
-      assert.equal(await page.locator('#modal-body img').count(),0);
+      assert.equal(await page.locator('#page-content img, #modal-body img').count(),0);
       await page.getByRole('button',{name:'Extend',exact:true}).click();
       await page.locator('[name="reason"]').fill('Extended collaboration');
       await page.locator('#premium-form [type="submit"]').click();
@@ -91,13 +94,13 @@ for (const viewport of [{width:1280,height:900}, {width:390,height:844}]) {
       await page.getByRole('heading',{name:'Free',exact:true}).waitFor();
       await page.locator('summary').click();
       assert.ok(await page.getByText('Collaboration ended',{exact:true}).count());
-      await page.getByRole('button',{name:'Close',exact:true}).click();
       await page.evaluate(()=>admin.navigate('premium',{partnerId:1}));
       await page.locator('#premium-status').selectOption('expiring');
       await page.waitForFunction(()=>document.querySelector('#premium-results table'));
       assert.ok(queries.some(q=>q.status==='expiring'&&q.partner_id==='1'));
       canManage=false;
-      await page.evaluate(()=>admin.openUserDetail(7));
+      await page.evaluate(()=>admin.navigate('users',{id:7,tab:'premium'}));
+      await page.getByRole('heading',{name:'Free',exact:true}).waitFor();
       assert.equal(await page.getByRole('button',{name:'Grant Premium',exact:true}).count(),0);
       assert.equal(await page.evaluate(()=>window.xss),undefined);
       assert.deepEqual(errors,[]);
@@ -142,6 +145,7 @@ for (const viewport of [{width:1280,height:900}, {width:390,height:844}]) {
       await exposeAdmin(page);
       await page.locator('#auth-screen.visible').waitFor();
       await page.evaluate(() => {admin.state.user={id:1,username:'Test admin',role:'superadmin'};admin.showApp();admin.openUserDetail(7);});
+      await page.getByRole('tab',{name:/^Trips/}).click();
       await page.getByRole('button',{name:'Grant trip Premium',exact:true}).first().click();
       await page.locator('#premium-form').getByText(tripName,{exact:true}).waitFor();
       await page.locator('[name="source"]').selectOption('compensation');
