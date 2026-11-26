@@ -2242,5 +2242,6 @@
   "expenseLockedExplain": "Otevřít ho může jen ten, kdo ho přidal.",
   "expensePersonalDetailsNote": "Osobní: nepočítá se do součtu výletu ani do dluhů. Ostatní vidí jen částku.",
   "workspacePersonalSpentLine": "Osobní {personal} · Celkem utraceno {total}",
-  "analyticsPersonalLine": "Osobní výdaje {amount}"
+  "analyticsPersonalLine": "Osobní výdaje {amount}",
+  "analyticsNoType": "Bez typu"
 }

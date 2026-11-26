@@ -2242,5 +2242,6 @@
   "expenseLockedExplain": "Bara den som lade till den kan öppna den.",
   "expensePersonalDetailsNote": "Personlig: ingår inte i resans totalsumma eller skulder. Andra ser bara beloppet.",
   "workspacePersonalSpentLine": "Personligt {personal} · Totalt spenderat {total}",
-  "analyticsPersonalLine": "Personliga utgifter {amount}"
+  "analyticsPersonalLine": "Personliga utgifter {amount}",
+  "analyticsNoType": "Ingen typ"
 }

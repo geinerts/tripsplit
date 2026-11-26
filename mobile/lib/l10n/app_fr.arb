@@ -2242,5 +2242,6 @@
   "expenseLockedExplain": "Seule la personne qui l'a ajoutée peut l'ouvrir.",
   "expensePersonalDetailsNote": "Personnelle : hors total du voyage et hors dettes. Les autres ne voient que le montant.",
   "workspacePersonalSpentLine": "Personnel {personal} · Total dépensé {total}",
-  "analyticsPersonalLine": "Dépenses personnelles {amount}"
+  "analyticsPersonalLine": "Dépenses personnelles {amount}",
+  "analyticsNoType": "Sans type"
 }

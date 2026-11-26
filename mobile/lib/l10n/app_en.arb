@@ -2524,5 +2524,9 @@
         "type": "String"
       }
     }
+  },
+  "analyticsNoType": "No type",
+  "@analyticsNoType": {
+    "description": "Analytics: the part of a category whose expenses have no type (subcategory)."
   }
 }

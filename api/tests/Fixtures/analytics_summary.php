@@ -64,6 +64,7 @@ invitation_expect(array_map(static fn(array $b): string => $b['date'] . '|' . $b
 invitation_expect($group['buckets'][0] === [
     'date' => '2026-02-02',
     'category' => 'food',
+    'subcategory' => null,
     'total_cents' => 4000,
     'share_cents' => 1500,
     'paid_cents' => 3000,
@@ -96,5 +97,22 @@ invitation_expect($missing['status'] === 500 && $missing['body']['code'] === 'an
 $pdo->exec('DELETE FROM trip_expenses WHERE id=500');
 $pdo->exec('INSERT INTO trip_expenses(id,trip_id,paid_by,amount,category,note,expense_date) VALUES (501,30,4,0.00,"food","","2026-03-03")');
 invitation_expect(invitation_call('analytics_summary_action', 4)['status'] === 200, 'A zero expense needs no allocation');
+
+
+// Expense types, once the subcategory column exists.
+$pdo->exec('ALTER TABLE trip_expenses ADD COLUMN subcategory VARCHAR(40)');
+$pdo->exec('UPDATE trip_expenses SET subcategory = "restaurant" WHERE id = 100');
+$pdo->exec('UPDATE trip_expenses SET subcategory = "  " WHERE id = 101');
+$pdo->exec('UPDATE trip_expenses SET subcategory = "Street food" WHERE id = 103');
+$typed = array_column(invitation_call('analytics_summary_action', 4)['body']['trips'], null, 'trip_id')[10];
+invitation_expect(array_map(static fn(array $b): string => $b['date'] . '|' . $b['category'] . '|' . ($b['subcategory'] ?? '-'), $typed['buckets'])
+    === ['2026-02-02|food|-', '2026-02-02|food|restaurant', '2026-02-03|other|-', '2026-03-01|food|Street food', '2026-03-02|food|-'],
+    'Rows are split by type; a blank type counts as none');
+invitation_expect($typed['buckets'][1]['total_cents'] === 3000 && $typed['buckets'][1]['share_cents'] === 1000
+    && $typed['buckets'][0]['total_cents'] === 1000 && $typed['buckets'][0]['share_cents'] === 500,
+    'Each type row has its own amounts');
+invitation_expect(array_sum(array_column($typed['buckets'], 'total_cents')) === array_sum(array_column($group['buckets'], 'total_cents'))
+    && array_sum(array_column($typed['buckets'], 'share_cents')) === array_sum(array_column($group['buckets'], 'share_cents')),
+    'Splitting by type keeps the same totals');
 
 echo json_encode(['assertions' => $assertions], JSON_THROW_ON_ERROR);

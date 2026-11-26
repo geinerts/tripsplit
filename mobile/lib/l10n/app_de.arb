@@ -2242,5 +2242,6 @@
   "expenseLockedExplain": "Nur die Person, die sie hinzugefügt hat, kann sie öffnen.",
   "expensePersonalDetailsNote": "Persönlich: nicht in der Reisesumme oder den Schulden. Andere sehen nur den Betrag.",
   "workspacePersonalSpentLine": "Persönlich {personal} · Insgesamt ausgegeben {total}",
-  "analyticsPersonalLine": "Persönliche Ausgaben {amount}"
+  "analyticsPersonalLine": "Persönliche Ausgaben {amount}",
+  "analyticsNoType": "Ohne Typ"
 }

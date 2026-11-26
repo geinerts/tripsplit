@@ -2242,5 +2242,6 @@
   "expenseLockedExplain": "Kun den, der tilføjede den, kan åbne den.",
   "expensePersonalDetailsNote": "Personlig: ikke med i rejsens total eller gæld. Andre ser kun beløbet.",
   "workspacePersonalSpentLine": "Personlig {personal} · I alt brugt {total}",
-  "analyticsPersonalLine": "Personlige udgifter {amount}"
+  "analyticsPersonalLine": "Personlige udgifter {amount}",
+  "analyticsNoType": "Ingen type"
 }

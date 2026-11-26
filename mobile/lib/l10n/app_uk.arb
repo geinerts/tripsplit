@@ -2242,5 +2242,6 @@
   "expenseLockedExplain": "Відкрити її може лише той, хто її додав.",
   "expensePersonalDetailsNote": "Особиста: не входить у загальну суму поїздки та борги. Інші бачать лише суму.",
   "workspacePersonalSpentLine": "Особисті {personal} · Усього витрачено {total}",
-  "analyticsPersonalLine": "Особисті витрати {amount}"
+  "analyticsPersonalLine": "Особисті витрати {amount}",
+  "analyticsNoType": "Без типу"
 }

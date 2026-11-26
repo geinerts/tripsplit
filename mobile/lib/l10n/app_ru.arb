@@ -2242,5 +2242,6 @@
   "expenseLockedExplain": "Открыть его может только тот, кто его добавил.",
   "expensePersonalDetailsNote": "Личный: не входит в итог поездки и долги. Другие видят только сумму.",
   "workspacePersonalSpentLine": "Личные {personal} · Всего потрачено {total}",
-  "analyticsPersonalLine": "Личные расходы {amount}"
+  "analyticsPersonalLine": "Личные расходы {amount}",
+  "analyticsNoType": "Без типа"
 }

@@ -5667,4 +5667,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String analyticsPersonalLine(String amount) {
     return 'Личные расходы $amount';
   }
+
+  @override
+  String get analyticsNoType => 'Без типа';
 }

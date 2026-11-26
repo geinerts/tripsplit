@@ -5657,4 +5657,7 @@ class AppLocalizationsCs extends AppLocalizations {
   String analyticsPersonalLine(String amount) {
     return 'Osobní výdaje $amount';
   }
+
+  @override
+  String get analyticsNoType => 'Bez typu';
 }

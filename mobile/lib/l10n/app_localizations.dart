@@ -10394,6 +10394,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Personal expenses {amount}'**
   String analyticsPersonalLine(String amount);
+
+  /// Analytics: the part of a category whose expenses have no type (subcategory).
+  ///
+  /// In en, this message translates to:
+  /// **'No type'**
+  String get analyticsNoType;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

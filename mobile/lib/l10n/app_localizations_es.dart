@@ -5643,4 +5643,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String analyticsPersonalLine(String amount) {
     return 'Gastos personales $amount';
   }
+
+  @override
+  String get analyticsNoType => 'Sin tipo';
 }

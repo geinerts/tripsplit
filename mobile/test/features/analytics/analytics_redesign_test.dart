@@ -268,6 +268,46 @@ void main() {
     },
   );
 
+  testWidgets('a category with types opens to show them', (tester) async {
+    final analytics = _Analytics()
+      ..expenses = const [
+        AnalyticsTestExpense(1, amount: 30, share: 10, subcategory: 'cafe'),
+        AnalyticsTestExpense(2, amount: 90, share: 30, subcategory: 'cafe'),
+        AnalyticsTestExpense(3, amount: 30, share: 10),
+        AnalyticsTestExpense(4, amount: 60, share: 20, category: 'transport'),
+      ];
+    await _mount(tester, _Trips(), analytics);
+    final toggle = find.byKey(const ValueKey('analytics-category-toggle-food'));
+    expect(toggle, findsOneWidget);
+    // Transport has no types, so it does not open.
+    expect(
+      find.byKey(const ValueKey('analytics-category-toggle-transport')),
+      findsNothing,
+    );
+    expect(find.text('Café'), findsNothing);
+    await tester.ensureVisible(toggle);
+    await tester.tap(toggle);
+    await tester.pumpAndSettle();
+    final cafe = find.byKey(const ValueKey('analytics-type-food-cafe'));
+    final none = find.byKey(const ValueKey('analytics-type-food--'));
+    expect(
+      find.descendant(of: cafe, matching: find.text('Café')),
+      findsOneWidget,
+    );
+    expect(
+      find.descendant(of: cafe, matching: find.text('€40.00')),
+      findsOneWidget,
+    );
+    expect(
+      find.descendant(of: none, matching: find.text('No type')),
+      findsOneWidget,
+    );
+    expect(tester.getTopLeft(cafe).dy, lessThan(tester.getTopLeft(none).dy));
+    await tester.tap(toggle);
+    await tester.pumpAndSettle();
+    expect(cafe, findsNothing);
+  });
+
   testWidgets('personal line adds personal expenses into total spent', (
     tester,
   ) async {

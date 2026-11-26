@@ -2242,5 +2242,6 @@
   "expenseLockedExplain": "Solo chi l'ha aggiunta può aprirla.",
   "expensePersonalDetailsNote": "Personale: non conta nel totale del viaggio né nei debiti. Gli altri vedono solo l'importo.",
   "workspacePersonalSpentLine": "Personale {personal} · Totale speso {total}",
-  "analyticsPersonalLine": "Spese personali {amount}"
+  "analyticsPersonalLine": "Spese personali {amount}",
+  "analyticsNoType": "Senza tipo"
 }

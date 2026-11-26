@@ -2242,5 +2242,6 @@
   "expenseLockedExplain": "Otworzyć go może tylko osoba, która go dodała.",
   "expensePersonalDetailsNote": "Osobisty: nie wlicza się do sumy wycieczki ani długów. Inni widzą tylko kwotę.",
   "workspacePersonalSpentLine": "Osobiste {personal} · Łącznie wydano {total}",
-  "analyticsPersonalLine": "Wydatki osobiste {amount}"
+  "analyticsPersonalLine": "Wydatki osobiste {amount}",
+  "analyticsNoType": "Bez typu"
 }

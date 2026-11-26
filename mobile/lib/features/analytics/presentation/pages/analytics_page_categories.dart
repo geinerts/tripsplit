@@ -6,46 +6,57 @@ extension _AnalyticsPageCategories on _AnalyticsPageState {
       ..sort((a, b) => b.value.compareTo(a.value));
     String percent(int value) =>
         _analyticsPercent(context, value, report.totalCents);
+    // Leave room for the open arrow on every row once one category has types,
+    // so the amounts stay in one column.
+    final typesByCategory = {
+      for (final row in rows) row.key: report.types(row.key),
+    };
+    final arrowSlot = typesByCategory.values.any(_hasTypes);
+    Widget withTypes(MapEntry<String, int> row, Widget child) =>
+        _categoryWithTypes(row, typesByCategory[row.key]!, arrowSlot, child);
     Widget legend() => Column(
       children: [
         for (final row in rows)
           Padding(
             key: ValueKey('analytics-category-${row.key}'),
             padding: const EdgeInsets.symmetric(vertical: 8),
-            child: _byTrip
-                // Announce each category with its amount and visible percentage.
-                ? Semantics(
-                    container: true,
-                    label:
-                        '${_categoryName(row.key)}, ${_money(row.value)}, '
-                        '${percent(row.value)}',
-                    excludeSemantics: true,
-                    child: _tripCategoryLegendRow(row, percent(row.value)),
-                  )
-                : Column(
-                    children: [
-                      _categoryLegendRow(row),
-                      Align(
-                        alignment: Alignment.centerRight,
-                        child: Text(
-                          '${(row.value * 100 / report.totalCents).toStringAsFixed(1)}%',
-                          style: Theme.of(context).textTheme.bodySmall,
+            child: withTypes(
+              row,
+              _byTrip
+                  // Announce each category with its amount and visible percentage.
+                  ? Semantics(
+                      container: true,
+                      label:
+                          '${_categoryName(row.key)}, ${_money(row.value)}, '
+                          '${percent(row.value)}',
+                      excludeSemantics: true,
+                      child: _tripCategoryLegendRow(row, percent(row.value)),
+                    )
+                  : Column(
+                      children: [
+                        _categoryLegendRow(row),
+                        Align(
+                          alignment: Alignment.centerRight,
+                          child: Text(
+                            '${(row.value * 100 / report.totalCents).toStringAsFixed(1)}%',
+                            style: Theme.of(context).textTheme.bodySmall,
+                          ),
                         ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 6),
-                        child: LinearProgressIndicator(
-                          value: row.value / report.totalCents,
-                          minHeight: 8,
-                          borderRadius: BorderRadius.circular(4),
-                          color: _categoryColor(row.key),
-                          backgroundColor: Theme.of(
-                            context,
-                          ).colorScheme.surfaceContainerHighest,
+                        Padding(
+                          padding: const EdgeInsets.only(top: 6),
+                          child: LinearProgressIndicator(
+                            value: row.value / report.totalCents,
+                            minHeight: 8,
+                            borderRadius: BorderRadius.circular(4),
+                            color: _categoryColor(row.key),
+                            backgroundColor: Theme.of(
+                              context,
+                            ).colorScheme.surfaceContainerHighest,
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
+                      ],
+                    ),
+            ),
           ),
       ],
     );
@@ -60,40 +71,47 @@ extension _AnalyticsPageCategories on _AnalyticsPageState {
             children: [
               for (final row in rows)
                 Padding(
+                  key: ValueKey('analytics-category-${row.key}'),
                   padding: const EdgeInsets.symmetric(vertical: 4),
-                  child: Row(
-                    children: [
-                      SizedBox(width: 112, child: Text(_categoryName(row.key))),
-                      Expanded(
-                        child: LinearProgressIndicator(
-                          value: row.value / report.totalCents,
-                          minHeight: 14,
-                          borderRadius: BorderRadius.circular(4),
-                          color: _categoryColor(row.key),
-                          backgroundColor: Theme.of(
-                            context,
-                          ).colorScheme.surfaceContainerHighest,
+                  child: withTypes(
+                    row,
+                    Row(
+                      children: [
+                        SizedBox(
+                          width: 112,
+                          child: Text(_categoryName(row.key)),
                         ),
-                      ),
-                      const SizedBox(width: 12),
-                      SizedBox(
-                        width: 86,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: [
-                            Text(
-                              _money(row.value),
-                              textAlign: TextAlign.end,
-                              style: Theme.of(context).textTheme.titleMedium,
-                            ),
-                            Text(
-                              '${(row.value * 100 / report.totalCents).toStringAsFixed(1)}%',
-                              style: Theme.of(context).textTheme.bodySmall,
-                            ),
-                          ],
+                        Expanded(
+                          child: LinearProgressIndicator(
+                            value: row.value / report.totalCents,
+                            minHeight: 14,
+                            borderRadius: BorderRadius.circular(4),
+                            color: _categoryColor(row.key),
+                            backgroundColor: Theme.of(
+                              context,
+                            ).colorScheme.surfaceContainerHighest,
+                          ),
                         ),
-                      ),
-                    ],
+                        const SizedBox(width: 12),
+                        SizedBox(
+                          width: 86,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              Text(
+                                _money(row.value),
+                                textAlign: TextAlign.end,
+                                style: Theme.of(context).textTheme.titleMedium,
+                              ),
+                              Text(
+                                '${(row.value * 100 / report.totalCents).toStringAsFixed(1)}%',
+                                style: Theme.of(context).textTheme.bodySmall,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
             ],
@@ -165,6 +183,106 @@ extension _AnalyticsPageCategories on _AnalyticsPageState {
         if (_personal) ...[_summaryMetrics(report), const SizedBox(height: 20)],
         legend(),
       ],
+    );
+  }
+
+  static bool _hasTypes(List<AnalyticsTypeAmount> types) =>
+      types.any((row) => row.type != null);
+
+  /// A category row that opens to show what was spent per expense type.
+  /// Categories without typed expenses stay plain.
+  Widget _categoryWithTypes(
+    MapEntry<String, int> row,
+    List<AnalyticsTypeAmount> types,
+    bool arrowSlot,
+    Widget child,
+  ) {
+    if (!arrowSlot) return child;
+    if (!_hasTypes(types)) {
+      return Row(
+        children: [
+          Expanded(child: child),
+          const SizedBox(width: 28),
+        ],
+      );
+    }
+    final open = _openCategories.contains(row.key);
+    final theme = Theme.of(context);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Semantics(
+          button: true,
+          expanded: open,
+          child: InkWell(
+            key: ValueKey('analytics-category-toggle-${row.key}'),
+            borderRadius: BorderRadius.circular(8),
+            onTap: () => _updateState(() {
+              if (!_openCategories.remove(row.key)) {
+                _openCategories.add(row.key);
+              }
+            }),
+            child: Row(
+              children: [
+                Expanded(child: child),
+                SizedBox(
+                  width: 28,
+                  child: Icon(
+                    open ? Icons.expand_less : Icons.expand_more,
+                    size: 20,
+                    color: theme.colorScheme.onSurfaceVariant,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+        if (open)
+          Padding(
+            padding: const EdgeInsetsDirectional.only(start: 20, top: 4),
+            child: Column(
+              children: [
+                for (final type in types) _typeRow(row.key, type, row.value),
+              ],
+            ),
+          ),
+      ],
+    );
+  }
+
+  Widget _typeRow(String category, AnalyticsTypeAmount type, int total) {
+    final theme = Theme.of(context);
+    final muted = theme.colorScheme.onSurfaceVariant;
+    final name = type.type == null
+        ? context.l10n.analyticsNoType
+        : expenseTypeLabel(context, type.type!);
+    return Padding(
+      key: ValueKey('analytics-type-$category-${type.type ?? '-'}'),
+      padding: const EdgeInsets.symmetric(vertical: 6),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Expanded(
+            child: Text(
+              name,
+              style: theme.textTheme.bodyMedium?.copyWith(
+                color: type.type == null ? muted : null,
+              ),
+            ),
+          ),
+          const SizedBox(width: 12),
+          Text(_money(type.cents), style: theme.textTheme.bodyMedium),
+          SizedBox(
+            width: 64,
+            child: Text(
+              _analyticsPercent(context, type.cents, total),
+              textAlign: TextAlign.end,
+              style: theme.textTheme.bodySmall?.copyWith(color: muted),
+            ),
+          ),
+          const SizedBox(width: 28),
+        ],
+      ),
     );
   }
 

@@ -5667,4 +5667,7 @@ class AppLocalizationsUk extends AppLocalizations {
   String analyticsPersonalLine(String amount) {
     return 'Особисті витрати $amount';
   }
+
+  @override
+  String get analyticsNoType => 'Без типу';
 }

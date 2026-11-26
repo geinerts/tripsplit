@@ -5643,4 +5643,7 @@ class AppLocalizationsFi extends AppLocalizations {
   String analyticsPersonalLine(String amount) {
     return 'Henkilökohtaiset kulut $amount';
   }
+
+  @override
+  String get analyticsNoType => 'Ei tyyppiä';
 }

@@ -2242,5 +2242,6 @@
   "expenseLockedExplain": "Alleen wie hem heeft toegevoegd, kan hem openen.",
   "expensePersonalDetailsNote": "Persoonlijk: niet in het reistotaal of de schulden. Anderen zien alleen het bedrag.",
   "workspacePersonalSpentLine": "Persoonlijk {personal} · Totaal uitgegeven {total}",
-  "analyticsPersonalLine": "Persoonlijke uitgaven {amount}"
+  "analyticsPersonalLine": "Persoonlijke uitgaven {amount}",
+  "analyticsNoType": "Geen type"
 }

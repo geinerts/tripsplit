@@ -2,6 +2,7 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/helper_personal_expense.php';
+require_once __DIR__ . '/helper_expense_subcategory.php';
 
 const ANALYTICS_LARGEST_LIMIT = 5;
 
@@ -25,7 +26,7 @@ function analytics_largest(array $rows, string $amountKey): array
 }
 
 /**
- * @param array $expenses Rows with id, amount, category, note, split_mode, expense_date, paid_by, paid_by_nickname.
+ * @param array $expenses Rows with id, amount, category, subcategory, note, split_mode, expense_date, paid_by, paid_by_nickname.
  * @param array $participantsByExpense Rows per expense id, in the order `list_expenses` uses.
  */
 function analytics_trip_summary(array $expenses, array $participantsByExpense, int $userId): array
@@ -62,10 +63,13 @@ function analytics_trip_summary(array $expenses, array $participantsByExpense, i
         $date = substr((string) ($expense['expense_date'] ?? ''), 0, 10);
         $category = trim((string) ($expense['category'] ?? ''));
         $category = $category !== '' ? $category : 'other';
-        $key = $date . '|' . $category;
+        $subcategory = trim((string) ($expense['subcategory'] ?? ''));
+        $subcategory = $subcategory !== '' ? $subcategory : null;
+        $key = $date . '|' . $category . '|' . ($subcategory ?? '');
         $buckets[$key] ??= [
             'date' => $date,
             'category' => $category,
+            'subcategory' => $subcategory,
             'total_cents' => 0,
             'share_cents' => 0,
             'paid_cents' => 0,
@@ -87,7 +91,9 @@ function analytics_trip_summary(array $expenses, array $participantsByExpense, i
             'share_cents' => $shareCents,
         ];
     }
-    ksort($buckets, SORT_STRING);
+    $buckets = array_values($buckets);
+    usort($buckets, static fn(array $a, array $b): int => [$a['date'], $a['category'], $a['subcategory'] ?? '']
+        <=> [$b['date'], $b['category'], $b['subcategory'] ?? '']);
 
     $members = [];
     foreach ($names as $id => $nickname) {
@@ -96,7 +102,7 @@ function analytics_trip_summary(array $expenses, array $participantsByExpense, i
     usort($members, static fn(array $a, array $b): int => [$b['paid_cents'], $a['id']] <=> [$a['paid_cents'], $b['id']]);
 
     return [
-        'buckets' => array_values($buckets),
+        'buckets' => $buckets,
         'members' => $members,
         'largest_by_total' => analytics_largest($rows, 'total_cents'),
         'largest_by_share' => analytics_largest($rows, 'share_cents'),
@@ -122,7 +128,7 @@ function analytics_summary_build(PDO $pdo, int $userId): array
     $tripsStmt->execute(['user_id' => $userId]);
 
     $expensesStmt = $pdo->prepare(
-        'SELECT e.id, e.amount, e.category, e.note, e.split_mode, e.expense_date, e.paid_by,
+        'SELECT e.id, e.amount, e.category, ' . expense_subcategory_select($pdo) . ', e.note, e.split_mode, e.expense_date, e.paid_by,
                 ' . expense_is_personal_select($pdo) . ', u.nickname AS paid_by_nickname
          FROM ' . $expensesTable . ' e
          JOIN ' . $usersTable . ' u ON u.id = e.paid_by

@@ -5643,4 +5643,7 @@ class AppLocalizationsNb extends AppLocalizations {
   String analyticsPersonalLine(String amount) {
     return 'Personlige utgifter $amount';
   }
+
+  @override
+  String get analyticsNoType => 'Ingen type';
 }

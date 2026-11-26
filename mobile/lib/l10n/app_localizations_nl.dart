@@ -5643,4 +5643,7 @@ class AppLocalizationsNl extends AppLocalizations {
   String analyticsPersonalLine(String amount) {
     return 'Persoonlijke uitgaven $amount';
   }
+
+  @override
+  String get analyticsNoType => 'Geen type';
 }
