@@ -34,6 +34,7 @@ response is sent with `Cache-Control: private, no-store`.
         {
           "date": "2026-03-02",
           "category": "food",
+          "subcategory": "restaurant",
           "total_cents": 20000,
           "share_cents": 10000,
           "paid_cents": 20000,
@@ -57,8 +58,12 @@ response is sent with `Cache-Control: private, no-store`.
 
 A trip without expenses is included with empty lists. All amounts are in the trip's currency.
 
-- `buckets`: one row per date and category, ordered by date and then category. An empty
-  category becomes `other`.
+- `buckets`: one row per date, category and expense type, ordered by date, category and
+  then type. An empty category becomes `other`.
+  - `subcategory`: the expense type (`docs/api/expense-subcategories.md`) as stored, or
+    `null` for expenses without one. Built-in types are lowercase keys; members' own types
+    are grouped exactly as written, and the app joins those that differ only in case or
+    spacing. Before the subcategory migration every row has `null`.
   - `total_cents`: the full amount of those expenses.
   - `share_cents`: the requesting user's part. It uses the same stored allocations as
     `list_expenses`, including the equal split fallback for rows without valid stored amounts.
@@ -97,6 +102,15 @@ fails and shows the usual error, because the two responses no longer describe th
 
 The Analytics screen still needs a connection. On failure it keeps the last loaded report and
 says so.
+
+## Expense types (added 2026-11-26)
+
+Approved by the owner on 2026-11-26. The `subcategory` field was added to each bucket so the
+app can show the types inside a category. Rows that used to be one per date and category are
+now split by type; their amounts and counts still add up to the same totals. Older apps read
+only `category` and add rows up, so they show the same numbers as before. Deploy the server
+before an app build that shows types; against an older server the app sees no types and shows
+categories as before.
 
 ## Rollout
 

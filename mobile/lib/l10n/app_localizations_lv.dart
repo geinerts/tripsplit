@@ -5655,4 +5655,65 @@ class AppLocalizationsLv extends AppLocalizations {
   String analyticsPersonalLine(String amount) {
     return 'Personīgie izdevumi $amount';
   }
+
+  @override
+  String get analyticsNoType => 'Bez tipa';
+
+  @override
+  String get memberStillToSettle => 'Vēl jānokārto';
+
+  @override
+  String get memberSettlePaysYou => 'Maksā tev';
+
+  @override
+  String memberSettlePaysName(String name) {
+    return 'Maksā $name';
+  }
+
+  @override
+  String get memberSettleReceivesFromYou => 'Saņem no tevis';
+
+  @override
+  String memberSettleReceivesFromName(String name) {
+    return 'Saņem no $name';
+  }
+
+  @override
+  String activityEventTripGuestAdded(String name) {
+    return 'pievienoja $name (bez lietotnes)';
+  }
+
+  @override
+  String get activityEventTripGuestAddedNoName => 'pievienoja cilvēku bez lietotnes';
+
+  @override
+  String activityEventTripGuestRenamed(String previous, String name) {
+    return 'pārdēvēja $previous par $name';
+  }
+
+  @override
+  String get activityEventTripGuestRenamedNoName => 'pārdēvēja cilvēku bez lietotnes';
+
+  @override
+  String activityChangedParts(String parts) {
+    return 'mainīts: $parts';
+  }
+
+  @override
+  String get activityChangePayer => 'maksātājs';
+
+  @override
+  String get activityChangeCategory => 'kategorija';
+
+  @override
+  String get activityChangeNote => 'apraksts';
+
+  @override
+  String get activityChangeDate => 'datums';
+
+  @override
+  String get activityChangeSplit => 'sadalījums';
+
+  @override
+  String get activityChangeReceipt => 'čeks';
 }

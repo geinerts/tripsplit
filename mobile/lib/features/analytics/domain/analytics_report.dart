@@ -22,10 +22,19 @@ List<T> _listValue<T>(Object? value, T Function(Map<String, dynamic>) parse) {
   );
 }
 
+/// A type from the server: null when missing, blank or from an older server.
+String? _typeValue(Object? value) {
+  if (value == null) return null;
+  if (value is! String) throw const FormatException('Invalid analytics type');
+  final type = value.trim();
+  return type.isEmpty ? null : type;
+}
+
 class AnalyticsBucket {
   const AnalyticsBucket({
     required this.date,
     required this.category,
+    this.subcategory,
     required this.totalCents,
     required this.shareCents,
     required this.paidCents,
@@ -35,6 +44,7 @@ class AnalyticsBucket {
   factory AnalyticsBucket.fromMap(Map<String, dynamic> map) => AnalyticsBucket(
     date: _textValue(map['date']),
     category: _textValue(map['category']),
+    subcategory: _typeValue(map['subcategory']),
     totalCents: _intValue(map['total_cents']),
     shareCents: _intValue(map['share_cents']),
     paidCents: _intValue(map['paid_cents']),
@@ -42,6 +52,9 @@ class AnalyticsBucket {
     sharedExpenseCount: _intValue(map['shared_expense_count']),
   );
   final String date, category;
+
+  /// The expense type within [category], or null for expenses without one.
+  final String? subcategory;
   final int totalCents, shareCents, paidCents, expenseCount, sharedExpenseCount;
   String? get month {
     final day = DateTime.tryParse(date);
@@ -192,6 +205,29 @@ class AnalyticsReport {
     return personal ? trip.largestByShare : trip.largestByTotal;
   }
 
+  /// What was spent per expense type in [category]: types first, largest
+  /// first, then the part without a type. Own types that differ only in case
+  /// or spacing are one row, named as first seen.
+  List<AnalyticsTypeAmount> types(String category) {
+    final named = <String, (String, int)>{};
+    var untyped = 0;
+    for (final bucket in _allRows) {
+      if (bucket.category != category || _amount(bucket) == 0) continue;
+      final type = bucket.subcategory;
+      if (type == null) {
+        untyped += _amount(bucket);
+        continue;
+      }
+      final key = type.replaceAll(RegExp(r'\s+'), ' ').toLowerCase();
+      final current = named[key];
+      named[key] = (current?.$1 ?? type, (current?.$2 ?? 0) + _amount(bucket));
+    }
+    final rows = [
+      for (final entry in named.values) AnalyticsTypeAmount(entry.$1, entry.$2),
+    ]..sort((a, b) => b.cents.compareTo(a.cents));
+    return [...rows, if (untyped != 0) AnalyticsTypeAmount(null, untyped)];
+  }
+
   Map<String, int> _group(String Function(AnalyticsBucket) key) {
     final result = <String, int>{};
     for (final bucket in _allRows) {
@@ -204,4 +240,11 @@ class AnalyticsReport {
     }
     return result;
   }
+}
+
+/// One row of [AnalyticsReport.types]. [type] is null for no type.
+class AnalyticsTypeAmount {
+  const AnalyticsTypeAmount(this.type, this.cents);
+  final String? type;
+  final int cents;
 }

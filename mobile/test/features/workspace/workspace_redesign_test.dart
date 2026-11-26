@@ -4465,7 +4465,8 @@ void main() {
       );
       expect(find.text('Active'), findsOneWidget);
       expect(find.text('Settled'), findsNothing);
-      expect(find.text('You get back €200.00'), findsOneWidget);
+      // The balance is shown on the Settle tab, not in the header.
+      expect(find.text('You get back €200.00'), findsNothing);
       await disposePage(tester);
     },
   );
@@ -6273,6 +6274,128 @@ void main() {
     },
   );
 
+  testWidgets('activity rows say who, what changed, and open the expense', (
+    tester,
+  ) async {
+    WorkspaceActivityEvent event(
+      int id,
+      String type, [
+      Map<String, dynamic> payload = const {},
+      int actor = 7,
+      String createdAt = '2026-10-21 10:30:00',
+    ]) => WorkspaceActivityEvent(
+      id: id,
+      tripId: 1,
+      actorUserId: actor,
+      actorName: actor == 7 ? 'Matiss' : 'Anna',
+      eventType: type,
+      entityType: type.startsWith('expense.') ? 'expense' : 'trip',
+      entityId: type.startsWith('expense.') ? 5 : 1,
+      payload: payload,
+      createdAt: createdAt,
+    );
+    final controller = _Workspace()
+      ..data = snapshot(expenses: [expense(5, name: 'Taxi')])
+      ..activity = [
+        event(1, 'trip.guest_added', {'guest_id': 30, 'guest_name': 'Liga'}),
+        event(2, 'trip.guest_renamed', {
+          'guest_id': 30,
+          'guest_name': 'Līga',
+          'previous_name': 'Liga',
+        }),
+        event(3, 'trip.guest_added', {'guest_id': 31}),
+        event(4, 'settlement.marked_sent', {
+          'from_user_id': 7,
+          'to_user_id': 8,
+          'amount_cents': 2400,
+        }),
+        event(5, 'payment.requested', {
+          'from_user_id': 8,
+          'to_user_id': 7,
+          'amount_cents': 1200,
+          'status': 'requested',
+        }),
+        event(6, 'expense.updated', {
+          'note': 'Taxi',
+          'amount_cents': 3000,
+          'previous_amount_cents': 2500,
+          'trip_currency_code': 'EUR',
+          'category': 'transport',
+          'subcategory': 'taxi',
+          'changed': ['amount', 'date'],
+        }),
+        event(7, 'expense.created', {
+          'amount_cents': 2500,
+          'trip_currency_code': 'EUR',
+          'category': 'transport',
+        }),
+        // Anna switched ready three times in a row: only the last shows.
+        event(8, 'trip.member_ready', const {}, 8),
+        event(9, 'trip.member_not_ready', const {}, 8),
+        event(10, 'trip.member_ready', const {}, 8),
+      ];
+    await _mount(tester, controller);
+    await tester.pumpAndSettle();
+    final t = AppLocalizations.of(tester.element(find.byType(WorkspacePage)))!;
+    await _selectTab(tester, t.workspaceActivityTab);
+
+    Future<Finder> row(int id) async {
+      final found = find.byKey(ValueKey('activity-row-$id'));
+      await tester.scrollUntilVisible(
+        found,
+        200,
+        scrollable: find.byType(Scrollable).first,
+      );
+      return found;
+    }
+
+    Future<void> expectText(int id, String text) async {
+      expect(
+        find.descendant(
+          of: await row(id),
+          matching: find.textContaining(text, findRichText: true),
+        ),
+        findsOneWidget,
+      );
+    }
+
+    await expectText(1, 'added Liga (without the app)');
+    await expectText(2, 'renamed Liga to Līga');
+    await expectText(3, t.activityEventTripGuestAddedNoName);
+    expect(find.textContaining(t.activityEventUnknown), findsNothing);
+    await expectText(4, 'Matiss → Anna');
+    await expectText(5, 'Anna → Matiss');
+    // The server's raw status word is not shown.
+    expect(
+      find.descendant(
+        of: await row(5),
+        matching: find.textContaining('requested ·'),
+      ),
+      findsNothing,
+    );
+    await expectText(6, '“Taxi”');
+    await expectText(6, '€25.00 → €30.00');
+    await expectText(6, 'Transport · Taxi');
+    await expectText(6, 'changed: date');
+    // No note: the sentence stays as it was, without quotes.
+    await expectText(7, t.activityEventExpenseCreated);
+    expect(
+      find.descendant(of: await row(7), matching: find.textContaining('“')),
+      findsNothing,
+    );
+    // An older day shows the clock time, not "… d ago".
+    expect(find.textContaining(' d ago'), findsNothing);
+    expect(find.byKey(const ValueKey('activity-row-8')), findsOneWidget);
+    expect(find.byKey(const ValueKey('activity-row-9')), findsNothing);
+    expect(find.byKey(const ValueKey('activity-row-10')), findsNothing);
+    // Guests and the ready toggle open nothing; the edited expense opens.
+    expect(find.byKey(const ValueKey('activity-open-1')), findsNothing);
+    await tester.tap(await row(6));
+    await tester.pumpAndSettle();
+    expect(find.byKey(const ValueKey('expense-detail-title')), findsOneWidget);
+    await disposePage(tester);
+  });
+
   testWidgets('activity rows name each event and show its own icon', (
     tester,
   ) async {
@@ -6333,7 +6456,7 @@ void main() {
     await expectRow(1, t.activityEventTripSettled, Icons.task_alt_rounded);
     await expectRow(
       2,
-      '${t.activityEventExpenseCommentAdded} Breakfast',
+      '${t.activityEventExpenseCommentAdded} “Breakfast”',
       Icons.chat_bubble_outline_rounded,
     );
     await expectRow(
@@ -7130,6 +7253,57 @@ void main() {
     final t = AppLocalizations.of(tester.element(find.byType(WorkspacePage)))!;
     expect(find.text(t.pushExpenseNotFound), findsOneWidget);
     expect(find.byKey(const ValueKey('expense-detail-title')), findsNothing);
+    await disposePage(tester);
+  });
+
+  testWidgets('member sheet lists what is still to settle by person', (
+    tester,
+  ) async {
+    final controller = _Workspace()
+      ..data = snapshot(
+        preview: true,
+      ).copyWith(settlements: [settlement('suggested')]);
+    await _mount(tester, controller);
+    await tester.pumpAndSettle();
+    final t = AppLocalizations.of(tester.element(find.byType(WorkspacePage)))!;
+    await _selectTab(tester, t.navBalances);
+    // Anna's sheet: Matiss pays her. The signed-in user is Matiss.
+    for (final (id, name, direction, amount) in [
+      (8, 'Matiss', 'Pays Anna', '+€24.00'),
+      (7, 'Anna', 'Receives from you', '−€24.00'),
+    ]) {
+      await visibleTap(tester, find.byKey(ValueKey('balance-row-$id')));
+      final row = find.byKey(const ValueKey('member-settle-7-8'));
+      await tester.scrollUntilVisible(
+        row,
+        200,
+        scrollable: find.byType(Scrollable).last,
+      );
+      expect(find.text(t.memberStillToSettle), findsOneWidget);
+      expect(
+        tester
+            .widget<Text>(find.byKey(const ValueKey('member-settle-summary')))
+            .data,
+        '1 · €24.00',
+      );
+      for (final text in [name, direction, amount]) {
+        expect(
+          find.descendant(of: row, matching: find.text(text)),
+          findsOneWidget,
+        );
+      }
+      // The old one-line "A → B · amount" text is gone.
+      expect(find.textContaining('→'), findsNothing);
+      expect(tester.takeException(), isNull);
+      await tester.tap(
+        find.byTooltip(
+          MaterialLocalizations.of(
+            tester.element(find.byType(WorkspacePage)),
+          ).closeButtonTooltip,
+        ),
+      );
+      await tester.pumpAndSettle();
+    }
     await disposePage(tester);
   });
 

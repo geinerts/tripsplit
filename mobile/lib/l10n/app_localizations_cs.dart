@@ -5657,4 +5657,65 @@ class AppLocalizationsCs extends AppLocalizations {
   String analyticsPersonalLine(String amount) {
     return 'Osobní výdaje $amount';
   }
+
+  @override
+  String get analyticsNoType => 'Bez typu';
+
+  @override
+  String get memberStillToSettle => 'Zbývá vyrovnat';
+
+  @override
+  String get memberSettlePaysYou => 'Platí vám';
+
+  @override
+  String memberSettlePaysName(String name) {
+    return 'Platí: $name';
+  }
+
+  @override
+  String get memberSettleReceivesFromYou => 'Dostane od vás';
+
+  @override
+  String memberSettleReceivesFromName(String name) {
+    return 'Dostane od: $name';
+  }
+
+  @override
+  String activityEventTripGuestAdded(String name) {
+    return 'přidal(a) $name (bez aplikace)';
+  }
+
+  @override
+  String get activityEventTripGuestAddedNoName => 'přidal(a) osobu bez aplikace';
+
+  @override
+  String activityEventTripGuestRenamed(String previous, String name) {
+    return 'přejmenoval(a) $previous na $name';
+  }
+
+  @override
+  String get activityEventTripGuestRenamedNoName => 'přejmenoval(a) osobu bez aplikace';
+
+  @override
+  String activityChangedParts(String parts) {
+    return 'změněno: $parts';
+  }
+
+  @override
+  String get activityChangePayer => 'plátce';
+
+  @override
+  String get activityChangeCategory => 'kategorie';
+
+  @override
+  String get activityChangeNote => 'poznámka';
+
+  @override
+  String get activityChangeDate => 'datum';
+
+  @override
+  String get activityChangeSplit => 'rozdělení';
+
+  @override
+  String get activityChangeReceipt => 'účtenka';
 }

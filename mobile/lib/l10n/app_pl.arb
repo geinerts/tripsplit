@@ -2242,5 +2242,22 @@
   "expenseLockedExplain": "Otworzyć go może tylko osoba, która go dodała.",
   "expensePersonalDetailsNote": "Osobisty: nie wlicza się do sumy wycieczki ani długów. Inni widzą tylko kwotę.",
   "workspacePersonalSpentLine": "Osobiste {personal} · Łącznie wydano {total}",
-  "analyticsPersonalLine": "Wydatki osobiste {amount}"
+  "analyticsPersonalLine": "Wydatki osobiste {amount}",
+  "analyticsNoType": "Bez typu",
+  "memberStillToSettle": "Do rozliczenia",
+  "memberSettlePaysYou": "Płaci tobie",
+  "memberSettlePaysName": "Płaci: {name}",
+  "memberSettleReceivesFromYou": "Otrzymuje od ciebie",
+  "memberSettleReceivesFromName": "Otrzymuje od: {name}",
+  "activityEventTripGuestAdded": "dodał(a) {name} (bez aplikacji)",
+  "activityEventTripGuestAddedNoName": "dodał(a) osobę bez aplikacji",
+  "activityEventTripGuestRenamed": "zmienił(a) nazwę {previous} na {name}",
+  "activityEventTripGuestRenamedNoName": "zmienił(a) nazwę osoby bez aplikacji",
+  "activityChangedParts": "zmieniono: {parts}",
+  "activityChangePayer": "płacący",
+  "activityChangeCategory": "kategoria",
+  "activityChangeNote": "notatka",
+  "activityChangeDate": "data",
+  "activityChangeSplit": "podział",
+  "activityChangeReceipt": "paragon"
 }

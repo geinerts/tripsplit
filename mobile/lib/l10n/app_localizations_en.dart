@@ -5643,4 +5643,65 @@ class AppLocalizationsEn extends AppLocalizations {
   String analyticsPersonalLine(String amount) {
     return 'Personal expenses $amount';
   }
+
+  @override
+  String get analyticsNoType => 'No type';
+
+  @override
+  String get memberStillToSettle => 'Still to settle';
+
+  @override
+  String get memberSettlePaysYou => 'Pays you';
+
+  @override
+  String memberSettlePaysName(String name) {
+    return 'Pays $name';
+  }
+
+  @override
+  String get memberSettleReceivesFromYou => 'Receives from you';
+
+  @override
+  String memberSettleReceivesFromName(String name) {
+    return 'Receives from $name';
+  }
+
+  @override
+  String activityEventTripGuestAdded(String name) {
+    return 'added $name (without the app)';
+  }
+
+  @override
+  String get activityEventTripGuestAddedNoName => 'added a person without the app';
+
+  @override
+  String activityEventTripGuestRenamed(String previous, String name) {
+    return 'renamed $previous to $name';
+  }
+
+  @override
+  String get activityEventTripGuestRenamedNoName => 'renamed a person without the app';
+
+  @override
+  String activityChangedParts(String parts) {
+    return 'changed: $parts';
+  }
+
+  @override
+  String get activityChangePayer => 'payer';
+
+  @override
+  String get activityChangeCategory => 'category';
+
+  @override
+  String get activityChangeNote => 'note';
+
+  @override
+  String get activityChangeDate => 'date';
+
+  @override
+  String get activityChangeSplit => 'split';
+
+  @override
+  String get activityChangeReceipt => 'receipt';
 }

@@ -27,6 +27,7 @@ import '../../../../app/theme/theme_mode_picker.dart';
 import '../../../../core/errors/api_exception.dart';
 import '../../../../core/expenses/expense_category_catalog.dart';
 import '../../../../core/expenses/expense_type_catalog.dart';
+import '../../../../core/expenses/expense_type_label.dart';
 import '../../../../core/l10n/l10n.dart';
 import '../../../../core/l10n/notification_localizer.dart';
 import '../../../../core/currency/app_currency.dart';

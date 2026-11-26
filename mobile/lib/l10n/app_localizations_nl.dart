@@ -5643,4 +5643,65 @@ class AppLocalizationsNl extends AppLocalizations {
   String analyticsPersonalLine(String amount) {
     return 'Persoonlijke uitgaven $amount';
   }
+
+  @override
+  String get analyticsNoType => 'Geen type';
+
+  @override
+  String get memberStillToSettle => 'Nog te verrekenen';
+
+  @override
+  String get memberSettlePaysYou => 'Betaalt jou';
+
+  @override
+  String memberSettlePaysName(String name) {
+    return 'Betaalt $name';
+  }
+
+  @override
+  String get memberSettleReceivesFromYou => 'Krijgt van jou';
+
+  @override
+  String memberSettleReceivesFromName(String name) {
+    return 'Krijgt van $name';
+  }
+
+  @override
+  String activityEventTripGuestAdded(String name) {
+    return 'heeft $name toegevoegd (zonder app)';
+  }
+
+  @override
+  String get activityEventTripGuestAddedNoName => 'heeft iemand zonder app toegevoegd';
+
+  @override
+  String activityEventTripGuestRenamed(String previous, String name) {
+    return 'heeft $previous hernoemd naar $name';
+  }
+
+  @override
+  String get activityEventTripGuestRenamedNoName => 'heeft iemand zonder app hernoemd';
+
+  @override
+  String activityChangedParts(String parts) {
+    return 'gewijzigd: $parts';
+  }
+
+  @override
+  String get activityChangePayer => 'betaler';
+
+  @override
+  String get activityChangeCategory => 'categorie';
+
+  @override
+  String get activityChangeNote => 'notitie';
+
+  @override
+  String get activityChangeDate => 'datum';
+
+  @override
+  String get activityChangeSplit => 'verdeling';
+
+  @override
+  String get activityChangeReceipt => 'bon';
 }

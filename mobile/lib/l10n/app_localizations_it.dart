@@ -5643,4 +5643,65 @@ class AppLocalizationsIt extends AppLocalizations {
   String analyticsPersonalLine(String amount) {
     return 'Spese personali $amount';
   }
+
+  @override
+  String get analyticsNoType => 'Senza tipo';
+
+  @override
+  String get memberStillToSettle => 'Ancora da saldare';
+
+  @override
+  String get memberSettlePaysYou => 'Ti paga';
+
+  @override
+  String memberSettlePaysName(String name) {
+    return 'Paga $name';
+  }
+
+  @override
+  String get memberSettleReceivesFromYou => 'Riceve da te';
+
+  @override
+  String memberSettleReceivesFromName(String name) {
+    return 'Riceve da $name';
+  }
+
+  @override
+  String activityEventTripGuestAdded(String name) {
+    return 'ha aggiunto $name (senza app)';
+  }
+
+  @override
+  String get activityEventTripGuestAddedNoName => 'ha aggiunto una persona senza app';
+
+  @override
+  String activityEventTripGuestRenamed(String previous, String name) {
+    return 'ha rinominato $previous in $name';
+  }
+
+  @override
+  String get activityEventTripGuestRenamedNoName => 'ha rinominato una persona senza app';
+
+  @override
+  String activityChangedParts(String parts) {
+    return 'modificato: $parts';
+  }
+
+  @override
+  String get activityChangePayer => 'pagante';
+
+  @override
+  String get activityChangeCategory => 'categoria';
+
+  @override
+  String get activityChangeNote => 'nota';
+
+  @override
+  String get activityChangeDate => 'data';
+
+  @override
+  String get activityChangeSplit => 'suddivisione';
+
+  @override
+  String get activityChangeReceipt => 'ricevuta';
 }

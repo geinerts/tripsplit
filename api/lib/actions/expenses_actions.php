@@ -2,6 +2,7 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/../helpers/helper_expense_subcategory.php';
+require_once __DIR__ . '/../helpers/helper_expense_activity.php';
 
 require_once __DIR__ . '/../helpers/helper_trip_guests.php';
 
@@ -893,6 +894,7 @@ function add_expense_action(): void
             'split_mode' => $splitMode,
             'participants_count' => count($participantRows),
             'note' => $note,
+            'subcategory' => expenses_subcategory_column_available($pdo) ? $subcategory : null,
             'is_personal' => $isPersonal,
         ]);
         json_out($responsePayload);
@@ -955,7 +957,7 @@ function update_expense_action(): void
         ? 'currency_code, source_amount, fx_rate_to_trip'
         : '\'' . default_trip_currency_code() . '\' AS currency_code, amount AS source_amount, 1.00000000 AS fx_rate_to_trip';
     $ownerStmt = $pdo->prepare(
-        'SELECT id, trip_id, paid_by, category, receipt_path, '
+        'SELECT id, trip_id, paid_by, amount, category, note, split_mode, expense_date, receipt_path, '
             . expense_subcategory_select($pdo, '') . ', ' . expense_is_personal_select($pdo, '') . ', ' . $currencySelect . '
          FROM ' . $expensesTable . '
          WHERE id = :id
@@ -1061,6 +1063,7 @@ function update_expense_action(): void
         $itemized
     );
 
+    $participantsBefore = expense_activity_participants($pdo, $expenseId);
     $pdo->beginTransaction();
     try {
         lock_active_trip_membership_scope($pdo, (int) $trip['id']);
@@ -1170,8 +1173,40 @@ function update_expense_action(): void
             $clientMutationId,
             $responsePayload
         );
+        $previousAmountCents = decimal_to_cents($expense['amount'] ?? 0);
+        $participantsAfter = [];
+        foreach ($participantRows as $participantRow) {
+            $participantsAfter[(int) ($participantRow['user_id'] ?? 0)] = (int) ($participantRow['owed_cents'] ?? 0);
+        }
+        $changes = expense_activity_changes([
+            'amount_cents' => $previousAmountCents,
+            'source_amount_cents' => decimal_to_cents($expense['source_amount'] ?? 0),
+            'currency_code' => $existingExpenseCurrencyCode,
+            'paid_by' => (int) $expense['paid_by'],
+            'category' => $existingCategory !== '' ? $existingCategory : 'other',
+            'subcategory' => $existingSubcategory,
+            'note' => trim((string) ($expense['note'] ?? '')),
+            'expense_date' => (string) ($expense['expense_date'] ?? ''),
+            'split_mode' => normalize_expense_split_mode($expense['split_mode'] ?? 'equal'),
+            'is_personal' => (int) ($expense['is_personal'] ?? 0) === 1 ? 1 : 0,
+            'receipt_path' => $oldReceiptPath,
+        ], [
+            'amount_cents' => $amountCents,
+            'source_amount_cents' => $sourceAmountCents,
+            'currency_code' => $sourceCurrencyCode,
+            'paid_by' => $nextPayerId,
+            'category' => $category,
+            'subcategory' => $subcategoryChanged ? (string) ($subcategory ?? '') : $existingSubcategory,
+            'note' => $note,
+            'expense_date' => $expenseDate,
+            'split_mode' => $splitMode,
+            'is_personal' => $isPersonal ? 1 : 0,
+            'receipt_path' => $nextReceiptPath,
+        ], $participantsBefore, $participantsAfter);
         app_event($pdo, $userId, 'expense.updated', 'expense', $expenseId, $tripId, [
             'amount_cents' => $amountCents,
+            'previous_amount_cents' => $previousAmountCents,
+            'changed' => $changes,
             'trip_currency_code' => $tripCurrencyCode,
             'expense_currency_code' => $sourceCurrencyCode,
             'source_amount_cents' => $sourceAmountCents,
@@ -1180,6 +1215,9 @@ function update_expense_action(): void
             'participants_count' => count($participantRows),
             'receipt_changed' => $oldReceiptPath !== $nextReceiptPath,
             'note' => $note,
+            'subcategory' => expenses_subcategory_column_available($pdo)
+                ? ($subcategoryChanged ? $subcategory : ($existingSubcategory !== '' ? $existingSubcategory : null))
+                : null,
             'is_personal' => $isPersonal,
         ]);
         json_out($responsePayload);
@@ -1240,7 +1278,7 @@ function delete_expense_action(): void
 
     $ownerStmt = $pdo->prepare(
         'SELECT id, trip_id, paid_by, amount, category, note, split_mode, receipt_path, '
-            . expense_is_personal_select($pdo, '') . ', ' . $currencySelect . '
+            . expense_subcategory_select($pdo, '') . ', ' . expense_is_personal_select($pdo, '') . ', ' . $currencySelect . '
          FROM ' . $expensesTable . '
          WHERE id = :id
          LIMIT 1'
@@ -1283,6 +1321,7 @@ function delete_expense_action(): void
         'category' => trim((string) ($expense['category'] ?? '')),
         'split_mode' => trim((string) ($expense['split_mode'] ?? '')),
         'note' => trim((string) ($expense['note'] ?? '')),
+        'subcategory' => trim((string) ($expense['subcategory'] ?? '')) ?: null,
         'is_personal' => (int) ($expense['is_personal'] ?? 0) === 1,
     ]);
     json_out($responsePayload);

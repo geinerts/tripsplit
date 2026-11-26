@@ -26,7 +26,6 @@ extension _WorkspacePageLayoutOverview on _WorkspacePageState {
     );
     final cover = (_displayTrip.imageUrl ?? _displayTrip.imageThumbUrl ?? '')
         .trim();
-    final net = mine?.net;
     Widget fallback() => const SplytoIllustration(
       'assets/branding/splyto_trip_cover_large.svg',
       fit: BoxFit.contain,
@@ -306,34 +305,6 @@ extension _WorkspacePageLayoutOverview on _WorkspacePageState {
             );
           },
         ),
-        if (!widget.trip.isSolo && net != null) ...[
-          const SizedBox(height: 4),
-          Text(
-            net.abs() < .005
-                ? t.workspaceBalanceEven
-                : (net < 0
-                      ? t.workspaceBalanceOwe(
-                          AppFormatters.displayCurrencyFromCents(
-                            context,
-                            (net.abs() * 100).round(),
-                            currencyCode: widget.trip.currencyCode,
-                          ),
-                        )
-                      : t.workspaceBalanceReceive(
-                          AppFormatters.displayCurrencyFromCents(
-                            context,
-                            (net * 100).round(),
-                            currencyCode: widget.trip.currencyCode,
-                          ),
-                        )),
-            style: theme.textTheme.bodyLarge?.copyWith(
-              fontWeight: FontWeight.w600,
-              color: net < -.004
-                  ? theme.colorScheme.error
-                  : theme.colorScheme.primary,
-            ),
-          ),
-        ],
         // Own personal expenses are not in the trip total or the share above.
         if (!widget.trip.isSolo && snapshot.personalTotalCents > 0) ...[
           const SizedBox(height: 4),

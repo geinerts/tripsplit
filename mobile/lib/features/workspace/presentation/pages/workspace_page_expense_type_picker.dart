@@ -1,29 +1,8 @@
 part of 'workspace_page.dart';
 
-/// The shown name of a type: built-in keys are translated, own types stay as
-/// written.
-String _expenseTypeLabel(BuildContext context, String type) {
-  final t = context.l10n;
-  return switch (type) {
-    'restaurant' => t.expenseTypeRestaurant,
-    'cafe' => t.expenseTypeCafe,
-    'bar' => t.expenseTypeBar,
-    'fast_food' => t.expenseTypeFastFood,
-    'snacks' => t.expenseTypeSnacks,
-    'taxi' => t.expenseTypeTaxi,
-    'flight' => t.expenseTypeFlight,
-    'train' => t.expenseTypeTrain,
-    'bus' => t.expenseTypeBus,
-    'car_rental' => t.expenseTypeCarRental,
-    'ferry' => t.expenseTypeFerry,
-    'public_transport' => t.expenseTypePublicTransport,
-    'hotel' => t.expenseTypeHotel,
-    'hostel' => t.expenseTypeHostel,
-    'apartment' => t.expenseTypeApartment,
-    'camping' => t.expenseTypeCamping,
-    _ => type,
-  };
-}
+/// The shown name of a type; see [expenseTypeLabel].
+String _expenseTypeLabel(BuildContext context, String type) =>
+    expenseTypeLabel(context, type);
 
 /// "Food · Restaurant" with the type a little lighter, or just "Food".
 Widget _expenseCategoryTitle(

@@ -2242,5 +2242,22 @@
   "expenseLockedExplain": "Alleen wie hem heeft toegevoegd, kan hem openen.",
   "expensePersonalDetailsNote": "Persoonlijk: niet in het reistotaal of de schulden. Anderen zien alleen het bedrag.",
   "workspacePersonalSpentLine": "Persoonlijk {personal} · Totaal uitgegeven {total}",
-  "analyticsPersonalLine": "Persoonlijke uitgaven {amount}"
+  "analyticsPersonalLine": "Persoonlijke uitgaven {amount}",
+  "analyticsNoType": "Geen type",
+  "memberStillToSettle": "Nog te verrekenen",
+  "memberSettlePaysYou": "Betaalt jou",
+  "memberSettlePaysName": "Betaalt {name}",
+  "memberSettleReceivesFromYou": "Krijgt van jou",
+  "memberSettleReceivesFromName": "Krijgt van {name}",
+  "activityEventTripGuestAdded": "heeft {name} toegevoegd (zonder app)",
+  "activityEventTripGuestAddedNoName": "heeft iemand zonder app toegevoegd",
+  "activityEventTripGuestRenamed": "heeft {previous} hernoemd naar {name}",
+  "activityEventTripGuestRenamedNoName": "heeft iemand zonder app hernoemd",
+  "activityChangedParts": "gewijzigd: {parts}",
+  "activityChangePayer": "betaler",
+  "activityChangeCategory": "categorie",
+  "activityChangeNote": "notitie",
+  "activityChangeDate": "datum",
+  "activityChangeSplit": "verdeling",
+  "activityChangeReceipt": "bon"
 }

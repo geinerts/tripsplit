@@ -2,9 +2,9 @@ part of 'workspace_page.dart';
 
 extension _WorkspacePageActivityTab on _WorkspacePageState {
   List<Widget> _buildActivitySlivers() {
-    final events = _activityEvents
-        .where(_isVisibleTripActivityEvent)
-        .toList(growable: false);
+    final events = _collapseReadyToggles(
+      _activityEvents.where(_isVisibleTripActivityEvent),
+    );
     final t = context.l10n;
     final shortNames = WorkspaceMemberShortNames([
       for (final user in _snapshot?.users ?? const <WorkspaceUser>[])
@@ -59,12 +59,11 @@ extension _WorkspacePageActivityTab on _WorkspacePageState {
             itemCount: events.length,
             itemBuilder: (context, index) {
               final event = events[index];
-              final day = (event.createdAt ?? '').split(RegExp('[ T]')).first;
+              // Local days, so the heading matches the clock times below it.
+              final day = _activityDay(event.createdAt);
               final previous = index == 0
                   ? null
-                  : (events[index - 1].createdAt ?? '')
-                        .split(RegExp('[ T]'))
-                        .first;
+                  : _activityDay(events[index - 1].createdAt);
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -116,7 +115,8 @@ extension _WorkspacePageActivityTab on _WorkspacePageState {
         : event.actorName.trim();
     final meta = _activityMeta(context, event);
     final note = _payloadString(event, 'note');
-    return Padding(
+    final open = _activityOpenAction(event);
+    final row = Padding(
       key: ValueKey('activity-row-${event.id}'),
       padding: const EdgeInsets.symmetric(vertical: 8),
       child: Row(
@@ -148,7 +148,7 @@ extension _WorkspacePageActivityTab on _WorkspacePageState {
                       ),
                       if (note != null && note.isNotEmpty)
                         TextSpan(
-                          text: note,
+                          text: '“$note”',
                           style: TextStyle(
                             decoration: _isDestructiveActivity(event.eventType)
                                 ? TextDecoration.lineThrough
@@ -165,7 +165,7 @@ extension _WorkspacePageActivityTab on _WorkspacePageState {
                 Text(
                   [
                     ...meta,
-                    _activityRelativeTime(context, event.createdAt),
+                    _activityTime(context, event.createdAt),
                   ].join(' · '),
                   style: theme.textTheme.bodySmall,
                 ),
@@ -185,6 +185,69 @@ extension _WorkspacePageActivityTab on _WorkspacePageState {
         ],
       ),
     );
+    if (open == null) return row;
+    return InkWell(
+      key: ValueKey('activity-open-${event.id}'),
+      onTap: open,
+      borderRadius: BorderRadius.circular(8),
+      child: row,
+    );
+  }
+
+  /// What tapping a row opens: the expense, or the transfer while it is still
+  /// in the list. Deleted expenses and anything else open nothing.
+  VoidCallback? _activityOpenAction(WorkspaceActivityEvent event) {
+    final snapshot = _snapshot;
+    if (snapshot == null) return null;
+    final type = event.eventType.trim().toLowerCase();
+    if (type == 'expense.created' ||
+        type == 'expense.updated' ||
+        type == 'expense.comment_added') {
+      final id = event.entityId;
+      final expense = snapshot.expenses.where((e) => e.id == id).firstOrNull;
+      if (expense == null) return null;
+      return () =>
+          unawaited(_openExpenseDetails(snapshot: snapshot, expense: expense));
+    }
+    if (type.startsWith('settlement.')) {
+      final from = _payloadInt(event, 'from_user_id');
+      final to = _payloadInt(event, 'to_user_id');
+      final settlement = snapshot.settlements
+          .where((row) => row.fromUserId == from && row.toUserId == to)
+          .firstOrNull;
+      if (settlement == null) return null;
+      return () => unawaited(
+        _openSettlementFlowTimelineSheet(
+          snapshot: snapshot,
+          item: settlement,
+          usersById: {for (final user in snapshot.users) user.id: user},
+        ),
+      );
+    }
+    return null;
+  }
+
+  /// Ready and not ready switched back and forth by one person in a row show
+  /// only where they ended up (the newest; the list is newest first).
+  List<WorkspaceActivityEvent> _collapseReadyToggles(
+    Iterable<WorkspaceActivityEvent> events,
+  ) {
+    bool isToggle(WorkspaceActivityEvent e) => const {
+      'trip.member_ready',
+      'trip.member_not_ready',
+    }.contains(e.eventType.trim().toLowerCase());
+    final result = <WorkspaceActivityEvent>[];
+    for (final event in events) {
+      final last = result.lastOrNull;
+      if (last != null &&
+          isToggle(last) &&
+          isToggle(event) &&
+          last.actorUserId == event.actorUserId) {
+        continue;
+      }
+      result.add(event);
+    }
+    return result;
   }
 
   /// These events read as complete sentences about the whole trip, so putting
@@ -236,6 +299,17 @@ extension _WorkspacePageActivityTab on _WorkspacePageState {
         return t.activityEventTripInvitationDeclined;
       case 'trip.invitation_revoked':
         return t.activityEventTripInvitationRevoked;
+      case 'trip.guest_added':
+        final name = _payloadString(event, 'guest_name');
+        return name == null
+            ? t.activityEventTripGuestAddedNoName
+            : t.activityEventTripGuestAdded(name);
+      case 'trip.guest_renamed':
+        final name = _payloadString(event, 'guest_name');
+        final previous = _payloadString(event, 'previous_name');
+        return name == null || previous == null
+            ? t.activityEventTripGuestRenamedNoName
+            : t.activityEventTripGuestRenamed(previous, name);
       case 'trip.member_removed':
         return t.activityEventTripMemberRemoved(
           (_payloadString(event, 'removed_user_name') ?? '').isEmpty
@@ -317,36 +391,86 @@ extension _WorkspacePageActivityTab on _WorkspacePageState {
     BuildContext context,
     WorkspaceActivityEvent event,
   ) {
+    final t = context.l10n;
+    final type = event.eventType.trim().toLowerCase();
     final items = <String>[];
-    final amount = _activityAmount(context, event);
-    if (amount.isNotEmpty) {
+    // Transfers and payments: who paid whom.
+    if (type.startsWith('settlement.') || type.startsWith('payment.')) {
+      final from = _payloadInt(event, 'from_user_id');
+      final to = _payloadInt(event, 'to_user_id');
+      if (from > 0 && to > 0) {
+        items.add('${_activityUserName(from)} → ${_activityUserName(to)}');
+      }
+    }
+    final amount = _activityAmount(context, event, 'amount_cents');
+    final changed = event.payload['changed'];
+    final changes = changed is List
+        ? changed.whereType<String>().toList(growable: false)
+        : const <String>[];
+    final previous = _activityAmount(context, event, 'previous_amount_cents');
+    if (changes.contains('amount') &&
+        previous.isNotEmpty &&
+        amount.isNotEmpty &&
+        previous != amount) {
+      items.add('$previous → $amount');
+    } else if (amount.isNotEmpty) {
       items.add(amount);
     }
     final category = _payloadString(event, 'category');
     if (category != null && category.isNotEmpty) {
+      final type = _payloadString(event, 'subcategory');
+      final label = ExpenseCategoryCatalog.labelFor(
+        category,
+        Localizations.localeOf(context),
+      );
       items.add(
-        ExpenseCategoryCatalog.labelFor(
-          category,
-          Localizations.localeOf(context),
-        ),
+        type == null ? label : '$label · ${expenseTypeLabel(context, type)}',
       );
     }
-    // Others get only the amount of a personal expense; it is named so.
-    final splitMode = _payloadString(event, 'split_mode');
-    if (event.payload['is_personal'] == true) {
-      items.add(context.l10n.expenseSplitPersonal);
-    } else if (splitMode != null && splitMode.isNotEmpty) {
-      items.add(_splitModeShortLabel(context, splitMode));
-    }
-    final status = _payloadString(event, 'status');
-    if (status != null && status.isNotEmpty) {
-      items.add(status);
+    // What an edit changed besides the amount, which is shown above.
+    final others = [
+      for (final change in changes)
+        if (change != 'amount') _activityChangeLabel(context, change),
+    ].whereType<String>().toList(growable: false);
+    if (others.isNotEmpty) {
+      items.add(t.activityChangedParts(others.join(', ')));
+    } else if (event.payload['is_personal'] == true) {
+      // Others get only the amount of a personal expense; it is named so.
+      items.add(t.expenseSplitPersonal);
+    } else {
+      final splitMode = _payloadString(event, 'split_mode');
+      if (splitMode != null && splitMode.isNotEmpty) {
+        items.add(_splitModeShortLabel(context, splitMode));
+      }
     }
     return items.take(3).toList(growable: false);
   }
 
-  String _activityAmount(BuildContext context, WorkspaceActivityEvent event) {
-    final amountCents = _payloadInt(event, 'amount_cents');
+  String? _activityChangeLabel(BuildContext context, String change) {
+    final t = context.l10n;
+    return switch (change) {
+      'payer' => t.activityChangePayer,
+      'category' => t.activityChangeCategory,
+      'note' => t.activityChangeNote,
+      'date' => t.activityChangeDate,
+      'split' => t.activityChangeSplit,
+      'receipt' => t.activityChangeReceipt,
+      _ => null,
+    };
+  }
+
+  String _activityUserName(int id) {
+    final user = _snapshot?.users.where((u) => u.id == id).firstOrNull;
+    final name = (user?.preferredName ?? '').trim();
+    return name.isEmpty ? context.l10n.activityMember : name;
+  }
+
+  String _activityAmount(
+    BuildContext context,
+    WorkspaceActivityEvent event, [
+    String key = 'amount_cents',
+  ]) {
+    final amountCents = _payloadInt(event, key);
     if (amountCents <= 0) {
       return '';
     }
@@ -400,6 +524,33 @@ extension _WorkspacePageActivityTab on _WorkspacePageState {
       return parsed.toLocal();
     }
     return DateTime.fromMillisecondsSinceEpoch(0);
+  }
+
+  String _activityDay(String? raw) {
+    final moment = _activityDate(raw);
+    if (moment.millisecondsSinceEpoch == 0) return '';
+    return '${moment.year.toString().padLeft(4, '0')}-'
+        '${moment.month.toString().padLeft(2, '0')}-'
+        '${moment.day.toString().padLeft(2, '0')}';
+  }
+
+  /// Under a day heading: "12 h ago" today, the clock time on older days,
+  /// since the heading already says which day.
+  String _activityTime(BuildContext context, String? raw) {
+    final moment = _activityDate(raw);
+    if (moment.millisecondsSinceEpoch == 0) {
+      return context.l10n.workspaceUnknownTime;
+    }
+    final now = DateTime.now();
+    if (moment.year == now.year &&
+        moment.month == now.month &&
+        moment.day == now.day) {
+      return _activityRelativeTime(context, raw);
+    }
+    return MaterialLocalizations.of(context).formatTimeOfDay(
+      TimeOfDay.fromDateTime(moment),
+      alwaysUse24HourFormat: MediaQuery.alwaysUse24HourFormatOf(context),
+    );
   }
 
   String _activityRelativeTime(BuildContext context, String? raw) {

@@ -2242,5 +2242,22 @@
   "expenseLockedExplain": "Відкрити її може лише той, хто її додав.",
   "expensePersonalDetailsNote": "Особиста: не входить у загальну суму поїздки та борги. Інші бачать лише суму.",
   "workspacePersonalSpentLine": "Особисті {personal} · Усього витрачено {total}",
-  "analyticsPersonalLine": "Особисті витрати {amount}"
+  "analyticsPersonalLine": "Особисті витрати {amount}",
+  "analyticsNoType": "Без типу",
+  "memberStillToSettle": "Залишилось розрахуватися",
+  "memberSettlePaysYou": "Платить вам",
+  "memberSettlePaysName": "Платить: {name}",
+  "memberSettleReceivesFromYou": "Отримує від вас",
+  "memberSettleReceivesFromName": "Отримує від: {name}",
+  "activityEventTripGuestAdded": "додав(ла) {name} (без застосунку)",
+  "activityEventTripGuestAddedNoName": "додав(ла) людину без застосунку",
+  "activityEventTripGuestRenamed": "перейменував(ла) {previous} на {name}",
+  "activityEventTripGuestRenamedNoName": "перейменував(ла) людину без застосунку",
+  "activityChangedParts": "змінено: {parts}",
+  "activityChangePayer": "платник",
+  "activityChangeCategory": "категорія",
+  "activityChangeNote": "опис",
+  "activityChangeDate": "дата",
+  "activityChangeSplit": "розподіл",
+  "activityChangeReceipt": "чек"
 }

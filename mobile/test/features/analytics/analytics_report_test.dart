@@ -32,10 +32,12 @@ class AnalyticsTestExpense {
     this.date = '2026-10-05',
     this.category = 'food',
     this.note = 'Dinner',
+    this.subcategory,
   });
   final int id, payer;
   final double amount, share;
   final String date, category, note;
+  final String? subcategory;
 }
 
 /// Adds up test expenses the way `analytics_summary` does for user 1.
@@ -49,7 +51,7 @@ AnalyticsTripSummary analyticsSummary(
   final grouped = <String, List<AnalyticsTestExpense>>{};
   final paid = <int, int>{1: 0};
   for (final e in expenses) {
-    final key = '${e.date}|${e.category}';
+    final key = '${e.date}|${e.category}|${e.subcategory ?? ''}';
     buckets[key] = e;
     (grouped[key] ??= []).add(e);
     paid.update(
@@ -82,6 +84,7 @@ AnalyticsTripSummary analyticsSummary(
         AnalyticsBucket(
           date: buckets[key]!.date,
           category: buckets[key]!.category,
+          subcategory: buckets[key]!.subcategory,
           totalCents: rows.fold(0, (s, e) => s + cents(e.amount)),
           shareCents: rows.fold(0, (s, e) => s + cents(e.share)),
           paidCents: rows
@@ -138,6 +141,66 @@ void main() {
     expect(summary.members.single.paidCents, 20000);
     expect(summary.largestByTotal.single.note, 'Dinner');
     expect(summary.largestByShare, isEmpty);
+    // Servers before expense types send no subcategory.
+    expect(summary.buckets.single.subcategory, isNull);
+  });
+
+  test('types within a category: own types joined, no type last', () {
+    final summary = AnalyticsTripSummary.fromMap({
+      'trip_id': 10,
+      'currency_code': 'EUR',
+      'buckets': [
+        for (final (date, category, type, share) in [
+          ('2026-03-02', 'food', 'restaurant', 3000),
+          ('2026-03-03', 'food', 'restaurant', 1000),
+          ('2026-03-02', 'food', null, 500),
+          ('2026-03-02', 'food', '  ', 200),
+          ('2026-03-02', 'food', 'Street food', 1500),
+          ('2026-03-03', 'food', 'street  FOOD', 1000),
+          ('2026-03-02', 'transport', 'taxi', 900),
+          ('2026-03-04', 'food', 'cafe', 0),
+        ])
+          {
+            'date': date,
+            'category': category,
+            'subcategory': type,
+            'total_cents': share * 2,
+            'share_cents': share,
+            'paid_cents': 0,
+            'expense_count': 1,
+            'shared_expense_count': share == 0 ? 0 : 1,
+          },
+      ],
+      'members': <Object>[],
+      'largest_by_total': <Object>[],
+      'largest_by_share': <Object>[],
+    });
+    final report = AnalyticsReport(source: [summary], currency: 'EUR');
+    expect(
+      [for (final row in report.types('food')) (row.type, row.cents)],
+      [('restaurant', 4000), ('Street food', 2500), (null, 700)],
+    );
+    expect(report.categories['food'], 7200);
+    final total = AnalyticsReport(
+      source: [summary],
+      currency: 'EUR',
+      tripId: 10,
+      personal: false,
+    );
+    expect(total.types('transport').single.cents, 1800);
+    expect(
+      () => AnalyticsBucket.fromMap({
+        'date': '2026-03-02',
+        'category': 'food',
+        'subcategory': 5,
+        'total_cents': 1,
+        'share_cents': 1,
+        'paid_cents': 0,
+        'expense_count': 1,
+        'shared_expense_count': 1,
+      }),
+      throwsFormatException,
+    );
   });
 
   test('a malformed response fails instead of showing zero', () {

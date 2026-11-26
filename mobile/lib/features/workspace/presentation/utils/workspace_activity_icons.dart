@@ -16,6 +16,8 @@ const Map<String, IconData> workspaceActivityIcons = {
   'trip.member_joined': Icons.person_add_alt_1_rounded,
   'trip.invitation_declined': Icons.person_off_rounded,
   'trip.invitation_revoked': Icons.cancel_schedule_send_rounded,
+  'trip.guest_added': Icons.person_add_alt_rounded,
+  'trip.guest_renamed': Icons.badge_rounded,
   'trip.member_removed': Icons.person_remove_rounded,
   'trip.member_left': Icons.logout_rounded,
   'trip.member_role_updated': Icons.admin_panel_settings_rounded,

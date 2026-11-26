@@ -5643,4 +5643,65 @@ class AppLocalizationsNb extends AppLocalizations {
   String analyticsPersonalLine(String amount) {
     return 'Personlige utgifter $amount';
   }
+
+  @override
+  String get analyticsNoType => 'Ingen type';
+
+  @override
+  String get memberStillToSettle => 'Gjenstår å gjøre opp';
+
+  @override
+  String get memberSettlePaysYou => 'Betaler deg';
+
+  @override
+  String memberSettlePaysName(String name) {
+    return 'Betaler $name';
+  }
+
+  @override
+  String get memberSettleReceivesFromYou => 'Får fra deg';
+
+  @override
+  String memberSettleReceivesFromName(String name) {
+    return 'Får fra $name';
+  }
+
+  @override
+  String activityEventTripGuestAdded(String name) {
+    return 'la til $name (uten appen)';
+  }
+
+  @override
+  String get activityEventTripGuestAddedNoName => 'la til en person uten appen';
+
+  @override
+  String activityEventTripGuestRenamed(String previous, String name) {
+    return 'ga $previous nytt navn: $name';
+  }
+
+  @override
+  String get activityEventTripGuestRenamedNoName => 'ga en person uten appen nytt navn';
+
+  @override
+  String activityChangedParts(String parts) {
+    return 'endret: $parts';
+  }
+
+  @override
+  String get activityChangePayer => 'betaler';
+
+  @override
+  String get activityChangeCategory => 'kategori';
+
+  @override
+  String get activityChangeNote => 'notat';
+
+  @override
+  String get activityChangeDate => 'dato';
+
+  @override
+  String get activityChangeSplit => 'fordeling';
+
+  @override
+  String get activityChangeReceipt => 'kvittering';
 }

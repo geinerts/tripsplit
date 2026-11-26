@@ -6,6 +6,7 @@ import '../../../../core/ui/splyto_illustration.dart';
 import '../../../../app/theme/app_design.dart';
 import '../../../../core/errors/api_exception.dart';
 import '../../../../core/expenses/expense_category_catalog.dart';
+import '../../../../core/expenses/expense_type_label.dart';
 import '../../../../core/l10n/l10n.dart';
 import '../../../../core/ui/app_background.dart';
 import '../../../../core/ui/app_formatters.dart';
@@ -61,6 +62,9 @@ class _AnalyticsPageState extends State<AnalyticsPage> {
   int _generation = 0, _accountId = 0;
   List<Trip> _trips = [];
   List<AnalyticsTripSummary> _summaries = [];
+
+  /// Categories opened to show their expense types.
+  final Set<String> _openCategories = {};
   @override
   void initState() {
     super.initState();

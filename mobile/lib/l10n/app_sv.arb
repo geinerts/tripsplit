@@ -2242,5 +2242,22 @@
   "expenseLockedExplain": "Bara den som lade till den kan öppna den.",
   "expensePersonalDetailsNote": "Personlig: ingår inte i resans totalsumma eller skulder. Andra ser bara beloppet.",
   "workspacePersonalSpentLine": "Personligt {personal} · Totalt spenderat {total}",
-  "analyticsPersonalLine": "Personliga utgifter {amount}"
+  "analyticsPersonalLine": "Personliga utgifter {amount}",
+  "analyticsNoType": "Ingen typ",
+  "memberStillToSettle": "Kvar att göra upp",
+  "memberSettlePaysYou": "Betalar dig",
+  "memberSettlePaysName": "Betalar {name}",
+  "memberSettleReceivesFromYou": "Får från dig",
+  "memberSettleReceivesFromName": "Får från {name}",
+  "activityEventTripGuestAdded": "lade till {name} (utan appen)",
+  "activityEventTripGuestAddedNoName": "lade till en person utan appen",
+  "activityEventTripGuestRenamed": "döpte om {previous} till {name}",
+  "activityEventTripGuestRenamedNoName": "döpte om en person utan appen",
+  "activityChangedParts": "ändrat: {parts}",
+  "activityChangePayer": "betalare",
+  "activityChangeCategory": "kategori",
+  "activityChangeNote": "anteckning",
+  "activityChangeDate": "datum",
+  "activityChangeSplit": "fördelning",
+  "activityChangeReceipt": "kvitto"
 }

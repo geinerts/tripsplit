@@ -2242,5 +2242,22 @@
   "expenseLockedExplain": "Kun den, der tilføjede den, kan åbne den.",
   "expensePersonalDetailsNote": "Personlig: ikke med i rejsens total eller gæld. Andre ser kun beløbet.",
   "workspacePersonalSpentLine": "Personlig {personal} · I alt brugt {total}",
-  "analyticsPersonalLine": "Personlige udgifter {amount}"
+  "analyticsPersonalLine": "Personlige udgifter {amount}",
+  "analyticsNoType": "Ingen type",
+  "memberStillToSettle": "Mangler at blive gjort op",
+  "memberSettlePaysYou": "Betaler dig",
+  "memberSettlePaysName": "Betaler {name}",
+  "memberSettleReceivesFromYou": "Modtager fra dig",
+  "memberSettleReceivesFromName": "Modtager fra {name}",
+  "activityEventTripGuestAdded": "tilføjede {name} (uden appen)",
+  "activityEventTripGuestAddedNoName": "tilføjede en person uden appen",
+  "activityEventTripGuestRenamed": "omdøbte {previous} til {name}",
+  "activityEventTripGuestRenamedNoName": "omdøbte en person uden appen",
+  "activityChangedParts": "ændret: {parts}",
+  "activityChangePayer": "betaler",
+  "activityChangeCategory": "kategori",
+  "activityChangeNote": "note",
+  "activityChangeDate": "dato",
+  "activityChangeSplit": "fordeling",
+  "activityChangeReceipt": "kvittering"
 }

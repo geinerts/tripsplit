@@ -5667,4 +5667,65 @@ class AppLocalizationsPl extends AppLocalizations {
   String analyticsPersonalLine(String amount) {
     return 'Wydatki osobiste $amount';
   }
+
+  @override
+  String get analyticsNoType => 'Bez typu';
+
+  @override
+  String get memberStillToSettle => 'Do rozliczenia';
+
+  @override
+  String get memberSettlePaysYou => 'Płaci tobie';
+
+  @override
+  String memberSettlePaysName(String name) {
+    return 'Płaci: $name';
+  }
+
+  @override
+  String get memberSettleReceivesFromYou => 'Otrzymuje od ciebie';
+
+  @override
+  String memberSettleReceivesFromName(String name) {
+    return 'Otrzymuje od: $name';
+  }
+
+  @override
+  String activityEventTripGuestAdded(String name) {
+    return 'dodał(a) $name (bez aplikacji)';
+  }
+
+  @override
+  String get activityEventTripGuestAddedNoName => 'dodał(a) osobę bez aplikacji';
+
+  @override
+  String activityEventTripGuestRenamed(String previous, String name) {
+    return 'zmienił(a) nazwę $previous na $name';
+  }
+
+  @override
+  String get activityEventTripGuestRenamedNoName => 'zmienił(a) nazwę osoby bez aplikacji';
+
+  @override
+  String activityChangedParts(String parts) {
+    return 'zmieniono: $parts';
+  }
+
+  @override
+  String get activityChangePayer => 'płacący';
+
+  @override
+  String get activityChangeCategory => 'kategoria';
+
+  @override
+  String get activityChangeNote => 'notatka';
+
+  @override
+  String get activityChangeDate => 'data';
+
+  @override
+  String get activityChangeSplit => 'podział';
+
+  @override
+  String get activityChangeReceipt => 'paragon';
 }

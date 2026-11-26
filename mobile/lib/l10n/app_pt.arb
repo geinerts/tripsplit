@@ -2242,5 +2242,22 @@
   "expenseLockedExplain": "Só quem a adicionou a pode abrir.",
   "expensePersonalDetailsNote": "Pessoal: não conta no total da viagem nem nas dívidas. Os outros só veem o valor.",
   "workspacePersonalSpentLine": "Pessoal {personal} · Total gasto {total}",
-  "analyticsPersonalLine": "Despesas pessoais {amount}"
+  "analyticsPersonalLine": "Despesas pessoais {amount}",
+  "analyticsNoType": "Sem tipo",
+  "memberStillToSettle": "Por acertar",
+  "memberSettlePaysYou": "Paga-te",
+  "memberSettlePaysName": "Paga a {name}",
+  "memberSettleReceivesFromYou": "Recebe de ti",
+  "memberSettleReceivesFromName": "Recebe de {name}",
+  "activityEventTripGuestAdded": "adicionou {name} (sem a app)",
+  "activityEventTripGuestAddedNoName": "adicionou uma pessoa sem a app",
+  "activityEventTripGuestRenamed": "mudou o nome de {previous} para {name}",
+  "activityEventTripGuestRenamedNoName": "mudou o nome de uma pessoa sem a app",
+  "activityChangedParts": "alterado: {parts}",
+  "activityChangePayer": "pagador",
+  "activityChangeCategory": "categoria",
+  "activityChangeNote": "nota",
+  "activityChangeDate": "data",
+  "activityChangeSplit": "divisão",
+  "activityChangeReceipt": "recibo"
 }

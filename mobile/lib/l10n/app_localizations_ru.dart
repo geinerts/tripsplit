@@ -5667,4 +5667,65 @@ class AppLocalizationsRu extends AppLocalizations {
   String analyticsPersonalLine(String amount) {
     return 'Личные расходы $amount';
   }
+
+  @override
+  String get analyticsNoType => 'Без типа';
+
+  @override
+  String get memberStillToSettle => 'Осталось рассчитаться';
+
+  @override
+  String get memberSettlePaysYou => 'Платит вам';
+
+  @override
+  String memberSettlePaysName(String name) {
+    return 'Платит: $name';
+  }
+
+  @override
+  String get memberSettleReceivesFromYou => 'Получает от вас';
+
+  @override
+  String memberSettleReceivesFromName(String name) {
+    return 'Получает от: $name';
+  }
+
+  @override
+  String activityEventTripGuestAdded(String name) {
+    return 'добавил(а) $name (без приложения)';
+  }
+
+  @override
+  String get activityEventTripGuestAddedNoName => 'добавил(а) человека без приложения';
+
+  @override
+  String activityEventTripGuestRenamed(String previous, String name) {
+    return 'переименовал(а) $previous в $name';
+  }
+
+  @override
+  String get activityEventTripGuestRenamedNoName => 'переименовал(а) человека без приложения';
+
+  @override
+  String activityChangedParts(String parts) {
+    return 'изменено: $parts';
+  }
+
+  @override
+  String get activityChangePayer => 'плательщик';
+
+  @override
+  String get activityChangeCategory => 'категория';
+
+  @override
+  String get activityChangeNote => 'описание';
+
+  @override
+  String get activityChangeDate => 'дата';
+
+  @override
+  String get activityChangeSplit => 'разделение';
+
+  @override
+  String get activityChangeReceipt => 'чек';
 }

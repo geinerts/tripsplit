@@ -2242,5 +2242,22 @@
   "expenseLockedExplain": "Bare den som la den til, kan åpne den.",
   "expensePersonalDetailsNote": "Personlig: ikke med i turens totalsum eller gjeld. Andre ser bare beløpet.",
   "workspacePersonalSpentLine": "Personlig {personal} · Totalt brukt {total}",
-  "analyticsPersonalLine": "Personlige utgifter {amount}"
+  "analyticsPersonalLine": "Personlige utgifter {amount}",
+  "analyticsNoType": "Ingen type",
+  "memberStillToSettle": "Gjenstår å gjøre opp",
+  "memberSettlePaysYou": "Betaler deg",
+  "memberSettlePaysName": "Betaler {name}",
+  "memberSettleReceivesFromYou": "Får fra deg",
+  "memberSettleReceivesFromName": "Får fra {name}",
+  "activityEventTripGuestAdded": "la til {name} (uten appen)",
+  "activityEventTripGuestAddedNoName": "la til en person uten appen",
+  "activityEventTripGuestRenamed": "ga {previous} nytt navn: {name}",
+  "activityEventTripGuestRenamedNoName": "ga en person uten appen nytt navn",
+  "activityChangedParts": "endret: {parts}",
+  "activityChangePayer": "betaler",
+  "activityChangeCategory": "kategori",
+  "activityChangeNote": "notat",
+  "activityChangeDate": "dato",
+  "activityChangeSplit": "fordeling",
+  "activityChangeReceipt": "kvittering"
 }

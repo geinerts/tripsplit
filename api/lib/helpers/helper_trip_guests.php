@@ -121,7 +121,7 @@ function add_trip_guest_action(): void
         throw $error;
     }
 
-    app_event($pdo, $actorId, 'trip.guest_added', 'trip', $tripId, $tripId, ['guest_id' => $guestId]);
+    app_event($pdo, $actorId, 'trip.guest_added', 'trip', $tripId, $tripId, ['guest_id' => $guestId, 'guest_name' => $name]);
     json_out(['ok' => true, 'guest' => ['id' => $guestId, 'nickname' => $name, 'is_guest' => true]]);
 }
 
@@ -132,16 +132,21 @@ function rename_trip_guest_action(): void
     $guestId = (int) ($body['user_id'] ?? 0);
     $name = normalize_trip_guest_name($body['name'] ?? '');
 
+    $found = $pdo->prepare('SELECT nickname FROM ' . table_name('users') . ' WHERE id = :id AND guest_trip_id = :trip_id');
+    $found->execute(['id' => $guestId, 'trip_id' => $tripId]);
+    $previousName = $found->fetchColumn();
+    if ($previousName === false) {
+        json_out(['ok' => false, 'error' => 'Guest not found.'], 404);
+    }
     $stmt = $pdo->prepare(
         'UPDATE ' . table_name('users') . ' SET nickname = :nickname WHERE id = :id AND guest_trip_id = :trip_id'
     );
     $stmt->execute(['nickname' => $name, 'id' => $guestId, 'trip_id' => $tripId]);
-    $found = $pdo->prepare('SELECT 1 FROM ' . table_name('users') . ' WHERE id = :id AND guest_trip_id = :trip_id');
-    $found->execute(['id' => $guestId, 'trip_id' => $tripId]);
-    if (!$found->fetchColumn()) {
-        json_out(['ok' => false, 'error' => 'Guest not found.'], 404);
-    }
 
-    app_event($pdo, $actorId, 'trip.guest_renamed', 'trip', $tripId, $tripId, ['guest_id' => $guestId]);
+    app_event($pdo, $actorId, 'trip.guest_renamed', 'trip', $tripId, $tripId, [
+        'guest_id' => $guestId,
+        'guest_name' => $name,
+        'previous_name' => (string) $previousName,
+    ]);
     json_out(['ok' => true, 'guest' => ['id' => $guestId, 'nickname' => $name, 'is_guest' => true]]);
 }

@@ -30,7 +30,6 @@ extension _WorkspacePageBalancesDetails on _WorkspacePageState {
       isScrollControlled: true,
       builder: (context) => StatefulBuilder(
         builder: (context, setSheet) {
-          final t = context.l10n;
           final theme = Theme.of(context);
           final colors = theme.colorScheme;
           final settled = item.net.abs() < .005;
@@ -134,21 +133,15 @@ extension _WorkspacePageBalancesDetails on _WorkspacePageState {
                         usersById: usersById,
                       ),
                       if (linkedSettlements.isNotEmpty) ...[
-                        const SizedBox(height: 16),
-                        Text(
-                          t.workspaceSettle,
-                          style: theme.textTheme.titleMedium,
-                        ),
+                        const SizedBox(height: 24),
+                        _memberSettleHeader(linkedSettlements, item.id),
                         for (final settlement in linkedSettlements)
-                          TextButton(
-                            onPressed: () => _openSettlementFlowTimelineSheet(
-                              snapshot: snapshot,
-                              item: settlement,
-                              usersById: usersById,
-                            ),
-                            child: Text(
-                              '${settlement.from} → ${settlement.to} · ${_balanceMoney(settlement.amount)}',
-                            ),
+                          _memberSettleRow(
+                            snapshot: snapshot,
+                            settlement: settlement,
+                            memberId: item.id,
+                            memberName: memberName,
+                            usersById: usersById,
                           ),
                       ],
                     ],
@@ -158,6 +151,126 @@ extension _WorkspacePageBalancesDetails on _WorkspacePageState {
             ),
           );
         },
+      ),
+    );
+  }
+
+  /// "Still to settle" with how many transfers are left and, when they all go
+  /// the same way, their total.
+  Widget _memberSettleHeader(List<SettlementItem> rows, int memberId) {
+    final theme = Theme.of(context);
+    final receives = rows.every((row) => row.toUserId == memberId);
+    final pays = rows.every((row) => row.fromUserId == memberId);
+    final total = rows.fold<double>(0, (sum, row) => sum + row.amount);
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 4),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.baseline,
+        textBaseline: TextBaseline.alphabetic,
+        children: [
+          Expanded(
+            child: Text(
+              context.l10n.memberStillToSettle,
+              style: theme.textTheme.titleMedium,
+            ),
+          ),
+          Text(
+            receives || pays
+                ? '${rows.length} · ${_balanceMoney(total)}'
+                : '${rows.length}',
+            key: const ValueKey('member-settle-summary'),
+            style: theme.textTheme.bodySmall?.copyWith(
+              color: theme.colorScheme.onSurfaceVariant,
+              fontFeatures: const [FontFeature.tabularFigures()],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// One suggested transfer, from the open person's side: the other person,
+  /// which way the money goes, and the amount with a sign.
+  Widget _memberSettleRow({
+    required WorkspaceSnapshot snapshot,
+    required SettlementItem settlement,
+    required int memberId,
+    required String memberName,
+    required Map<int, WorkspaceUser> usersById,
+  }) {
+    final t = context.l10n;
+    final theme = Theme.of(context);
+    final colors = theme.colorScheme;
+    final receives = settlement.toUserId == memberId;
+    final otherId = receives ? settlement.fromUserId : settlement.toUserId;
+    final other = usersById[otherId];
+    final otherName = _paymentMemberName(
+      receives ? settlement.from : settlement.to,
+      otherId,
+      other,
+    );
+    final isMe = memberId == _currentUserId;
+    final direction = receives
+        ? (isMe ? t.memberSettlePaysYou : t.memberSettlePaysName(memberName))
+        : (isMe
+              ? t.memberSettleReceivesFromYou
+              : t.memberSettleReceivesFromName(memberName));
+    final amount = _balanceMoney(settlement.amount);
+    return InkWell(
+      key: ValueKey(
+        'member-settle-${settlement.fromUserId}-${settlement.toUserId}',
+      ),
+      onTap: () => _openSettlementFlowTimelineSheet(
+        snapshot: snapshot,
+        item: settlement,
+        usersById: usersById,
+      ),
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 10),
+        decoration: BoxDecoration(
+          border: Border(bottom: BorderSide(color: colors.outlineVariant)),
+        ),
+        child: Row(
+          children: [
+            _largeMemberAvatar(
+              id: otherId,
+              name: otherName,
+              avatarUrl: other?.avatarThumbUrl ?? other?.avatarUrl,
+              size: 40,
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    otherName,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: theme.textTheme.titleSmall?.copyWith(
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  Text(
+                    direction,
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      color: colors.onSurfaceVariant,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(width: 8),
+            Text(
+              receives ? '+$amount' : '−$amount',
+              style: theme.textTheme.titleSmall?.copyWith(
+                fontWeight: FontWeight.w700,
+                color: receives ? colors.primary : colors.error,
+                fontFeatures: const [FontFeature.tabularFigures()],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

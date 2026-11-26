@@ -10394,6 +10394,108 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Personal expenses {amount}'**
   String analyticsPersonalLine(String amount);
+
+  /// Analytics: the part of a category whose expenses have no type (subcategory).
+  ///
+  /// In en, this message translates to:
+  /// **'No type'**
+  String get analyticsNoType;
+
+  /// Heading above the suggested transfers in a member's balance sheet.
+  ///
+  /// In en, this message translates to:
+  /// **'Still to settle'**
+  String get memberStillToSettle;
+
+  /// Under the other person's name: they pay the signed-in user.
+  ///
+  /// In en, this message translates to:
+  /// **'Pays you'**
+  String get memberSettlePaysYou;
+
+  /// Under the other person's name: they pay the member whose sheet is open.
+  ///
+  /// In en, this message translates to:
+  /// **'Pays {name}'**
+  String memberSettlePaysName(String name);
+
+  /// Under the other person's name: they get money from the signed-in user.
+  ///
+  /// In en, this message translates to:
+  /// **'Receives from you'**
+  String get memberSettleReceivesFromYou;
+
+  /// Under the other person's name: they get money from the member whose sheet is open.
+  ///
+  /// In en, this message translates to:
+  /// **'Receives from {name}'**
+  String memberSettleReceivesFromName(String name);
+
+  /// Activity: the actor added a member without an account, named {name}.
+  ///
+  /// In en, this message translates to:
+  /// **'added {name} (without the app)'**
+  String activityEventTripGuestAdded(String name);
+
+  /// Activity: the actor added a member without an account; older events have no name.
+  ///
+  /// In en, this message translates to:
+  /// **'added a person without the app'**
+  String get activityEventTripGuestAddedNoName;
+
+  /// Activity: the actor renamed a member without an account.
+  ///
+  /// In en, this message translates to:
+  /// **'renamed {previous} to {name}'**
+  String activityEventTripGuestRenamed(String previous, String name);
+
+  /// Activity: the actor renamed a member without an account; older events have no names.
+  ///
+  /// In en, this message translates to:
+  /// **'renamed a person without the app'**
+  String get activityEventTripGuestRenamedNoName;
+
+  /// Activity, under an edited expense: which parts changed, a comma-separated list of the activityChange* words.
+  ///
+  /// In en, this message translates to:
+  /// **'changed: {parts}'**
+  String activityChangedParts(String parts);
+
+  /// Activity: one part of an expense that an edit changed, lowercase, used inside activityChangedParts.
+  ///
+  /// In en, this message translates to:
+  /// **'payer'**
+  String get activityChangePayer;
+
+  /// Activity: one part of an expense that an edit changed, lowercase, used inside activityChangedParts.
+  ///
+  /// In en, this message translates to:
+  /// **'category'**
+  String get activityChangeCategory;
+
+  /// Activity: one part of an expense that an edit changed, lowercase, used inside activityChangedParts.
+  ///
+  /// In en, this message translates to:
+  /// **'note'**
+  String get activityChangeNote;
+
+  /// Activity: one part of an expense that an edit changed, lowercase, used inside activityChangedParts.
+  ///
+  /// In en, this message translates to:
+  /// **'date'**
+  String get activityChangeDate;
+
+  /// Activity: one part of an expense that an edit changed, lowercase, used inside activityChangedParts.
+  ///
+  /// In en, this message translates to:
+  /// **'split'**
+  String get activityChangeSplit;
+
+  /// Activity: one part of an expense that an edit changed, lowercase, used inside activityChangedParts.
+  ///
+  /// In en, this message translates to:
+  /// **'receipt'**
+  String get activityChangeReceipt;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
