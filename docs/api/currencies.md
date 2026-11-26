@@ -49,3 +49,22 @@ exact in storage, so totals still add up, and shows rounded.
 
 Older app versions keep working, but they don't list the new currencies. A trip in one
 of them shows its code rather than its name on those versions.
+
+## Profile currency in the trips list
+
+Approved by the owner on 2026-11-26. Each trip in `trips` already carried
+`preferred_currency_code` (the user's profile currency) and `my_paid_preferred_cents`
+(what the user paid, converted to it). It now also carries `my_owed_preferred_cents`:
+the user's share (`my_owed_cents`) in the profile currency.
+
+- Each expense's share is converted with that expense's own rate and date, the same way as
+  `my_paid_preferred_cents`. The sum is then scaled to `my_owed_cents`, so it always
+  describes the share the trip shows in its own currency.
+- It equals `my_owed_cents` when the trip is in the profile currency, and is 0 when the
+  share is 0.
+- It is `null` when a rate can't be fetched or the share has no stored parts. The app then
+  shows the totals per currency without a converted total, rather than a guessed one.
+- Personal expenses stay out, as in `my_owed_cents`.
+
+Older apps ignore the field. The Home screen shows the sum as an approximate total
+("≈") in the profile currency, with the totals per trip currency under it.

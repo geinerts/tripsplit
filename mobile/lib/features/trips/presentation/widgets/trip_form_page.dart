@@ -84,6 +84,7 @@ class TripFormPage extends StatefulWidget {
     this.budgetCents,
     required this.pickImage,
     this.editImageCrop,
+    this.defaultCurrencyCode,
   });
   final Trip? trip;
   final bool budgetLoaded;
@@ -93,6 +94,10 @@ class TripFormPage extends StatefulWidget {
 
   /// Edits the saved cover's crop and returns its new address.
   final Future<String?> Function()? editImageCrop;
+
+  /// A new trip's starting currency: the profile currency. Ignored when
+  /// editing, where the trip's own currency is kept.
+  final String? defaultCurrencyCode;
   @override
   State<TripFormPage> createState() => _TripFormPageState();
 }
@@ -131,7 +136,12 @@ class _TripFormPageState extends State<TripFormPage> {
   @override
   void initState() {
     super.initState();
-    _currency = widget.trip?.currencyCode ?? _currency;
+    final preferred = widget.defaultCurrencyCode?.trim() ?? '';
+    _currency =
+        widget.trip?.currencyCode ??
+        (preferred.isEmpty
+            ? _currency
+            : AppCurrencyCatalog.normalize(preferred));
     _mode = widget.trip?.tripMode ?? _mode;
     final budget = widget.budgetLoaded
         ? widget.budgetCents

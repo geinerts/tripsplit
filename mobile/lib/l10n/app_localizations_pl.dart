@@ -2212,7 +2212,7 @@ class AppLocalizationsPl extends AppLocalizations {
   String get profileEditVerificationWasSentNewEmailSecurityNoticeWas => 'Wiadomość weryfikacyjna została wysłana na nowy adres e-mail. Powiadomienie dotyczące bezpieczeństwa zostało wysłane na Twój aktualny adres e-mail.';
 
   @override
-  String get profileEditOverviewCurrency => 'Przegląd walut';
+  String get profileEditOverviewCurrency => 'Twoja waluta';
 
   @override
   String get profileEditPaymentMethod => 'Metoda płatności';
@@ -2253,7 +2253,7 @@ class AppLocalizationsPl extends AppLocalizations {
   String get profileEditNoCurrenciesFound => 'Nie znaleziono walut';
 
   @override
-  String get profileEditOverviewTotalsConvertedCurrency => 'Sumy w przeglądzie są przeliczane na tę walutę.';
+  String get profileEditOverviewTotalsConvertedCurrency => 'Twój udział na stronie głównej jest też sumowany w tej walucie, a nowe podróże zaczynają się w niej.';
 
   @override
   String get profileEditPaymentInfoUpdated => 'Zaktualizowano informacje dotyczące płatności.';

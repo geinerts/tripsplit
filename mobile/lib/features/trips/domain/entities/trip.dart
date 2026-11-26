@@ -30,6 +30,7 @@ class Trip {
     required this.totalAmountCents,
     required this.myPaidCents,
     this.myPaidPreferredCents,
+    this.myOwedPreferredCents,
     this.preferredCurrencyCode,
     required this.myOwedCents,
     required this.myBalanceCents,
@@ -67,6 +68,10 @@ class Trip {
   final int totalAmountCents;
   final int myPaidCents;
   final int? myPaidPreferredCents;
+
+  /// [myOwedCents] in [preferredCurrencyCode]; null when the server could not
+  /// convert it or is older than this field.
+  final int? myOwedPreferredCents;
   final String? preferredCurrencyCode;
   final int myOwedCents;
   final int myBalanceCents;
@@ -104,6 +109,7 @@ class Trip {
         totalAmountCents: totalAmountCents,
         myPaidCents: myPaidCents,
         myPaidPreferredCents: myPaidPreferredCents,
+        myOwedPreferredCents: myOwedPreferredCents,
         preferredCurrencyCode: preferredCurrencyCode,
         myOwedCents: myOwedCents,
         myBalanceCents: myBalanceCents,

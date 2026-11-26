@@ -2200,7 +2200,7 @@ class AppLocalizationsFi extends AppLocalizations {
   String get profileEditVerificationWasSentNewEmailSecurityNoticeWas => 'Vahvistus on lähetetty uuteen sähköpostiosoitteeseen. Turvallisuusilmoitus on lähetetty nykyiseen sähköpostiosoitteeseesi.';
 
   @override
-  String get profileEditOverviewCurrency => 'Yleiskatsaus valuutasta';
+  String get profileEditOverviewCurrency => 'Valuuttasi';
 
   @override
   String get profileEditPaymentMethod => 'Maksutapa';
@@ -2241,7 +2241,7 @@ class AppLocalizationsFi extends AppLocalizations {
   String get profileEditNoCurrenciesFound => 'Valuuttoja ei löytynyt';
 
   @override
-  String get profileEditOverviewTotalsConvertedCurrency => 'Yhteenvetoluvut muunnetaan tähän valuuttaan.';
+  String get profileEditOverviewTotalsConvertedCurrency => 'Osuutesi etusivulla lasketaan yhteen myös tässä valuutassa, ja uudet matkat alkavat siinä.';
 
   @override
   String get profileEditPaymentInfoUpdated => 'Maksutiedot päivitetty.';

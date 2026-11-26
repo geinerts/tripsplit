@@ -5,6 +5,8 @@ extension _TripsPageDialogs on _TripsPageState {
     final result = await Navigator.of(context).push<TripFormDraft>(
       AppFormPageRoute(
         builder: (_) => TripFormPage(
+          defaultCurrencyCode:
+              widget.authController.currentUser?.preferredCurrencyCode,
           pickImage: _pickTripImageForUploadFromSource,
           loadFriends: () async {
             final snapshot =

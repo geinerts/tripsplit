@@ -33,10 +33,15 @@ extension _MainShellPageQuickSplits on _MainShellPageState {
     if (refresh) unawaited(_quickSplits!.load());
   }
 
+  /// An active trip's currency, else the profile currency, else the newest
+  /// trip's.
   String _quickSplitCurrency(List<Trip> trips) {
     for (final trip in trips) {
       if (trip.isActive) return trip.currencyCode;
     }
+    final preferred =
+        widget.authController.currentUser?.preferredCurrencyCode?.trim() ?? '';
+    if (preferred.isNotEmpty) return AppCurrencyCatalog.normalize(preferred);
     return trips.isNotEmpty
         ? trips.first.currencyCode
         : AppCurrencyCatalog.defaultCode;
