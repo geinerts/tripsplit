@@ -2200,7 +2200,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get profileEditVerificationWasSentNewEmailSecurityNoticeWas => 'Une confirmation a été envoyée à la nouvelle adresse e-mail. Une notification de sécurité a été envoyée à votre adresse e-mail actuelle.';
 
   @override
-  String get profileEditOverviewCurrency => 'Aperçu des devises';
+  String get profileEditOverviewCurrency => 'Votre devise';
 
   @override
   String get profileEditPaymentMethod => 'Mode de paiement';
@@ -2241,7 +2241,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get profileEditNoCurrenciesFound => 'Aucune devise trouvée';
 
   @override
-  String get profileEditOverviewTotalsConvertedCurrency => 'Les totaux de l’aperçu sont convertis dans cette devise.';
+  String get profileEditOverviewTotalsConvertedCurrency => 'Votre part sur l’accueil est aussi totalisée dans cette devise, et les nouveaux voyages commencent avec elle.';
 
   @override
   String get profileEditPaymentInfoUpdated => 'Informations de paiement mises à jour.';

@@ -142,6 +142,10 @@ class _TripsPageState extends State<TripsPage> {
   bool _isCreateTripDialogOpen = false;
   int _handledCreateTripRequestCount = 0;
   int _handledRefreshRequestCount = 0;
+
+  /// The profile currency a reload was last asked for, so a changed currency
+  /// reloads the trips once instead of on every build.
+  String? _reloadedForProfileCurrency;
   int _handledInvitationsRefreshCount = 0;
   int _invitationsGeneration = 0;
   List<ReceivedTripInvitation> _receivedInvitations = const [];

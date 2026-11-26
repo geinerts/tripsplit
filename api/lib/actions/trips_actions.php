@@ -243,6 +243,80 @@ function trip_user_paid_in_preferred_currency_cents(
     return $totalCents;
 }
 
+/**
+ * The user's share of a trip in their profile currency, or null when a rate is missing.
+ * Each expense's share is converted at that expense's date; the result is scaled to
+ * $myOwedCents so it always matches the share the trip shows in its own currency.
+ */
+function trip_user_owed_in_preferred_currency_cents(
+    PDO $pdo,
+    int $tripId,
+    int $userId,
+    string $tripCurrencyCode,
+    string $preferredCurrencyCode,
+    int $myOwedCents
+): ?int {
+    if ($myOwedCents <= 0) {
+        return 0;
+    }
+    $tripCurrency = normalize_currency_code_or_default($tripCurrencyCode);
+    $preferredCurrency = normalize_currency_code_or_default($preferredCurrencyCode);
+    if ($tripCurrency === $preferredCurrency) {
+        return $myOwedCents;
+    }
+
+    $expenseCurrencyColumnsAvailable = expenses_currency_columns_available($pdo);
+    $stmt = $pdo->prepare(
+        'SELECT e.amount, '
+            . ($expenseCurrencyColumnsAvailable ? 'e.currency_code, e.source_amount' : 'NULL AS currency_code, e.amount AS source_amount')
+            . ', e.expense_date, e.created_at, ep.owed_cents
+         FROM ' . table_name('expense_participants') . ' ep
+         JOIN ' . table_name('expenses') . ' e ON e.id = ep.expense_id
+         WHERE e.trip_id = :trip_id
+           AND ep.user_id = :user_id' . expense_group_only_sql($pdo, 'e')
+    );
+    $stmt->execute(['trip_id' => $tripId, 'user_id' => $userId]);
+
+    $shareCents = 0;
+    $convertedCents = 0;
+    foreach ($stmt->fetchAll() as $row) {
+        $owedCents = (int) ($row['owed_cents'] ?? 0);
+        $tripAmountCents = decimal_to_cents($row['amount'] ?? 0);
+        if ($owedCents <= 0 || $tripAmountCents <= 0) {
+            continue;
+        }
+        $sourceAmountCents = decimal_to_cents($row['source_amount'] ?? 0);
+        if ($sourceAmountCents <= 0) {
+            $sourceAmountCents = $tripAmountCents;
+        }
+        $sourceCurrency = $expenseCurrencyColumnsAvailable
+            ? normalize_currency_code_or_default($row['currency_code'] ?? $tripCurrency)
+            : $tripCurrency;
+        $expenseDate = trim((string) ($row['expense_date'] ?? ''));
+        if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $expenseDate)) {
+            $createdAt = trim((string) ($row['created_at'] ?? ''));
+            $expenseDate = strlen($createdAt) >= 10 ? substr($createdAt, 0, 10) : date('Y-m-d');
+        }
+        $converted = convert_expense_amount_to_target_currency_cents(
+            $sourceAmountCents,
+            $sourceCurrency,
+            $tripAmountCents,
+            $tripCurrency,
+            $expenseDate,
+            $preferredCurrency
+        );
+        if (!is_int($converted)) {
+            return null;
+        }
+        $shareCents += $owedCents;
+        $convertedCents += (int) round($converted * $owedCents / $tripAmountCents);
+    }
+    if ($shareCents <= 0) {
+        return null;
+    }
+    return (int) round($myOwedCents * $convertedCents / $shareCents);
+}
+
 function trips_action(): void
 {
     $me = get_me();
@@ -423,6 +497,14 @@ function trips_action(): void
                 $preferredCurrencyCode
             );
         }
+        $row['my_owed_preferred_cents'] = trip_user_owed_in_preferred_currency_cents(
+            $pdo,
+            (int) $row['id'],
+            $currentUserId,
+            $row['currency_code'],
+            $preferredCurrencyCode,
+            $row['my_owed_cents']
+        );
         $row['my_balance_cents'] = $row['my_owed_cents'] - $row['my_paid_cents'];
         $row['all_settled'] = $row['settlements_total'] > 0 && $row['settlements_total'] === $row['settlements_confirmed'];
         $row['ready_to_settle'] = $row['status'] === 'settling' && $row['settlements_pending'] > 0;

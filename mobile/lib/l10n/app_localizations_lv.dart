@@ -2206,7 +2206,7 @@ class AppLocalizationsLv extends AppLocalizations {
   String get profileEditVerificationWasSentNewEmailSecurityNoticeWas => 'Verifikācijas saite nosūtīta uz jauno e-pastu. Drošības paziņojums nosūtīts uz pašreizējo e-pastu.';
 
   @override
-  String get profileEditOverviewCurrency => 'Pārskata valūta';
+  String get profileEditOverviewCurrency => 'Tava valūta';
 
   @override
   String get profileEditPaymentMethod => 'Maksājuma metode';
@@ -2247,7 +2247,7 @@ class AppLocalizationsLv extends AppLocalizations {
   String get profileEditNoCurrenciesFound => 'Valūtas netika atrastas';
 
   @override
-  String get profileEditOverviewTotalsConvertedCurrency => 'Pārskata summas tiks konvertētas uz šo valūtu.';
+  String get profileEditOverviewTotalsConvertedCurrency => 'Sākumlapā tava daļa tiek saskaitīta arī šajā valūtā, un jauni ceļojumi sākas ar to.';
 
   @override
   String get profileEditPaymentInfoUpdated => 'Maksājumu info atjaunināta.';

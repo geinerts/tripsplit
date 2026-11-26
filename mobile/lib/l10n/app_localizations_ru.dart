@@ -2212,7 +2212,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get profileEditVerificationWasSentNewEmailSecurityNoticeWas => 'Подтверждение отправлено на новый адрес. Уведомление о безопасности отправлено на текущий адрес.';
 
   @override
-  String get profileEditOverviewCurrency => 'Валюта обзора';
+  String get profileEditOverviewCurrency => 'Ваша валюта';
 
   @override
   String get profileEditPaymentMethod => 'Способ оплаты';
@@ -2253,7 +2253,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get profileEditNoCurrenciesFound => 'Валюты не найдены';
 
   @override
-  String get profileEditOverviewTotalsConvertedCurrency => 'Итоги обзора пересчитываются в эту валюту.';
+  String get profileEditOverviewTotalsConvertedCurrency => 'Ваша доля на главном экране также суммируется в этой валюте, и новые поездки начинаются в ней.';
 
   @override
   String get profileEditPaymentInfoUpdated => 'Платёжные данные обновлены.';

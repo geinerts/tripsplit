@@ -30,6 +30,7 @@ class TripModel extends Trip {
     required super.totalAmountCents,
     required super.myPaidCents,
     super.myPaidPreferredCents,
+    super.myOwedPreferredCents,
     super.preferredCurrencyCode,
     required super.myOwedCents,
     required super.myBalanceCents,
@@ -102,6 +103,7 @@ class TripModel extends Trip {
       totalAmountCents: (map['total_amount_cents'] as num?)?.toInt() ?? 0,
       myPaidCents: (map['my_paid_cents'] as num?)?.toInt() ?? 0,
       myPaidPreferredCents: (map['my_paid_preferred_cents'] as num?)?.toInt(),
+      myOwedPreferredCents: (map['my_owed_preferred_cents'] as num?)?.toInt(),
       preferredCurrencyCode:
           (map['preferred_currency_code'] as String?)?.trim().isNotEmpty == true
           ? AppCurrencyCatalog.normalizeProfilePreferred(

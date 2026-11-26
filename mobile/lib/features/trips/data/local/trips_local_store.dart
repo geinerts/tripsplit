@@ -78,6 +78,7 @@ class TripsLocalStore {
       'destinations': trip.destinations,
       'my_paid_cents': trip.myPaidCents,
       'my_paid_preferred_cents': trip.myPaidPreferredCents,
+      'my_owed_preferred_cents': trip.myOwedPreferredCents,
       'preferred_currency_code': trip.preferredCurrencyCode,
       'my_owed_cents': trip.myOwedCents,
       'my_balance_cents': trip.myBalanceCents,

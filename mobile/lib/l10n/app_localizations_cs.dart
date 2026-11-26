@@ -2206,7 +2206,7 @@ class AppLocalizationsCs extends AppLocalizations {
   String get profileEditVerificationWasSentNewEmailSecurityNoticeWas => 'Ověřovací e-mail byl odeslán na novou e-mailovou adresu. Bezpečnostní upozornění bylo odesláno na vaši aktuální e-mailovou adresu.';
 
   @override
-  String get profileEditOverviewCurrency => 'Přehled měn';
+  String get profileEditOverviewCurrency => 'Vaše měna';
 
   @override
   String get profileEditPaymentMethod => 'Způsob platby';
@@ -2247,7 +2247,7 @@ class AppLocalizationsCs extends AppLocalizations {
   String get profileEditNoCurrenciesFound => 'Nebyly nalezeny žádné měny';
 
   @override
-  String get profileEditOverviewTotalsConvertedCurrency => 'Souhrnné částky v přehledu jsou přepočítány na tuto měnu.';
+  String get profileEditOverviewTotalsConvertedCurrency => 'Váš podíl na úvodní stránce se sečte i v této měně a nové cesty v ní začínají.';
 
   @override
   String get profileEditPaymentInfoUpdated => 'Informace o platbách byly aktualizovány.';

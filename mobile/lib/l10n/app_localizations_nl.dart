@@ -2200,7 +2200,7 @@ class AppLocalizationsNl extends AppLocalizations {
   String get profileEditVerificationWasSentNewEmailSecurityNoticeWas => 'Er is een verificatiebericht verzonden naar het nieuwe e-mailadres. Er is een beveiligingsmelding verzonden naar je huidige e-mailadres.';
 
   @override
-  String get profileEditOverviewCurrency => 'Overzicht valuta';
+  String get profileEditOverviewCurrency => 'Jouw valuta';
 
   @override
   String get profileEditPaymentMethod => 'Betaalmethode';
@@ -2241,7 +2241,7 @@ class AppLocalizationsNl extends AppLocalizations {
   String get profileEditNoCurrenciesFound => 'Geen valuta\'s gevonden';
 
   @override
-  String get profileEditOverviewTotalsConvertedCurrency => 'De totalen in het overzicht worden omgerekend naar deze valuta.';
+  String get profileEditOverviewTotalsConvertedCurrency => 'Je aandeel op Home wordt ook in deze valuta opgeteld, en nieuwe reizen beginnen ermee.';
 
   @override
   String get profileEditPaymentInfoUpdated => 'Betalingsgegevens bijgewerkt.';

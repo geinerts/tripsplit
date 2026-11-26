@@ -2200,7 +2200,7 @@ class AppLocalizationsDa extends AppLocalizations {
   String get profileEditVerificationWasSentNewEmailSecurityNoticeWas => 'Der er sendt en bekræftelse til den nye e-mailadresse. Der er sendt en sikkerhedsmeddelelse til din nuværende e-mailadresse.';
 
   @override
-  String get profileEditOverviewCurrency => 'Oversigt over valuta';
+  String get profileEditOverviewCurrency => 'Din valuta';
 
   @override
   String get profileEditPaymentMethod => 'Betalingsmetode';
@@ -2241,7 +2241,7 @@ class AppLocalizationsDa extends AppLocalizations {
   String get profileEditNoCurrenciesFound => 'Ingen valutaer fundet';
 
   @override
-  String get profileEditOverviewTotalsConvertedCurrency => 'Oversigtsbeløbene omregnes til denne valuta.';
+  String get profileEditOverviewTotalsConvertedCurrency => 'Din andel på forsiden lægges også sammen i denne valuta, og nye ture starter i den.';
 
   @override
   String get profileEditPaymentInfoUpdated => 'Betalingsoplysninger opdateret.';

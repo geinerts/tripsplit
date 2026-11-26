@@ -29,9 +29,15 @@ import 'package:tripsplit/features/trips/presentation/pages/trips_page.dart';
 import 'package:tripsplit/l10n/app_localizations.dart';
 
 class _Auth implements AuthController {
+  _Auth([this.currency]);
+  final String? currency;
   @override
-  AuthUser? get currentUser =>
-      const AuthUser(id: 7, nickname: 'Tester', needsCredentials: false);
+  AuthUser? get currentUser => AuthUser(
+    id: 7,
+    nickname: 'Tester',
+    needsCredentials: false,
+    preferredCurrencyCode: currency,
+  );
   @override
   Uint8List? avatarBytesFor(AuthUser? user) => null;
   @override
@@ -121,8 +127,10 @@ class _Trips implements TripsController {
   List<Trip>? peekTripsCache({bool allowStale = false}) => cache;
   @override
   Future<List<Trip>?> primeTripsCacheFromDisk() async => cache;
+  int serverLoads = 0;
   @override
   Future<List<Trip>> refreshTripsFromServer() async {
+    serverLoads++;
     if (pending != null) return pending!.future;
     if (error != null) throw error!;
     return trips;
@@ -142,7 +150,11 @@ Trip _trip(
   String role = 'member',
   int? members,
   List<Map<String, Object?>>? preview,
+  String? preferred,
+  int? sharePreferred,
 }) => TripModel.fromLegacyMap({
+  'preferred_currency_code': ?preferred,
+  'my_owed_preferred_cents': ?sharePreferred,
   'id': id,
   'name': name ?? 'Lisbon getaway',
   'status': status,
@@ -168,6 +180,7 @@ Future<void> _pump(
   TripsPageOpenTripCallback? onTripOpened,
   GlobalKey? boundary,
   FriendsController? friends,
+  String? profileCurrency,
 }) async {
   tester.view.physicalSize = Size(width, 844);
   tester.view.devicePixelRatio = 1;
@@ -214,7 +227,7 @@ Future<void> _pump(
             ),
             body: TripsPage(
               controller: trips,
-              authController: _Auth(),
+              authController: _Auth(profileCurrency),
               friendsController: friends ?? _Friends(),
               showInlineHeader: false,
               commandController: commands,
@@ -519,6 +532,93 @@ void main() {
       expect(find.byKey(const ValueKey('create-trip-form')), findsOneWidget);
     },
   );
+
+  testWidgets('a new trip starts in the profile currency', (tester) async {
+    await _pump(tester, _Trips()..trips = [_trip(1)], profileCurrency: 'GBP');
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const ValueKey('home-create-trip')));
+    await tester.pumpAndSettle();
+    final row = find.byKey(const ValueKey('trip-currency'));
+    await tester.scrollUntilVisible(
+      row,
+      200,
+      scrollable: find.byType(Scrollable).last,
+    );
+    expect(
+      find.descendant(of: row, matching: find.text('GBP')),
+      findsOneWidget,
+    );
+  });
+
+  testWidgets('shares add up in the profile currency as an estimate', (
+    tester,
+  ) async {
+    final trips = _Trips()
+      ..trips = [
+        _trip(1, share: 4200, preferred: 'EUR', sharePreferred: 4200),
+        _trip(
+          2,
+          name: 'Tokyo',
+          currency: 'JPY',
+          share: 100000,
+          preferred: 'EUR',
+          sharePreferred: 6100,
+        ),
+      ];
+    await _pump(tester, trips, profileCurrency: 'EUR');
+    await tester.pumpAndSettle();
+    expect(
+      tester
+          .widget<Text>(find.byKey(const ValueKey('home-total-converted')))
+          .data,
+      '≈ €103.00',
+    );
+    final breakdown = tester
+        .widget<Text>(find.byKey(const ValueKey('home-total-breakdown')))
+        .data!;
+    expect(breakdown, contains('€42.00'));
+    expect(breakdown, contains('1,000'));
+    expect(find.byKey(const ValueKey('home-total-EUR')), findsNothing);
+    await tester.pumpWidget(const SizedBox.shrink());
+
+    // A share the server could not convert: no estimate, per currency only.
+    final unknown = _Trips()
+      ..trips = [
+        _trip(1, preferred: 'EUR', sharePreferred: 4200),
+        _trip(2, currency: 'JPY', share: 100000, preferred: 'EUR'),
+      ];
+    await _pump(tester, unknown, profileCurrency: 'EUR');
+    await tester.pumpAndSettle();
+    expect(find.byKey(const ValueKey('home-total-converted')), findsNothing);
+    expect(find.byKey(const ValueKey('home-total-JPY')), findsOneWidget);
+    await tester.pumpWidget(const SizedBox.shrink());
+
+    // One currency that is the profile currency: no estimate line.
+    final single = _Trips()
+      ..trips = [_trip(1, preferred: 'EUR', sharePreferred: 4200)];
+    await _pump(tester, single, profileCurrency: 'EUR');
+    await tester.pumpAndSettle();
+    expect(find.byKey(const ValueKey('home-total-converted')), findsNothing);
+    expect(find.byKey(const ValueKey('home-total-EUR')), findsOneWidget);
+    await tester.pumpWidget(const SizedBox.shrink());
+
+    // Trips loaded before the profile currency changed reload once.
+    final stale = _Trips()
+      ..trips = [
+        _trip(1, preferred: 'EUR', sharePreferred: 4200),
+        _trip(
+          2,
+          currency: 'USD',
+          share: 1200,
+          preferred: 'EUR',
+          sharePreferred: 1100,
+        ),
+      ];
+    await _pump(tester, stale, profileCurrency: 'GBP');
+    await tester.pumpAndSettle();
+    expect(find.byKey(const ValueKey('home-total-converted')), findsNothing);
+    expect(stale.serverLoads, 2);
+  });
 
   testWidgets(
     'A4 uses shares, keeps currencies separate, includes archived and settling',

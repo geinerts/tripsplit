@@ -39,7 +39,12 @@ extension _AnalyticsPageActions on _AnalyticsPageState {
         }
         final codes = trips.map((t) => t.currencyCode).toSet();
         if (!codes.contains(_currency)) {
-          _currency = (codes.toList()..sort()).firstOrNull;
+          // Start with the profile currency when a trip uses it.
+          final preferred =
+              widget.authController.currentUser?.preferredCurrencyCode;
+          _currency = preferred != null && codes.contains(preferred)
+              ? preferred
+              : (codes.toList()..sort()).firstOrNull;
         }
         if (!_months.contains(_month)) _month = null;
       });

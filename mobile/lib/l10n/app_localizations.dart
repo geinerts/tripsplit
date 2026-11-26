@@ -4032,7 +4032,7 @@ abstract class AppLocalizations {
   /// No description provided for @profileEditOverviewCurrency.
   ///
   /// In en, this message translates to:
-  /// **'Overview currency'**
+  /// **'Your currency'**
   String get profileEditOverviewCurrency;
 
   /// No description provided for @profileEditPaymentMethod.
@@ -4110,7 +4110,7 @@ abstract class AppLocalizations {
   /// No description provided for @profileEditOverviewTotalsConvertedCurrency.
   ///
   /// In en, this message translates to:
-  /// **'Overview totals are converted to this currency.'**
+  /// **'Your share on Home is also totalled in this currency, and new trips start in it.'**
   String get profileEditOverviewTotalsConvertedCurrency;
 
   /// No description provided for @profileEditPaymentInfoUpdated.

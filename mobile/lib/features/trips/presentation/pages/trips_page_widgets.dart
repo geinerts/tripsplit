@@ -179,6 +179,7 @@ extension _TripsPageWidgets on _TripsPageState {
       );
     }
     final currencies = totals.keys.toList()..sort();
+    final converted = _homeTotalInProfileCurrency(allTrips, currencies);
     final theme = Theme.of(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -190,18 +191,41 @@ extension _TripsPageWidgets on _TripsPageState {
           ),
         ),
         const SizedBox(height: 2),
-        for (final currency in currencies)
+        if (converted != null) ...[
+          // An estimate: each share is converted at its own expense's rate.
           Text(
-            AppFormatters.displayCurrencyFromCents(
-              context,
-              totals[currency]!,
-              currencyCode: currency,
-            ),
-            key: ValueKey('home-total-$currency'),
-            style: currencies.length == 1
-                ? theme.textTheme.displaySmall?.copyWith(height: 1.15)
-                : theme.textTheme.headlineSmall,
+            '≈ ${AppFormatters.displayCurrencyFromCents(context, converted.cents, currencyCode: converted.currency)}',
+            key: const ValueKey('home-total-converted'),
+            style: theme.textTheme.displaySmall?.copyWith(height: 1.15),
           ),
+          const SizedBox(height: 2),
+          Text(
+            [
+              for (final currency in currencies)
+                AppFormatters.displayCurrencyFromCents(
+                  context,
+                  totals[currency]!,
+                  currencyCode: currency,
+                ),
+            ].join(' · '),
+            key: const ValueKey('home-total-breakdown'),
+            style: theme.textTheme.bodyMedium?.copyWith(
+              color: theme.colorScheme.onSurfaceVariant,
+            ),
+          ),
+        ] else
+          for (final currency in currencies)
+            Text(
+              AppFormatters.displayCurrencyFromCents(
+                context,
+                totals[currency]!,
+                currencyCode: currency,
+              ),
+              key: ValueKey('home-total-$currency'),
+              style: currencies.length == 1
+                  ? theme.textTheme.displaySmall?.copyWith(height: 1.15)
+                  : theme.textTheme.headlineSmall,
+            ),
         const SizedBox(height: 2),
         Text(
           context.l10n.homeAllTime,
@@ -211,6 +235,41 @@ extension _TripsPageWidgets on _TripsPageState {
         ),
       ],
     );
+  }
+
+  /// The shares added up in the profile currency, when some trip uses another
+  /// currency and every share could be converted by the server. Trips loaded
+  /// before the profile currency changed are reloaded once instead.
+  ({int cents, String currency})? _homeTotalInProfileCurrency(
+    List<Trip> trips,
+    List<String> currencies,
+  ) {
+    final raw = widget.authController.currentUser?.preferredCurrencyCode;
+    if (raw == null || raw.trim().isEmpty || trips.isEmpty) return null;
+    final profile = AppCurrencyCatalog.normalize(raw);
+    if (currencies.length == 1 && currencies.single == profile) return null;
+    final stale = trips.any(
+      (trip) =>
+          trip.preferredCurrencyCode != null &&
+          AppCurrencyCatalog.normalize(trip.preferredCurrencyCode!) != profile,
+    );
+    if (stale) {
+      if (_reloadedForProfileCurrency != profile && !_isRefreshing) {
+        _reloadedForProfileCurrency = profile;
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (mounted) unawaited(_loadTrips());
+        });
+      }
+      return null;
+    }
+    var total = 0;
+    for (final trip in trips) {
+      if (trip.myOwedCents == 0) continue;
+      final cents = trip.myOwedPreferredCents;
+      if (cents == null || trip.preferredCurrencyCode == null) return null;
+      total += cents;
+    }
+    return (cents: total, currency: profile);
   }
 
   Widget _buildTripsSectionHeader(BuildContext context) => Row(
