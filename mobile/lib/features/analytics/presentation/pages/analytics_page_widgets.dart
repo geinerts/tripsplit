@@ -191,7 +191,12 @@ extension _AnalyticsPageWidgets on _AnalyticsPageState {
                   ],
                   if (report.personalCents > 0 && (_personal || !_byTrip))
                     Text(
-                      t.analyticsPersonalLine(_money(report.personalCents)),
+                      // Personal expenses are not in the share above, so the
+                      // line adds them up into what was spent in total.
+                      t.workspacePersonalSpentLine(
+                        _money(report.personalCents),
+                        _money(report.totalCents + report.personalCents),
+                      ),
                       key: const ValueKey('analytics-personal'),
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                         color: AppDesign.mutedColor(context),

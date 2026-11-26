@@ -268,6 +268,38 @@ void main() {
     },
   );
 
+  testWidgets('personal line adds personal expenses into total spent', (
+    tester,
+  ) async {
+    final analytics = _Analytics();
+    final base = analyticsSummary(1, 'EUR', analytics.expenses);
+    analytics.fixed = [
+      AnalyticsTripSummary(
+        tripId: base.tripId,
+        currencyCode: base.currencyCode,
+        buckets: base.buckets,
+        members: base.members,
+        personalCents: 1700,
+      ),
+    ];
+    await _mount(tester, _Trips(), analytics);
+    // Share €42 + personal €17.
+    expect(
+      tester
+          .widget<Text>(find.byKey(const ValueKey('analytics-personal')))
+          .data,
+      'Personal €17.00 · Total spent €59.00',
+    );
+    await tester.tap(find.text('By trip'));
+    await tester.pumpAndSettle();
+    expect(
+      tester
+          .widget<Text>(find.byKey(const ValueKey('analytics-personal')))
+          .data,
+      'Personal €17.00 · Total spent €59.00',
+    );
+  });
+
   testWidgets('all trips personal totals, trip total and share switch', (
     tester,
   ) async {
