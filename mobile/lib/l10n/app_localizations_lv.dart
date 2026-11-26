@@ -5677,4 +5677,43 @@ class AppLocalizationsLv extends AppLocalizations {
   String memberSettleReceivesFromName(String name) {
     return 'Saņem no $name';
   }
+
+  @override
+  String activityEventTripGuestAdded(String name) {
+    return 'pievienoja $name (bez lietotnes)';
+  }
+
+  @override
+  String get activityEventTripGuestAddedNoName => 'pievienoja cilvēku bez lietotnes';
+
+  @override
+  String activityEventTripGuestRenamed(String previous, String name) {
+    return 'pārdēvēja $previous par $name';
+  }
+
+  @override
+  String get activityEventTripGuestRenamedNoName => 'pārdēvēja cilvēku bez lietotnes';
+
+  @override
+  String activityChangedParts(String parts) {
+    return 'mainīts: $parts';
+  }
+
+  @override
+  String get activityChangePayer => 'maksātājs';
+
+  @override
+  String get activityChangeCategory => 'kategorija';
+
+  @override
+  String get activityChangeNote => 'apraksts';
+
+  @override
+  String get activityChangeDate => 'datums';
+
+  @override
+  String get activityChangeSplit => 'sadalījums';
+
+  @override
+  String get activityChangeReceipt => 'čeks';
 }

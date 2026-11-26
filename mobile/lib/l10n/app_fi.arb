@@ -2248,5 +2248,16 @@
   "memberSettlePaysYou": "Maksaa sinulle",
   "memberSettlePaysName": "Maksaa: {name}",
   "memberSettleReceivesFromYou": "Saa sinulta",
-  "memberSettleReceivesFromName": "Saa henkilöltä {name}"
+  "memberSettleReceivesFromName": "Saa henkilöltä {name}",
+  "activityEventTripGuestAdded": "lisäsi henkilön {name} (ilman sovellusta)",
+  "activityEventTripGuestAddedNoName": "lisäsi henkilön ilman sovellusta",
+  "activityEventTripGuestRenamed": "nimesi henkilön {previous} uudelleen: {name}",
+  "activityEventTripGuestRenamedNoName": "nimesi henkilön ilman sovellusta uudelleen",
+  "activityChangedParts": "muutettu: {parts}",
+  "activityChangePayer": "maksaja",
+  "activityChangeCategory": "luokka",
+  "activityChangeNote": "muistiinpano",
+  "activityChangeDate": "päivämäärä",
+  "activityChangeSplit": "jako",
+  "activityChangeReceipt": "kuitti"
 }

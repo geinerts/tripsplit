@@ -5665,4 +5665,43 @@ class AppLocalizationsDa extends AppLocalizations {
   String memberSettleReceivesFromName(String name) {
     return 'Modtager fra $name';
   }
+
+  @override
+  String activityEventTripGuestAdded(String name) {
+    return 'tilføjede $name (uden appen)';
+  }
+
+  @override
+  String get activityEventTripGuestAddedNoName => 'tilføjede en person uden appen';
+
+  @override
+  String activityEventTripGuestRenamed(String previous, String name) {
+    return 'omdøbte $previous til $name';
+  }
+
+  @override
+  String get activityEventTripGuestRenamedNoName => 'omdøbte en person uden appen';
+
+  @override
+  String activityChangedParts(String parts) {
+    return 'ændret: $parts';
+  }
+
+  @override
+  String get activityChangePayer => 'betaler';
+
+  @override
+  String get activityChangeCategory => 'kategori';
+
+  @override
+  String get activityChangeNote => 'note';
+
+  @override
+  String get activityChangeDate => 'dato';
+
+  @override
+  String get activityChangeSplit => 'fordeling';
+
+  @override
+  String get activityChangeReceipt => 'kvittering';
 }

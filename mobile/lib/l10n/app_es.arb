@@ -2234,5 +2234,16 @@
   "memberSettlePaysYou": "Te paga",
   "memberSettlePaysName": "Paga a {name}",
   "memberSettleReceivesFromYou": "Recibe de ti",
-  "memberSettleReceivesFromName": "Recibe de {name}"
+  "memberSettleReceivesFromName": "Recibe de {name}",
+  "activityEventTripGuestAdded": "añadió a {name} (sin la app)",
+  "activityEventTripGuestAddedNoName": "añadió a una persona sin la app",
+  "activityEventTripGuestRenamed": "cambió el nombre de {previous} a {name}",
+  "activityEventTripGuestRenamedNoName": "cambió el nombre de una persona sin la app",
+  "activityChangedParts": "cambios: {parts}",
+  "activityChangePayer": "pagador",
+  "activityChangeCategory": "categoría",
+  "activityChangeNote": "nota",
+  "activityChangeDate": "fecha",
+  "activityChangeSplit": "reparto",
+  "activityChangeReceipt": "recibo"
 }

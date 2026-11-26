@@ -2234,5 +2234,16 @@
   "memberSettlePaysYou": "Maksā tev",
   "memberSettlePaysName": "Maksā {name}",
   "memberSettleReceivesFromYou": "Saņem no tevis",
-  "memberSettleReceivesFromName": "Saņem no {name}"
+  "memberSettleReceivesFromName": "Saņem no {name}",
+  "activityEventTripGuestAdded": "pievienoja {name} (bez lietotnes)",
+  "activityEventTripGuestAddedNoName": "pievienoja cilvēku bez lietotnes",
+  "activityEventTripGuestRenamed": "pārdēvēja {previous} par {name}",
+  "activityEventTripGuestRenamedNoName": "pārdēvēja cilvēku bez lietotnes",
+  "activityChangedParts": "mainīts: {parts}",
+  "activityChangePayer": "maksātājs",
+  "activityChangeCategory": "kategorija",
+  "activityChangeNote": "apraksts",
+  "activityChangeDate": "datums",
+  "activityChangeSplit": "sadalījums",
+  "activityChangeReceipt": "čeks"
 }

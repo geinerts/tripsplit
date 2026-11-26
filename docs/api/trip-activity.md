@@ -14,6 +14,13 @@ payload key as optional, because rows written before a key existed do not have i
 | `expense.deleted` | Expense deleted | As above without `participants_count`, `receipt_changed` |
 | `expense.comment_added` | Comment or reply posted | `comment_id`, `note` (the expense's note, never the comment text) |
 
+All three `expense.*` save events also carry `subcategory` (the expense type or `null`).
+`expense.updated` also carries `previous_amount_cents` (the amount before the edit, in trip
+cents) and `changed`: the parts the edit changed, as a list in this order, using only these
+names: `amount` (amount or currency), `payer`, `category` (category or type), `note`, `date`,
+`split` (split mode, people, their parts, or personal), `receipt`. An empty list means the save
+changed nothing. Rows written before 2026-11-26 have none of these keys.
+
 `expense.*` events of a personal expense also carry `is_personal: true`. Anyone but its payer
 gets only `amount_cents`, `trip_currency_code` and `is_personal` (`docs/api/personal-expenses.md`).
 | `trip.created` | Trip created | See handler |
@@ -21,6 +28,8 @@ gets only `amount_cents`, `trip_currency_code` and `is_personal` (`docs/api/pers
 | `trip.members_added` | Legacy rows only | `members_added_count` |
 | `trip.members_invited` | Invitations sent | `members_invited_count` |
 | `trip.member_joined`, `trip.invitation_declined`, `trip.invitation_revoked` | Invitation lifecycle | None |
+| `trip.guest_added` | A member without an account was added | `guest_id`, `guest_name` |
+| `trip.guest_renamed` | A member without an account was renamed | `guest_id`, `guest_name`, `previous_name` |
 | `trip.member_removed` | Member removed | `removed_user_id`, `removed_user_name` |
 | `trip.member_left` | Member left | `left_user_id`, `left_user_name` |
 | `trip.member_role_updated` | Role changed | `target_user_id`, `target_user_name`, `role` |
@@ -45,3 +54,10 @@ gets only `amount_cents`, `trip_currency_code` and `is_personal` (`docs/api/pers
 
 `note` repeats a value already visible to every trip member. Comment text is not
 copied into the payload.
+
+## Changes on 2026-11-26
+
+Approved by the owner on 2026-11-26. Added `subcategory`, `previous_amount_cents` and `changed`
+to `expense.*` payloads and `guest_name` / `previous_name` to the guest events, and documented
+the guest events. Nothing was removed or renamed; older apps ignore the new keys. A personal
+expense's event still shows others only `amount_cents`, `trip_currency_code` and `is_personal`.

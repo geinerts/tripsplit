@@ -2248,5 +2248,16 @@
   "memberSettlePaysYou": "Betaler deg",
   "memberSettlePaysName": "Betaler {name}",
   "memberSettleReceivesFromYou": "Får fra deg",
-  "memberSettleReceivesFromName": "Får fra {name}"
+  "memberSettleReceivesFromName": "Får fra {name}",
+  "activityEventTripGuestAdded": "la til {name} (uten appen)",
+  "activityEventTripGuestAddedNoName": "la til en person uten appen",
+  "activityEventTripGuestRenamed": "ga {previous} nytt navn: {name}",
+  "activityEventTripGuestRenamedNoName": "ga en person uten appen nytt navn",
+  "activityChangedParts": "endret: {parts}",
+  "activityChangePayer": "betaler",
+  "activityChangeCategory": "kategori",
+  "activityChangeNote": "notat",
+  "activityChangeDate": "dato",
+  "activityChangeSplit": "fordeling",
+  "activityChangeReceipt": "kvittering"
 }

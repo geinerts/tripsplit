@@ -5679,4 +5679,43 @@ class AppLocalizationsCs extends AppLocalizations {
   String memberSettleReceivesFromName(String name) {
     return 'Dostane od: $name';
   }
+
+  @override
+  String activityEventTripGuestAdded(String name) {
+    return 'přidal(a) $name (bez aplikace)';
+  }
+
+  @override
+  String get activityEventTripGuestAddedNoName => 'přidal(a) osobu bez aplikace';
+
+  @override
+  String activityEventTripGuestRenamed(String previous, String name) {
+    return 'přejmenoval(a) $previous na $name';
+  }
+
+  @override
+  String get activityEventTripGuestRenamedNoName => 'přejmenoval(a) osobu bez aplikace';
+
+  @override
+  String activityChangedParts(String parts) {
+    return 'změněno: $parts';
+  }
+
+  @override
+  String get activityChangePayer => 'plátce';
+
+  @override
+  String get activityChangeCategory => 'kategorie';
+
+  @override
+  String get activityChangeNote => 'poznámka';
+
+  @override
+  String get activityChangeDate => 'datum';
+
+  @override
+  String get activityChangeSplit => 'rozdělení';
+
+  @override
+  String get activityChangeReceipt => 'účtenka';
 }

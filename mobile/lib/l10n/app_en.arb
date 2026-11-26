@@ -2558,5 +2558,67 @@
         "type": "String"
       }
     }
+  },
+  "activityEventTripGuestAdded": "added {name} (without the app)",
+  "@activityEventTripGuestAdded": {
+    "description": "Activity: the actor added a member without an account, named {name}.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "activityEventTripGuestAddedNoName": "added a person without the app",
+  "@activityEventTripGuestAddedNoName": {
+    "description": "Activity: the actor added a member without an account; older events have no name."
+  },
+  "activityEventTripGuestRenamed": "renamed {previous} to {name}",
+  "@activityEventTripGuestRenamed": {
+    "description": "Activity: the actor renamed a member without an account.",
+    "placeholders": {
+      "previous": {
+        "type": "String"
+      },
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "activityEventTripGuestRenamedNoName": "renamed a person without the app",
+  "@activityEventTripGuestRenamedNoName": {
+    "description": "Activity: the actor renamed a member without an account; older events have no names."
+  },
+  "activityChangedParts": "changed: {parts}",
+  "@activityChangedParts": {
+    "description": "Activity, under an edited expense: which parts changed, a comma-separated list of the activityChange* words.",
+    "placeholders": {
+      "parts": {
+        "type": "String"
+      }
+    }
+  },
+  "activityChangePayer": "payer",
+  "@activityChangePayer": {
+    "description": "Activity: one part of an expense that an edit changed, lowercase, used inside activityChangedParts."
+  },
+  "activityChangeCategory": "category",
+  "@activityChangeCategory": {
+    "description": "Activity: one part of an expense that an edit changed, lowercase, used inside activityChangedParts."
+  },
+  "activityChangeNote": "note",
+  "@activityChangeNote": {
+    "description": "Activity: one part of an expense that an edit changed, lowercase, used inside activityChangedParts."
+  },
+  "activityChangeDate": "date",
+  "@activityChangeDate": {
+    "description": "Activity: one part of an expense that an edit changed, lowercase, used inside activityChangedParts."
+  },
+  "activityChangeSplit": "split",
+  "@activityChangeSplit": {
+    "description": "Activity: one part of an expense that an edit changed, lowercase, used inside activityChangedParts."
+  },
+  "activityChangeReceipt": "receipt",
+  "@activityChangeReceipt": {
+    "description": "Activity: one part of an expense that an edit changed, lowercase, used inside activityChangedParts."
   }
 }

@@ -2248,5 +2248,16 @@
   "memberSettlePaysYou": "Платит вам",
   "memberSettlePaysName": "Платит: {name}",
   "memberSettleReceivesFromYou": "Получает от вас",
-  "memberSettleReceivesFromName": "Получает от: {name}"
+  "memberSettleReceivesFromName": "Получает от: {name}",
+  "activityEventTripGuestAdded": "добавил(а) {name} (без приложения)",
+  "activityEventTripGuestAddedNoName": "добавил(а) человека без приложения",
+  "activityEventTripGuestRenamed": "переименовал(а) {previous} в {name}",
+  "activityEventTripGuestRenamedNoName": "переименовал(а) человека без приложения",
+  "activityChangedParts": "изменено: {parts}",
+  "activityChangePayer": "плательщик",
+  "activityChangeCategory": "категория",
+  "activityChangeNote": "описание",
+  "activityChangeDate": "дата",
+  "activityChangeSplit": "разделение",
+  "activityChangeReceipt": "чек"
 }

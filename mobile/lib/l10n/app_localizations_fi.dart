@@ -5665,4 +5665,43 @@ class AppLocalizationsFi extends AppLocalizations {
   String memberSettleReceivesFromName(String name) {
     return 'Saa henkilöltä $name';
   }
+
+  @override
+  String activityEventTripGuestAdded(String name) {
+    return 'lisäsi henkilön $name (ilman sovellusta)';
+  }
+
+  @override
+  String get activityEventTripGuestAddedNoName => 'lisäsi henkilön ilman sovellusta';
+
+  @override
+  String activityEventTripGuestRenamed(String previous, String name) {
+    return 'nimesi henkilön $previous uudelleen: $name';
+  }
+
+  @override
+  String get activityEventTripGuestRenamedNoName => 'nimesi henkilön ilman sovellusta uudelleen';
+
+  @override
+  String activityChangedParts(String parts) {
+    return 'muutettu: $parts';
+  }
+
+  @override
+  String get activityChangePayer => 'maksaja';
+
+  @override
+  String get activityChangeCategory => 'luokka';
+
+  @override
+  String get activityChangeNote => 'muistiinpano';
+
+  @override
+  String get activityChangeDate => 'päivämäärä';
+
+  @override
+  String get activityChangeSplit => 'jako';
+
+  @override
+  String get activityChangeReceipt => 'kuitti';
 }

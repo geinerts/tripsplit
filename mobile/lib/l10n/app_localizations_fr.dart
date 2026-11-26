@@ -5665,4 +5665,43 @@ class AppLocalizationsFr extends AppLocalizations {
   String memberSettleReceivesFromName(String name) {
     return 'Reçoit de $name';
   }
+
+  @override
+  String activityEventTripGuestAdded(String name) {
+    return 'a ajouté $name (sans l\'app)';
+  }
+
+  @override
+  String get activityEventTripGuestAddedNoName => 'a ajouté une personne sans l\'app';
+
+  @override
+  String activityEventTripGuestRenamed(String previous, String name) {
+    return 'a renommé $previous en $name';
+  }
+
+  @override
+  String get activityEventTripGuestRenamedNoName => 'a renommé une personne sans l\'app';
+
+  @override
+  String activityChangedParts(String parts) {
+    return 'modifié : $parts';
+  }
+
+  @override
+  String get activityChangePayer => 'payeur';
+
+  @override
+  String get activityChangeCategory => 'catégorie';
+
+  @override
+  String get activityChangeNote => 'note';
+
+  @override
+  String get activityChangeDate => 'date';
+
+  @override
+  String get activityChangeSplit => 'répartition';
+
+  @override
+  String get activityChangeReceipt => 'reçu';
 }

@@ -127,6 +127,14 @@ final class PersonalExpenseTest extends TestCase
         }
         // While it was shared, its event was a normal one.
         self::assertSame('Souvenirs', $other[1][1]['note']);
+        // Edits name what changed; the payer sees it, others of a personal expense do not.
+        $updates = array_values(array_filter($payer, static fn (array $e): bool => $e[0] === 'expense.updated'));
+        self::assertNotEmpty($updates);
+        foreach ($updates as $update) {
+            self::assertIsArray($update[1]['changed']);
+            self::assertArrayHasKey('previous_amount_cents', $update[1]);
+        }
+        self::assertContains('split', $other[1][1]['changed']);
     }
 
     public function test_analytics_and_report_leave_personal_expenses_out(): void

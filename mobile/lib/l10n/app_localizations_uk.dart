@@ -5689,4 +5689,43 @@ class AppLocalizationsUk extends AppLocalizations {
   String memberSettleReceivesFromName(String name) {
     return 'Отримує від: $name';
   }
+
+  @override
+  String activityEventTripGuestAdded(String name) {
+    return 'додав(ла) $name (без застосунку)';
+  }
+
+  @override
+  String get activityEventTripGuestAddedNoName => 'додав(ла) людину без застосунку';
+
+  @override
+  String activityEventTripGuestRenamed(String previous, String name) {
+    return 'перейменував(ла) $previous на $name';
+  }
+
+  @override
+  String get activityEventTripGuestRenamedNoName => 'перейменував(ла) людину без застосунку';
+
+  @override
+  String activityChangedParts(String parts) {
+    return 'змінено: $parts';
+  }
+
+  @override
+  String get activityChangePayer => 'платник';
+
+  @override
+  String get activityChangeCategory => 'категорія';
+
+  @override
+  String get activityChangeNote => 'опис';
+
+  @override
+  String get activityChangeDate => 'дата';
+
+  @override
+  String get activityChangeSplit => 'розподіл';
+
+  @override
+  String get activityChangeReceipt => 'чек';
 }

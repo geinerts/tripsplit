@@ -2248,5 +2248,16 @@
   "memberSettlePaysYou": "Platí vám",
   "memberSettlePaysName": "Platí: {name}",
   "memberSettleReceivesFromYou": "Dostane od vás",
-  "memberSettleReceivesFromName": "Dostane od: {name}"
+  "memberSettleReceivesFromName": "Dostane od: {name}",
+  "activityEventTripGuestAdded": "přidal(a) {name} (bez aplikace)",
+  "activityEventTripGuestAddedNoName": "přidal(a) osobu bez aplikace",
+  "activityEventTripGuestRenamed": "přejmenoval(a) {previous} na {name}",
+  "activityEventTripGuestRenamedNoName": "přejmenoval(a) osobu bez aplikace",
+  "activityChangedParts": "změněno: {parts}",
+  "activityChangePayer": "plátce",
+  "activityChangeCategory": "kategorie",
+  "activityChangeNote": "poznámka",
+  "activityChangeDate": "datum",
+  "activityChangeSplit": "rozdělení",
+  "activityChangeReceipt": "účtenka"
 }
