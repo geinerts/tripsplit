@@ -4465,7 +4465,8 @@ void main() {
       );
       expect(find.text('Active'), findsOneWidget);
       expect(find.text('Settled'), findsNothing);
-      expect(find.text('You get back €200.00'), findsOneWidget);
+      // The balance is shown on the Settle tab, not in the header.
+      expect(find.text('You get back €200.00'), findsNothing);
       await disposePage(tester);
     },
   );
