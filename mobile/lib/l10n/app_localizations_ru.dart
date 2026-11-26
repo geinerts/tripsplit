@@ -5670,4 +5670,23 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get analyticsNoType => 'Без типа';
+
+  @override
+  String get memberStillToSettle => 'Осталось рассчитаться';
+
+  @override
+  String get memberSettlePaysYou => 'Платит вам';
+
+  @override
+  String memberSettlePaysName(String name) {
+    return 'Платит: $name';
+  }
+
+  @override
+  String get memberSettleReceivesFromYou => 'Получает от вас';
+
+  @override
+  String memberSettleReceivesFromName(String name) {
+    return 'Получает от: $name';
+  }
 }

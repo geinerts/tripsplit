@@ -2243,5 +2243,10 @@
   "expensePersonalDetailsNote": "Persoonlijk: niet in het reistotaal of de schulden. Anderen zien alleen het bedrag.",
   "workspacePersonalSpentLine": "Persoonlijk {personal} · Totaal uitgegeven {total}",
   "analyticsPersonalLine": "Persoonlijke uitgaven {amount}",
-  "analyticsNoType": "Geen type"
+  "analyticsNoType": "Geen type",
+  "memberStillToSettle": "Nog te verrekenen",
+  "memberSettlePaysYou": "Betaalt jou",
+  "memberSettlePaysName": "Betaalt {name}",
+  "memberSettleReceivesFromYou": "Krijgt van jou",
+  "memberSettleReceivesFromName": "Krijgt van {name}"
 }

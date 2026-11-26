@@ -2243,5 +2243,10 @@
   "expensePersonalDetailsNote": "Особиста: не входить у загальну суму поїздки та борги. Інші бачать лише суму.",
   "workspacePersonalSpentLine": "Особисті {personal} · Усього витрачено {total}",
   "analyticsPersonalLine": "Особисті витрати {amount}",
-  "analyticsNoType": "Без типу"
+  "analyticsNoType": "Без типу",
+  "memberStillToSettle": "Залишилось розрахуватися",
+  "memberSettlePaysYou": "Платить вам",
+  "memberSettlePaysName": "Платить: {name}",
+  "memberSettleReceivesFromYou": "Отримує від вас",
+  "memberSettleReceivesFromName": "Отримує від: {name}"
 }

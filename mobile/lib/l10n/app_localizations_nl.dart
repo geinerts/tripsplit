@@ -5646,4 +5646,23 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get analyticsNoType => 'Geen type';
+
+  @override
+  String get memberStillToSettle => 'Nog te verrekenen';
+
+  @override
+  String get memberSettlePaysYou => 'Betaalt jou';
+
+  @override
+  String memberSettlePaysName(String name) {
+    return 'Betaalt $name';
+  }
+
+  @override
+  String get memberSettleReceivesFromYou => 'Krijgt van jou';
+
+  @override
+  String memberSettleReceivesFromName(String name) {
+    return 'Krijgt van $name';
+  }
 }

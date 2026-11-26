@@ -2243,5 +2243,10 @@
   "expensePersonalDetailsNote": "Personnelle : hors total du voyage et hors dettes. Les autres ne voient que le montant.",
   "workspacePersonalSpentLine": "Personnel {personal} · Total dépensé {total}",
   "analyticsPersonalLine": "Dépenses personnelles {amount}",
-  "analyticsNoType": "Sans type"
+  "analyticsNoType": "Sans type",
+  "memberStillToSettle": "Reste à régler",
+  "memberSettlePaysYou": "Vous paie",
+  "memberSettlePaysName": "Paie {name}",
+  "memberSettleReceivesFromYou": "Reçoit de vous",
+  "memberSettleReceivesFromName": "Reçoit de {name}"
 }

@@ -2528,5 +2528,35 @@
   "analyticsNoType": "No type",
   "@analyticsNoType": {
     "description": "Analytics: the part of a category whose expenses have no type (subcategory)."
+  },
+  "memberStillToSettle": "Still to settle",
+  "@memberStillToSettle": {
+    "description": "Heading above the suggested transfers in a member's balance sheet."
+  },
+  "memberSettlePaysYou": "Pays you",
+  "@memberSettlePaysYou": {
+    "description": "Under the other person's name: they pay the signed-in user."
+  },
+  "memberSettlePaysName": "Pays {name}",
+  "@memberSettlePaysName": {
+    "description": "Under the other person's name: they pay the member whose sheet is open.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "memberSettleReceivesFromYou": "Receives from you",
+  "@memberSettleReceivesFromYou": {
+    "description": "Under the other person's name: they get money from the signed-in user."
+  },
+  "memberSettleReceivesFromName": "Receives from {name}",
+  "@memberSettleReceivesFromName": {
+    "description": "Under the other person's name: they get money from the member whose sheet is open.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
   }
 }

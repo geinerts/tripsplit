@@ -10400,6 +10400,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No type'**
   String get analyticsNoType;
+
+  /// Heading above the suggested transfers in a member's balance sheet.
+  ///
+  /// In en, this message translates to:
+  /// **'Still to settle'**
+  String get memberStillToSettle;
+
+  /// Under the other person's name: they pay the signed-in user.
+  ///
+  /// In en, this message translates to:
+  /// **'Pays you'**
+  String get memberSettlePaysYou;
+
+  /// Under the other person's name: they pay the member whose sheet is open.
+  ///
+  /// In en, this message translates to:
+  /// **'Pays {name}'**
+  String memberSettlePaysName(String name);
+
+  /// Under the other person's name: they get money from the signed-in user.
+  ///
+  /// In en, this message translates to:
+  /// **'Receives from you'**
+  String get memberSettleReceivesFromYou;
+
+  /// Under the other person's name: they get money from the member whose sheet is open.
+  ///
+  /// In en, this message translates to:
+  /// **'Receives from {name}'**
+  String memberSettleReceivesFromName(String name);
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

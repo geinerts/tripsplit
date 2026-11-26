@@ -5646,4 +5646,23 @@ class AppLocalizationsDa extends AppLocalizations {
 
   @override
   String get analyticsNoType => 'Ingen type';
+
+  @override
+  String get memberStillToSettle => 'Mangler at blive gjort op';
+
+  @override
+  String get memberSettlePaysYou => 'Betaler dig';
+
+  @override
+  String memberSettlePaysName(String name) {
+    return 'Betaler $name';
+  }
+
+  @override
+  String get memberSettleReceivesFromYou => 'Modtager fra dig';
+
+  @override
+  String memberSettleReceivesFromName(String name) {
+    return 'Modtager fra $name';
+  }
 }

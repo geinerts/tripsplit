@@ -5646,4 +5646,23 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get analyticsNoType => 'Sans type';
+
+  @override
+  String get memberStillToSettle => 'Reste à régler';
+
+  @override
+  String get memberSettlePaysYou => 'Vous paie';
+
+  @override
+  String memberSettlePaysName(String name) {
+    return 'Paie $name';
+  }
+
+  @override
+  String get memberSettleReceivesFromYou => 'Reçoit de vous';
+
+  @override
+  String memberSettleReceivesFromName(String name) {
+    return 'Reçoit de $name';
+  }
 }

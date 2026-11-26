@@ -5658,4 +5658,23 @@ class AppLocalizationsLv extends AppLocalizations {
 
   @override
   String get analyticsNoType => 'Bez tipa';
+
+  @override
+  String get memberStillToSettle => 'Vēl jānokārto';
+
+  @override
+  String get memberSettlePaysYou => 'Maksā tev';
+
+  @override
+  String memberSettlePaysName(String name) {
+    return 'Maksā $name';
+  }
+
+  @override
+  String get memberSettleReceivesFromYou => 'Saņem no tevis';
+
+  @override
+  String memberSettleReceivesFromName(String name) {
+    return 'Saņem no $name';
+  }
 }

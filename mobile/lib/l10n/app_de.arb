@@ -2243,5 +2243,10 @@
   "expensePersonalDetailsNote": "Persönlich: nicht in der Reisesumme oder den Schulden. Andere sehen nur den Betrag.",
   "workspacePersonalSpentLine": "Persönlich {personal} · Insgesamt ausgegeben {total}",
   "analyticsPersonalLine": "Persönliche Ausgaben {amount}",
-  "analyticsNoType": "Ohne Typ"
+  "analyticsNoType": "Ohne Typ",
+  "memberStillToSettle": "Noch auszugleichen",
+  "memberSettlePaysYou": "Zahlt dir",
+  "memberSettlePaysName": "Zahlt {name}",
+  "memberSettleReceivesFromYou": "Bekommt von dir",
+  "memberSettleReceivesFromName": "Bekommt von {name}"
 }

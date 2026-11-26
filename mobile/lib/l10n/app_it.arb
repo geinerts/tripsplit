@@ -2243,5 +2243,10 @@
   "expensePersonalDetailsNote": "Personale: non conta nel totale del viaggio né nei debiti. Gli altri vedono solo l'importo.",
   "workspacePersonalSpentLine": "Personale {personal} · Totale speso {total}",
   "analyticsPersonalLine": "Spese personali {amount}",
-  "analyticsNoType": "Senza tipo"
+  "analyticsNoType": "Senza tipo",
+  "memberStillToSettle": "Ancora da saldare",
+  "memberSettlePaysYou": "Ti paga",
+  "memberSettlePaysName": "Paga {name}",
+  "memberSettleReceivesFromYou": "Riceve da te",
+  "memberSettleReceivesFromName": "Riceve da {name}"
 }

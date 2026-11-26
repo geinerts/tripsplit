@@ -2243,5 +2243,10 @@
   "expensePersonalDetailsNote": "Personlig: ingår inte i resans totalsumma eller skulder. Andra ser bara beloppet.",
   "workspacePersonalSpentLine": "Personligt {personal} · Totalt spenderat {total}",
   "analyticsPersonalLine": "Personliga utgifter {amount}",
-  "analyticsNoType": "Ingen typ"
+  "analyticsNoType": "Ingen typ",
+  "memberStillToSettle": "Kvar att göra upp",
+  "memberSettlePaysYou": "Betalar dig",
+  "memberSettlePaysName": "Betalar {name}",
+  "memberSettleReceivesFromYou": "Får från dig",
+  "memberSettleReceivesFromName": "Får från {name}"
 }

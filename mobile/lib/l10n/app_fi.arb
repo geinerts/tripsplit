@@ -2243,5 +2243,10 @@
   "expensePersonalDetailsNote": "Henkilökohtainen: ei kuulu matkan kokonaissummaan eikä velkoihin. Muut näkevät vain summan.",
   "workspacePersonalSpentLine": "Henkilökohtaiset {personal} · Yhteensä käytetty {total}",
   "analyticsPersonalLine": "Henkilökohtaiset kulut {amount}",
-  "analyticsNoType": "Ei tyyppiä"
+  "analyticsNoType": "Ei tyyppiä",
+  "memberStillToSettle": "Vielä selvitettävää",
+  "memberSettlePaysYou": "Maksaa sinulle",
+  "memberSettlePaysName": "Maksaa: {name}",
+  "memberSettleReceivesFromYou": "Saa sinulta",
+  "memberSettleReceivesFromName": "Saa henkilöltä {name}"
 }

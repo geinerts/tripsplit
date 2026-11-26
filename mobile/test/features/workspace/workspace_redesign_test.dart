@@ -7134,6 +7134,57 @@ void main() {
     await disposePage(tester);
   });
 
+  testWidgets('member sheet lists what is still to settle by person', (
+    tester,
+  ) async {
+    final controller = _Workspace()
+      ..data = snapshot(
+        preview: true,
+      ).copyWith(settlements: [settlement('suggested')]);
+    await _mount(tester, controller);
+    await tester.pumpAndSettle();
+    final t = AppLocalizations.of(tester.element(find.byType(WorkspacePage)))!;
+    await _selectTab(tester, t.navBalances);
+    // Anna's sheet: Matiss pays her. The signed-in user is Matiss.
+    for (final (id, name, direction, amount) in [
+      (8, 'Matiss', 'Pays Anna', '+€24.00'),
+      (7, 'Anna', 'Receives from you', '−€24.00'),
+    ]) {
+      await visibleTap(tester, find.byKey(ValueKey('balance-row-$id')));
+      final row = find.byKey(const ValueKey('member-settle-7-8'));
+      await tester.scrollUntilVisible(
+        row,
+        200,
+        scrollable: find.byType(Scrollable).last,
+      );
+      expect(find.text(t.memberStillToSettle), findsOneWidget);
+      expect(
+        tester
+            .widget<Text>(find.byKey(const ValueKey('member-settle-summary')))
+            .data,
+        '1 · €24.00',
+      );
+      for (final text in [name, direction, amount]) {
+        expect(
+          find.descendant(of: row, matching: find.text(text)),
+          findsOneWidget,
+        );
+      }
+      // The old one-line "A → B · amount" text is gone.
+      expect(find.textContaining('→'), findsNothing);
+      expect(tester.takeException(), isNull);
+      await tester.tap(
+        find.byTooltip(
+          MaterialLocalizations.of(
+            tester.element(find.byType(WorkspacePage)),
+          ).closeButtonTooltip,
+        ),
+      );
+      await tester.pumpAndSettle();
+    }
+    await disposePage(tester);
+  });
+
   testWidgets('member sheet shows payments as sent or received', (
     tester,
   ) async {

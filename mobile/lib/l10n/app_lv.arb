@@ -2229,5 +2229,10 @@
   "expensePersonalDetailsNote": "Personīgs: neietilpst ceļojuma kopsummā un parādos. Citi redz tikai summu.",
   "workspacePersonalSpentLine": "Personīgie {personal} · Kopā iztērēts {total}",
   "analyticsPersonalLine": "Personīgie izdevumi {amount}",
-  "analyticsNoType": "Bez tipa"
+  "analyticsNoType": "Bez tipa",
+  "memberStillToSettle": "Vēl jānokārto",
+  "memberSettlePaysYou": "Maksā tev",
+  "memberSettlePaysName": "Maksā {name}",
+  "memberSettleReceivesFromYou": "Saņem no tevis",
+  "memberSettleReceivesFromName": "Saņem no {name}"
 }

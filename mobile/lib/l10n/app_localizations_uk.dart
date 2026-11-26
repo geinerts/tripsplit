@@ -5670,4 +5670,23 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get analyticsNoType => 'Без типу';
+
+  @override
+  String get memberStillToSettle => 'Залишилось розрахуватися';
+
+  @override
+  String get memberSettlePaysYou => 'Платить вам';
+
+  @override
+  String memberSettlePaysName(String name) {
+    return 'Платить: $name';
+  }
+
+  @override
+  String get memberSettleReceivesFromYou => 'Отримує від вас';
+
+  @override
+  String memberSettleReceivesFromName(String name) {
+    return 'Отримує від: $name';
+  }
 }

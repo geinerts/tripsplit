@@ -5646,4 +5646,23 @@ class AppLocalizationsFi extends AppLocalizations {
 
   @override
   String get analyticsNoType => 'Ei tyyppiä';
+
+  @override
+  String get memberStillToSettle => 'Vielä selvitettävää';
+
+  @override
+  String get memberSettlePaysYou => 'Maksaa sinulle';
+
+  @override
+  String memberSettlePaysName(String name) {
+    return 'Maksaa: $name';
+  }
+
+  @override
+  String get memberSettleReceivesFromYou => 'Saa sinulta';
+
+  @override
+  String memberSettleReceivesFromName(String name) {
+    return 'Saa henkilöltä $name';
+  }
 }

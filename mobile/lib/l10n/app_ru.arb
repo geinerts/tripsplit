@@ -2243,5 +2243,10 @@
   "expensePersonalDetailsNote": "Личный: не входит в итог поездки и долги. Другие видят только сумму.",
   "workspacePersonalSpentLine": "Личные {personal} · Всего потрачено {total}",
   "analyticsPersonalLine": "Личные расходы {amount}",
-  "analyticsNoType": "Без типа"
+  "analyticsNoType": "Без типа",
+  "memberStillToSettle": "Осталось рассчитаться",
+  "memberSettlePaysYou": "Платит вам",
+  "memberSettlePaysName": "Платит: {name}",
+  "memberSettleReceivesFromYou": "Получает от вас",
+  "memberSettleReceivesFromName": "Получает от: {name}"
 }

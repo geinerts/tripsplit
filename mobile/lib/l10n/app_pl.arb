@@ -2243,5 +2243,10 @@
   "expensePersonalDetailsNote": "Osobisty: nie wlicza się do sumy wycieczki ani długów. Inni widzą tylko kwotę.",
   "workspacePersonalSpentLine": "Osobiste {personal} · Łącznie wydano {total}",
   "analyticsPersonalLine": "Wydatki osobiste {amount}",
-  "analyticsNoType": "Bez typu"
+  "analyticsNoType": "Bez typu",
+  "memberStillToSettle": "Do rozliczenia",
+  "memberSettlePaysYou": "Płaci tobie",
+  "memberSettlePaysName": "Płaci: {name}",
+  "memberSettleReceivesFromYou": "Otrzymuje od ciebie",
+  "memberSettleReceivesFromName": "Otrzymuje od: {name}"
 }

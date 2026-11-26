@@ -2243,5 +2243,10 @@
   "expensePersonalDetailsNote": "Personlig: ikke med i turens totalsum eller gjeld. Andre ser bare beløpet.",
   "workspacePersonalSpentLine": "Personlig {personal} · Totalt brukt {total}",
   "analyticsPersonalLine": "Personlige utgifter {amount}",
-  "analyticsNoType": "Ingen type"
+  "analyticsNoType": "Ingen type",
+  "memberStillToSettle": "Gjenstår å gjøre opp",
+  "memberSettlePaysYou": "Betaler deg",
+  "memberSettlePaysName": "Betaler {name}",
+  "memberSettleReceivesFromYou": "Får fra deg",
+  "memberSettleReceivesFromName": "Får fra {name}"
 }

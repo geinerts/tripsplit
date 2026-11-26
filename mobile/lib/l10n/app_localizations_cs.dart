@@ -5660,4 +5660,23 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get analyticsNoType => 'Bez typu';
+
+  @override
+  String get memberStillToSettle => 'Zbývá vyrovnat';
+
+  @override
+  String get memberSettlePaysYou => 'Platí vám';
+
+  @override
+  String memberSettlePaysName(String name) {
+    return 'Platí: $name';
+  }
+
+  @override
+  String get memberSettleReceivesFromYou => 'Dostane od vás';
+
+  @override
+  String memberSettleReceivesFromName(String name) {
+    return 'Dostane od: $name';
+  }
 }

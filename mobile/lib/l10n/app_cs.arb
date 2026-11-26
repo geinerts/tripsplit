@@ -2243,5 +2243,10 @@
   "expensePersonalDetailsNote": "Osobní: nepočítá se do součtu výletu ani do dluhů. Ostatní vidí jen částku.",
   "workspacePersonalSpentLine": "Osobní {personal} · Celkem utraceno {total}",
   "analyticsPersonalLine": "Osobní výdaje {amount}",
-  "analyticsNoType": "Bez typu"
+  "analyticsNoType": "Bez typu",
+  "memberStillToSettle": "Zbývá vyrovnat",
+  "memberSettlePaysYou": "Platí vám",
+  "memberSettlePaysName": "Platí: {name}",
+  "memberSettleReceivesFromYou": "Dostane od vás",
+  "memberSettleReceivesFromName": "Dostane od: {name}"
 }
