@@ -5425,9 +5425,6 @@ class AppLocalizationsNb extends AppLocalizations {
   String get yearSummaryLoadFailed => 'Kunne ikke laste inn reiseåret ditt.';
 
   @override
-  String get yearSummaryTrips => 'Reiser';
-
-  @override
   String get yearSummaryDays => 'Dager på reise';
 
   @override
@@ -5457,13 +5454,94 @@ class AppLocalizationsNb extends AppLocalizations {
   String get yearSummaryPartial => 'Noen beløp mangler fordi ingen valutakurs var tilgjengelig.';
 
   @override
-  String get yearSummaryShare => 'Del';
-
-  @override
   String get yearSummaryShareFailed => 'Kunne ikke dele bildet.';
 
   @override
   String get yearSummaryRetry => 'Prøv igjen';
+
+  @override
+  String yearSummaryIntroTitle(String year) {
+    return 'Ditt $year, fullt av minner.';
+  }
+
+  @override
+  String get yearSummaryIntroBody => 'Hver tur ga året ditt noe nytt.';
+
+  @override
+  String yearSummaryTripsToRemember(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'turer å huske',
+      one: 'tur å huske',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get yearSummaryPlacesTitle => 'Stedene. Minnene.';
+
+  @override
+  String get yearSummaryPlacesBody => 'Et blikk på hvor året tok deg.';
+
+  @override
+  String get yearSummaryShareTitle => 'Et år verdt å dele.';
+
+  @override
+  String get yearSummaryShareBody => 'Ta vare på minnene. Del høydepunktene.';
+
+  @override
+  String get yearSummaryIncludeSpending => 'Vis utgifter';
+
+  @override
+  String get yearSummaryShareAction => 'Del året mitt';
+
+  @override
+  String get yearSummaryDone => 'Ferdig';
+
+  @override
+  String yearSummaryTripCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count turer',
+      one: '1 tur',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String yearSummaryDayCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count dager',
+      one: '1 dag',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String yearSummaryCountryCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count land',
+      one: '1 land',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String yearSummaryCityCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count byer',
+      one: '1 by',
+    );
+    return '$_temp0';
+  }
 
   @override
   String get notificationCommentAddedTitle => 'Ny kommentar på utgiften din';

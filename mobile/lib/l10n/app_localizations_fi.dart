@@ -5425,9 +5425,6 @@ class AppLocalizationsFi extends AppLocalizations {
   String get yearSummaryLoadFailed => 'Matkavuottasi ei voitu ladata.';
 
   @override
-  String get yearSummaryTrips => 'Matkat';
-
-  @override
   String get yearSummaryDays => 'Matkapäivät';
 
   @override
@@ -5457,13 +5454,94 @@ class AppLocalizationsFi extends AppLocalizations {
   String get yearSummaryPartial => 'Joitakin summia puuttuu, koska valuuttakurssia ei ollut saatavilla.';
 
   @override
-  String get yearSummaryShare => 'Jaa';
-
-  @override
   String get yearSummaryShareFailed => 'Kuvaa ei voitu jakaa.';
 
   @override
   String get yearSummaryRetry => 'Yritä uudelleen';
+
+  @override
+  String yearSummaryIntroTitle(String year) {
+    return 'Sinun vuotesi $year, täynnä muistoja.';
+  }
+
+  @override
+  String get yearSummaryIntroBody => 'Jokainen matka toi vuoteesi jotain uutta.';
+
+  @override
+  String yearSummaryTripsToRemember(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'muistettavaa matkaa',
+      one: 'muistettava matka',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get yearSummaryPlacesTitle => 'Paikat. Muistot.';
+
+  @override
+  String get yearSummaryPlacesBody => 'Katsaus siihen, minne vuotesi vei sinut.';
+
+  @override
+  String get yearSummaryShareTitle => 'Jakamisen arvoinen vuosi.';
+
+  @override
+  String get yearSummaryShareBody => 'Säilytä muistot. Jaa kohokohtasi.';
+
+  @override
+  String get yearSummaryIncludeSpending => 'Näytä kulut';
+
+  @override
+  String get yearSummaryShareAction => 'Jaa vuoteni';
+
+  @override
+  String get yearSummaryDone => 'Valmis';
+
+  @override
+  String yearSummaryTripCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count matkaa',
+      one: '1 matka',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String yearSummaryDayCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count päivää',
+      one: '1 päivä',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String yearSummaryCountryCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count maata',
+      one: '1 maa',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String yearSummaryCityCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count kaupunkia',
+      one: '1 kaupunki',
+    );
+    return '$_temp0';
+  }
 
   @override
   String get notificationCommentAddedTitle => 'Uusi kommentti kuluusi';

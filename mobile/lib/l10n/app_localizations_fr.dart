@@ -5425,9 +5425,6 @@ class AppLocalizationsFr extends AppLocalizations {
   String get yearSummaryLoadFailed => 'Impossible de charger votre année de voyages.';
 
   @override
-  String get yearSummaryTrips => 'Voyages';
-
-  @override
   String get yearSummaryDays => 'Jours en voyage';
 
   @override
@@ -5457,13 +5454,94 @@ class AppLocalizationsFr extends AppLocalizations {
   String get yearSummaryPartial => 'Certains montants manquent, faute de taux de change disponible.';
 
   @override
-  String get yearSummaryShare => 'Partager';
-
-  @override
   String get yearSummaryShareFailed => 'Impossible de partager l\'image.';
 
   @override
   String get yearSummaryRetry => 'Réessayer';
+
+  @override
+  String yearSummaryIntroTitle(String year) {
+    return 'Ton année $year, pleine de souvenirs.';
+  }
+
+  @override
+  String get yearSummaryIntroBody => 'Chaque voyage a apporté quelque chose à ton année.';
+
+  @override
+  String yearSummaryTripsToRemember(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'voyages à retenir',
+      one: 'voyage à retenir',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get yearSummaryPlacesTitle => 'Les lieux. Les souvenirs.';
+
+  @override
+  String get yearSummaryPlacesBody => 'Un aperçu des endroits où ton année t’a mené.';
+
+  @override
+  String get yearSummaryShareTitle => 'Une année à partager.';
+
+  @override
+  String get yearSummaryShareBody => 'Garde tes souvenirs. Partage tes meilleurs moments.';
+
+  @override
+  String get yearSummaryIncludeSpending => 'Inclure les dépenses';
+
+  @override
+  String get yearSummaryShareAction => 'Partager mon année';
+
+  @override
+  String get yearSummaryDone => 'Terminé';
+
+  @override
+  String yearSummaryTripCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count voyages',
+      one: '1 voyage',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String yearSummaryDayCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count jours',
+      one: '1 jour',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String yearSummaryCountryCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count pays',
+      one: '1 pays',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String yearSummaryCityCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count villes',
+      one: '1 ville',
+    );
+    return '$_temp0';
+  }
 
   @override
   String get notificationCommentAddedTitle => 'Nouveau commentaire sur ta dépense';

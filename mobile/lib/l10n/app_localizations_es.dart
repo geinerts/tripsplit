@@ -5425,9 +5425,6 @@ class AppLocalizationsEs extends AppLocalizations {
   String get yearSummaryLoadFailed => 'No se ha podido cargar tu año de viajes.';
 
   @override
-  String get yearSummaryTrips => 'Viajes';
-
-  @override
   String get yearSummaryDays => 'Días fuera';
 
   @override
@@ -5457,13 +5454,94 @@ class AppLocalizationsEs extends AppLocalizations {
   String get yearSummaryPartial => 'Faltan algunos importes porque no había tipo de cambio disponible.';
 
   @override
-  String get yearSummaryShare => 'Compartir';
-
-  @override
   String get yearSummaryShareFailed => 'No se ha podido compartir la imagen.';
 
   @override
   String get yearSummaryRetry => 'Reintentar';
+
+  @override
+  String yearSummaryIntroTitle(String year) {
+    return 'Tu $year, lleno de recuerdos.';
+  }
+
+  @override
+  String get yearSummaryIntroBody => 'Cada viaje sumó algo a tu año.';
+
+  @override
+  String yearSummaryTripsToRemember(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'viajes para recordar',
+      one: 'viaje para recordar',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get yearSummaryPlacesTitle => 'Los lugares. Los recuerdos.';
+
+  @override
+  String get yearSummaryPlacesBody => 'Un vistazo a dónde te llevó tu año.';
+
+  @override
+  String get yearSummaryShareTitle => 'Un año para compartir.';
+
+  @override
+  String get yearSummaryShareBody => 'Guarda los recuerdos. Comparte lo mejor.';
+
+  @override
+  String get yearSummaryIncludeSpending => 'Incluir gastos';
+
+  @override
+  String get yearSummaryShareAction => 'Compartir mi año';
+
+  @override
+  String get yearSummaryDone => 'Listo';
+
+  @override
+  String yearSummaryTripCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count viajes',
+      one: '1 viaje',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String yearSummaryDayCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count días',
+      one: '1 día',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String yearSummaryCountryCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count países',
+      one: '1 país',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String yearSummaryCityCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count ciudades',
+      one: '1 ciudad',
+    );
+    return '$_temp0';
+  }
 
   @override
   String get notificationCommentAddedTitle => 'Nuevo comentario en tu gasto';

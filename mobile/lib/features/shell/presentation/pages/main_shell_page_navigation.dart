@@ -6,7 +6,8 @@ extension _MainShellPageNavigation on _MainShellPageState {
     if (repository == null) return;
     unawaited(
       Navigator.of(context).push<void>(
-        AppPageRoute<void>(
+        MaterialPageRoute<void>(
+          fullscreenDialog: true,
           builder: (_) => YearSummaryPage(repository: repository),
         ),
       ),

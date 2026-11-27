@@ -5438,9 +5438,6 @@ class AppLocalizationsLv extends AppLocalizations {
   String get yearSummaryLoadFailed => 'Neizdevās ielādēt tavu ceļojumu gadu.';
 
   @override
-  String get yearSummaryTrips => 'Ceļojumi';
-
-  @override
   String get yearSummaryDays => 'Dienas ceļā';
 
   @override
@@ -5470,13 +5467,99 @@ class AppLocalizationsLv extends AppLocalizations {
   String get yearSummaryPartial => 'Dažu summu trūkst, jo valūtas kurss nebija pieejams.';
 
   @override
-  String get yearSummaryShare => 'Kopīgot';
-
-  @override
   String get yearSummaryShareFailed => 'Neizdevās kopīgot attēlu.';
 
   @override
   String get yearSummaryRetry => 'Mēģināt vēlreiz';
+
+  @override
+  String yearSummaryIntroTitle(String year) {
+    return 'Tavs $year, atmiņām bagāts.';
+  }
+
+  @override
+  String get yearSummaryIntroBody => 'Katrs brauciens kaut ko pievienoja tavam gadam.';
+
+  @override
+  String yearSummaryTripsToRemember(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'braucieni atmiņā',
+      one: 'brauciens atmiņā',
+      zero: 'braucienu atmiņā',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get yearSummaryPlacesTitle => 'Vietas. Atmiņas.';
+
+  @override
+  String get yearSummaryPlacesBody => 'Ieskats, kur tevi aizveda šis gads.';
+
+  @override
+  String get yearSummaryShareTitle => 'Gads, ar ko dalīties.';
+
+  @override
+  String get yearSummaryShareBody => 'Saglabā atmiņas. Dalies ar spilgtāko.';
+
+  @override
+  String get yearSummaryIncludeSpending => 'Rādīt izdevumus';
+
+  @override
+  String get yearSummaryShareAction => 'Dalīties ar savu gadu';
+
+  @override
+  String get yearSummaryDone => 'Gatavs';
+
+  @override
+  String yearSummaryTripCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count braucieni',
+      one: '$count brauciens',
+      zero: '$count braucienu',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String yearSummaryDayCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count dienas',
+      one: '$count diena',
+      zero: '$count dienu',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String yearSummaryCountryCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count valstis',
+      one: '$count valsts',
+      zero: '$count valstu',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String yearSummaryCityCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count pilsētas',
+      one: '$count pilsēta',
+      zero: '$count pilsētu',
+    );
+    return '$_temp0';
+  }
 
   @override
   String get notificationCommentAddedTitle => 'Jauns komentārs pie tava izdevuma';

@@ -1,7 +1,11 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
+import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tripsplit/app/theme/app_theme.dart';
 import 'package:tripsplit/core/errors/api_exception.dart';
@@ -87,6 +91,7 @@ Map<String, dynamic> _summaryMap({int year = 2026, int trips = 3}) => {
 };
 
 Widget _page(TripReportsRepository repository, {Locale? locale}) => MaterialApp(
+  debugShowCheckedModeBanner: false,
   theme: AppTheme.light(),
   locale: locale ?? const Locale('en'),
   localizationsDelegates: AppLocalizations.localizationsDelegates,
@@ -183,23 +188,6 @@ void main() {
       expect(find.byType(FilledButton), findsNothing);
       expect(find.byKey(const ValueKey('year-summary-share')), findsNothing);
       expect(repository.requests, [null]);
-    },
-  );
-
-  testWidgets(
-    'season response shows only the completed year without a year selector',
-    (tester) async {
-      final repository = _Repository(
-        (_) async => YearSummary.fromMap({
-          ..._summaryMap(),
-          'available_years': [2026],
-        }),
-      );
-      await tester.pumpWidget(_page(repository));
-      await tester.pumpAndSettle();
-      expect(find.text('2026'), findsOneWidget);
-      expect(find.byType(ChoiceChip), findsNothing);
-      expect(find.byKey(const ValueKey('year-summary-share')), findsOneWidget);
     },
   );
 
@@ -319,42 +307,124 @@ void main() {
     },
   );
 
-  testWidgets('shows the year, highlights and a partial-rate note', (
+  testWidgets('three slides show the year, places and a share card', (
     tester,
   ) async {
-    tester.view.physicalSize = const Size(800, 1600);
-    tester.view.devicePixelRatio = 1;
-    addTearDown(tester.view.reset);
-    final repository = _Repository((_) async {
-      return YearSummary.fromMap(_summaryMap());
-    });
+    final repository = _Repository(
+      (_) async => YearSummary.fromMap({
+        ..._summaryMap(),
+        'available_years': [2026],
+      }),
+    );
     await tester.pumpWidget(_page(repository));
     await tester.pumpAndSettle();
-    expect(find.text('2026'), findsWidgets);
+    expect(find.text('Your 2026, full of memories.'), findsOneWidget);
+    expect(
+      tester
+          .widget<Text>(find.byKey(const ValueKey('year-summary-trip-count')))
+          .data,
+      '3',
+    );
+    expect(find.text('trips to remember'), findsOneWidget);
     expect(find.text('23'), findsOneWidget);
-    expect(find.text('Italy · Latvia'), findsOneWidget);
-    expect(find.text('Anna'), findsOneWidget);
+    expect(find.byKey(const ValueKey('year-summary-back')), findsNothing);
+    expect(find.byKey(const ValueKey('year-summary-share')), findsNothing);
+
+    await tester.tap(find.byKey(const ValueKey('year-summary-next')));
+    await tester.pumpAndSettle();
+    expect(find.text('Italy'), findsOneWidget);
+    expect(find.text('Latvia'), findsOneWidget);
     expect(find.text('Food'), findsOneWidget);
+    expect(find.text('Anna'), findsOneWidget);
+    expect(find.textContaining('Summer · '), findsOneWidget);
+    // A missing rate makes the spending an estimate, with a note.
+    expect(find.textContaining('≈ '), findsOneWidget);
+    expect(find.byKey(const ValueKey('year-summary-partial')), findsOneWidget);
     expect(find.textContaining('.00'), findsNothing);
-    expect(find.textContaining('no exchange rate'), findsOneWidget);
+
+    await tester.tap(find.byKey(const ValueKey('year-summary-back')));
+    await tester.pumpAndSettle();
+    expect(find.text('Your 2026, full of memories.'), findsOneWidget);
+    await tester.drag(
+      find.byKey(const ValueKey('year-summary-pages')),
+      const Offset(-500, 0),
+    );
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const ValueKey('year-summary-next')));
+    await tester.pumpAndSettle();
+    expect(find.text('A year worth sharing.'), findsOneWidget);
+    expect(find.text('3 trips · 23 days'), findsOneWidget);
+    expect(find.text('2 countries · 2 cities'), findsOneWidget);
     expect(find.byKey(const ValueKey('year-summary-share')), findsOneWidget);
+    expect(find.byKey(const ValueKey('year-summary-done')), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
 
-  testWidgets('switching year reloads and an empty year has no share action', (
+  testWidgets('spending stays off the shared card until switched on', (
     tester,
   ) async {
-    final repository = _Repository((year) async {
-      return YearSummary.fromMap(
-        year == 2025 ? _summaryMap(year: 2025, trips: 0) : _summaryMap(),
-      );
-    });
+    tester.view.physicalSize = const Size(390, 844);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+    final repository = _Repository(
+      (_) async =>
+          YearSummary.fromMap({..._summaryMap(), 'conversion_complete': true}),
+    );
     await tester.pumpWidget(_page(repository));
     await tester.pumpAndSettle();
-    await tester.tap(find.byKey(const ValueKey('year-summary-year-2025')));
+    for (var i = 0; i < 2; i++) {
+      await tester.tap(find.byKey(const ValueKey('year-summary-next')));
+      await tester.pumpAndSettle();
+    }
+    const spending = ValueKey('year-summary-share-spending');
+    expect(find.byKey(spending), findsNothing);
+    await tester.tap(
+      find.byKey(const ValueKey('year-summary-include-spending')),
+    );
     await tester.pumpAndSettle();
-    expect(repository.requests, [null, 2025]);
-    expect(find.text('No finished trips in 2025.'), findsOneWidget);
+    expect(find.byKey(spending), findsOneWidget);
+    expect(
+      tester.widget<Text>(find.byKey(spending)).data,
+      isNot(contains('≈')),
+    );
+  });
+
+  testWidgets('many countries show six and count the rest', (tester) async {
+    final repository = _Repository(
+      (_) async => YearSummary.fromMap({
+        ..._summaryMap(),
+        'countries': [
+          for (final name in ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'])
+            {'code': name, 'name': 'Land $name'},
+        ],
+      }),
+    );
+    await tester.pumpWidget(_page(repository));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const ValueKey('year-summary-next')));
+    await tester.pumpAndSettle();
+    expect(find.text('Land F'), findsOneWidget);
+    expect(find.text('Land G'), findsNothing);
+    expect(find.text('+2'), findsOneWidget);
+  });
+
+  testWidgets('one trip reads in the singular', (tester) async {
+    final repository = _Repository(
+      (_) async => YearSummary.fromMap(_summaryMap(trips: 1)),
+    );
+    await tester.pumpWidget(_page(repository));
+    await tester.pumpAndSettle();
+    expect(find.text('trip to remember'), findsOneWidget);
+  });
+
+  testWidgets('an empty year has a message and no slides', (tester) async {
+    final repository = _Repository(
+      (_) async => YearSummary.fromMap(_summaryMap(trips: 0)),
+    );
+    await tester.pumpWidget(_page(repository));
+    await tester.pumpAndSettle();
+    expect(find.text('No finished trips in 2026.'), findsOneWidget);
+    expect(find.byKey(const ValueKey('year-summary-pages')), findsNothing);
     expect(find.byKey(const ValueKey('year-summary-share')), findsNothing);
   });
 
@@ -370,28 +440,130 @@ void main() {
     fail = false;
     await tester.tap(find.text('Try again'));
     await tester.pumpAndSettle();
-    expect(find.text('Anna'), findsOneWidget);
+    expect(
+      find.byKey(const ValueKey('year-summary-trip-count')),
+      findsOneWidget,
+    );
+    expect(repository.requests, [null, null]);
   });
 
-  testWidgets('long translations and large text fit a small phone', (
-    tester,
-  ) async {
-    tester.view.physicalSize = const Size(320, 640);
-    tester.view.devicePixelRatio = 1;
-    addTearDown(tester.view.reset);
-    final repository = _Repository((_) async {
-      return YearSummary.fromMap(_summaryMap());
-    });
-    await tester.pumpWidget(
-      MediaQuery(
-        data: const MediaQueryData(
-          size: Size(320, 640),
-          textScaler: TextScaler.linear(1.6),
-        ),
-        child: _page(repository, locale: const Locale('uk')),
-      ),
-    );
-    await tester.pumpAndSettle();
-    expect(tester.takeException(), isNull);
+  test('the year summary stays hidden in the app by default', () {
+    expect(yearSummaryOfferedInApp, isFalse);
   });
+
+  for (final locale in ['uk', 'lv', 'de']) {
+    testWidgets('long translations and large text fit a small phone: $locale', (
+      tester,
+    ) async {
+      tester.view.physicalSize = const Size(320, 640);
+      tester.view.devicePixelRatio = 1;
+      addTearDown(tester.view.reset);
+      final repository = _Repository((_) async {
+        return YearSummary.fromMap(_summaryMap());
+      });
+      await tester.pumpWidget(
+        MediaQuery(
+          data: const MediaQueryData(
+            size: Size(320, 640),
+            textScaler: TextScaler.linear(1.6),
+          ),
+          child: _page(repository, locale: Locale(locale)),
+        ),
+      );
+      await tester.pumpAndSettle();
+      for (var i = 0; i < 2; i++) {
+        expect(tester.takeException(), isNull);
+        await tester.tap(find.byKey(const ValueKey('year-summary-next')));
+        await tester.pumpAndSettle();
+      }
+      expect(tester.takeException(), isNull);
+    });
+  }
+
+  // Opt-in review images of the three slides with demo data:
+  // flutter test test/features/trip_reports/trip_reports_test.dart
+  //   --dart-define=YEAR_SUMMARY_PREVIEWS=true
+  if (const bool.fromEnvironment('YEAR_SUMMARY_PREVIEWS')) {
+    for (final locale in ['en', 'lv']) {
+      testWidgets('year summary review images: $locale', (tester) async {
+        tester.view.physicalSize = const Size(390, 844);
+        tester.view.devicePixelRatio = 1;
+        addTearDown(tester.view.reset);
+        await tester.runAsync(() async {
+          await (FontLoader(
+            'Inter',
+          )..addFont(rootBundle.load('assets/fonts/Inter.ttf'))).load();
+          await (FontLoader('MaterialIcons')
+                ..addFont(rootBundle.load('fonts/MaterialIcons-Regular.otf')))
+              .load();
+        });
+        final repository = _Repository(
+          (_) async => YearSummary.fromMap({
+            'year': 2026,
+            'available_years': [2026],
+            'trip_count': 6,
+            'days_away': 32,
+            'countries': [
+              for (final name in [
+                'Italy',
+                'Spain',
+                'Portugal',
+                'Latvia',
+                'Albania',
+              ])
+                {'code': name, 'name': name},
+            ],
+            'cities': List.generate(9, (i) => 'City $i'),
+            'currency_code': 'EUR',
+            'total_share': 2480.0,
+            'conversion_complete': true,
+            'biggest_trip': {'name': 'Italy road trip', 'share': 860.0},
+            'top_category': {'key': 'food', 'share': 700.0},
+            'top_companion': {'nickname': 'Anna', 'trip_count': 4},
+          }),
+        );
+        final key = GlobalKey();
+        await tester.pumpWidget(
+          RepaintBoundary(
+            key: key,
+            child: _page(repository, locale: Locale(locale)),
+          ),
+        );
+        await tester.runAsync(
+          () => precacheImage(
+            const AssetImage('assets/branding/logo_full.png'),
+            key.currentContext!,
+          ),
+        );
+        await tester.pumpAndSettle();
+        for (var slide = 1; slide <= 3; slide++) {
+          if (slide == 3) {
+            await tester.tap(
+              find.byKey(const ValueKey('year-summary-include-spending')),
+            );
+            await tester.pumpAndSettle();
+          }
+          await tester.runAsync(() async {
+            final image =
+                await (key.currentContext!.findRenderObject()
+                        as RenderRepaintBoundary)
+                    .toImage(pixelRatio: 2);
+            final bytes = await image.toByteData(
+              format: ui.ImageByteFormat.png,
+            );
+            final file = File(
+              '../output/design/year-summary/app-$locale-$slide.png',
+            );
+            await file.parent.create(recursive: true);
+            await file.writeAsBytes(bytes!.buffer.asUint8List());
+            image.dispose();
+          });
+          if (slide < 3) {
+            await tester.tap(find.byKey(const ValueKey('year-summary-next')));
+            await tester.pumpAndSettle();
+          }
+        }
+      });
+    }
+  }
 }

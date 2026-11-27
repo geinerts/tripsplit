@@ -5440,9 +5440,6 @@ class AppLocalizationsCs extends AppLocalizations {
   String get yearSummaryLoadFailed => 'Váš rok na cestách se nepodařilo načíst.';
 
   @override
-  String get yearSummaryTrips => 'Cesty';
-
-  @override
   String get yearSummaryDays => 'Dny na cestách';
 
   @override
@@ -5472,13 +5469,99 @@ class AppLocalizationsCs extends AppLocalizations {
   String get yearSummaryPartial => 'Některé částky chybí, protože nebyl k dispozici směnný kurz.';
 
   @override
-  String get yearSummaryShare => 'Sdílet';
-
-  @override
   String get yearSummaryShareFailed => 'Obrázek se nepodařilo sdílet.';
 
   @override
   String get yearSummaryRetry => 'Zkusit znovu';
+
+  @override
+  String yearSummaryIntroTitle(String year) {
+    return 'Tvůj rok $year, plný vzpomínek.';
+  }
+
+  @override
+  String get yearSummaryIntroBody => 'Každý výlet přidal tvému roku něco nového.';
+
+  @override
+  String yearSummaryTripsToRemember(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'výletů na vzpomínku',
+      few: 'výlety na vzpomínku',
+      one: 'výlet na vzpomínku',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get yearSummaryPlacesTitle => 'Místa. Vzpomínky.';
+
+  @override
+  String get yearSummaryPlacesBody => 'Pohled na to, kam tě tvůj rok zavedl.';
+
+  @override
+  String get yearSummaryShareTitle => 'Rok, o který se vyplatí podělit.';
+
+  @override
+  String get yearSummaryShareBody => 'Uchovej si vzpomínky. Sdílej to nejlepší.';
+
+  @override
+  String get yearSummaryIncludeSpending => 'Zahrnout útratu';
+
+  @override
+  String get yearSummaryShareAction => 'Sdílet můj rok';
+
+  @override
+  String get yearSummaryDone => 'Hotovo';
+
+  @override
+  String yearSummaryTripCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count výletů',
+      few: '$count výlety',
+      one: '$count výlet',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String yearSummaryDayCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count dní',
+      few: '$count dny',
+      one: '$count den',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String yearSummaryCountryCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count zemí',
+      few: '$count země',
+      one: '$count země',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String yearSummaryCityCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count měst',
+      few: '$count města',
+      one: '$count město',
+    );
+    return '$_temp0';
+  }
 
   @override
   String get notificationCommentAddedTitle => 'Nový komentář k vašemu výdaji';

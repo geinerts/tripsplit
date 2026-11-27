@@ -9,6 +9,7 @@ class AppFormatters {
   static NumberFormat _currencyFormatter(
     BuildContext context, {
     required String currencyCode,
+    bool wholeUnits = false,
   }) {
     final normalizedCode = AppCurrencyCatalog.normalize(currencyCode);
     final symbol = AppCurrencyCatalog.symbolForCode(normalizedCode);
@@ -18,14 +19,18 @@ class AppFormatters {
         locale: localeTag,
         name: normalizedCode,
         symbol: symbol,
-        decimalDigits: AppCurrencyCatalog.decimalDigitsForCode(normalizedCode),
+        decimalDigits: wholeUnits
+            ? 0
+            : AppCurrencyCatalog.decimalDigitsForCode(normalizedCode),
       );
     } catch (_) {
       return NumberFormat.currency(
         locale: 'en_US',
         name: normalizedCode,
         symbol: symbol,
-        decimalDigits: AppCurrencyCatalog.decimalDigitsForCode(normalizedCode),
+        decimalDigits: wholeUnits
+            ? 0
+            : AppCurrencyCatalog.decimalDigitsForCode(normalizedCode),
       );
     }
   }
@@ -58,12 +63,14 @@ class AppFormatters {
     double amount, {
     String currencyCode = AppCurrencyCatalog.defaultCode,
     bool signed = false,
+    bool wholeUnits = false,
   }) {
     final normalizedCode = AppCurrencyCatalog.normalize(currencyCode);
     final formatted = _currencyFormatter(
       context,
       currencyCode: normalizedCode,
-    ).format(amount.abs());
+      wholeUnits: wholeUnits,
+    ).format(wholeUnits ? amount.abs().roundToDouble() : amount.abs());
     if (!signed) {
       return formatted;
     }

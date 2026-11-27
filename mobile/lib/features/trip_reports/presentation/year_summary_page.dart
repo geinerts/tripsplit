@@ -1,21 +1,31 @@
 import 'dart:async';
+import 'dart:math' as math;
 import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter/services.dart';
 import 'package:share_plus/share_plus.dart';
 
-import '../../../app/theme/app_design.dart';
+import '../../../app/theme/app_theme.dart';
 import '../../../core/errors/api_exception.dart';
 import '../../../core/expenses/expense_category_catalog.dart';
 import '../../../core/l10n/l10n.dart';
 import '../../../core/ui/app_formatters.dart';
-import '../../../core/ui/app_scaffold.dart';
-import '../../../core/ui/responsive.dart';
+import '../../../core/ui/ribbon_background.dart';
 import '../data/trip_reports_repository.dart';
 import '../domain/year_summary.dart';
 
-/// The Premium year summary, with a card that can be shared as an image.
+part 'year_summary_slides.dart';
+
+/// Whether the app offers the year summary. Off until the owner decides to
+/// launch it; the server's season and Premium rules still apply once it is on.
+const bool yearSummaryOfferedInApp = bool.fromEnvironment(
+  'YEAR_SUMMARY_IN_APP',
+);
+
+/// The year summary in three slides, in the Quick Start style: the year, its
+/// places and spending, and a card that can be shared as an image.
 class YearSummaryPage extends StatefulWidget {
   const YearSummaryPage({super.key, required this.repository});
 
@@ -26,12 +36,17 @@ class YearSummaryPage extends StatefulWidget {
 }
 
 class _YearSummaryPageState extends State<YearSummaryPage> {
+  static const _slideCount = 3;
+
   final GlobalKey _cardKey = GlobalKey();
+  final GlobalKey _shareButtonKey = GlobalKey();
+  final _pageController = PageController();
   YearSummary? _summary;
-  int? _year;
   bool _failed = false;
   bool _outOfSeason = false;
   bool _sharing = false;
+  bool _includeSpending = false;
+  int _step = 0;
   int _request = 0;
 
   @override
@@ -40,20 +55,25 @@ class _YearSummaryPageState extends State<YearSummaryPage> {
     unawaited(_fetch());
   }
 
-  Future<void> _load({int? year}) {
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
+
+  void _retry() {
     setState(() {
       _failed = false;
       _outOfSeason = false;
-      _year = year ?? _year;
       _summary = null;
     });
-    return _fetch();
+    unawaited(_fetch());
   }
 
   Future<void> _fetch() async {
     final request = ++_request;
     try {
-      final summary = await widget.repository.loadYearSummary(year: _year);
+      final summary = await widget.repository.loadYearSummary();
       if (!mounted || request != _request) return;
       setState(() => _summary = summary);
     } catch (error) {
@@ -66,6 +86,27 @@ class _YearSummaryPageState extends State<YearSummaryPage> {
     }
   }
 
+  double get _page {
+    if (_pageController.hasClients && _pageController.position.haveDimensions) {
+      return _pageController.page ?? _step.toDouble();
+    }
+    return _step.toDouble();
+  }
+
+  void _goTo(int page) {
+    if (MediaQuery.disableAnimationsOf(context)) {
+      _pageController.jumpToPage(page);
+      return;
+    }
+    unawaited(
+      _pageController.animateToPage(
+        page,
+        duration: const Duration(milliseconds: 320),
+        curve: Curves.easeOutCubic,
+      ),
+    );
+  }
+
   Future<void> _share() async {
     final summary = _summary;
     final boundary =
@@ -73,7 +114,8 @@ class _YearSummaryPageState extends State<YearSummaryPage> {
     if (summary == null || boundary == null || _sharing) return;
     final failure = context.l10n.yearSummaryShareFailed;
     final messenger = ScaffoldMessenger.of(context);
-    final box = context.findRenderObject() as RenderBox?;
+    final box =
+        _shareButtonKey.currentContext?.findRenderObject() as RenderBox?;
     final origin = box != null && box.hasSize
         ? box.localToGlobal(Offset.zero) & box.size
         : null;
@@ -107,291 +149,263 @@ class _YearSummaryPageState extends State<YearSummaryPage> {
 
   @override
   Widget build(BuildContext context) {
-    final t = context.l10n;
     final summary = _summary;
-    return AppPageScaffold(
-      appBar: AppBar(
-        title: Text(t.yearSummaryTitle),
-        actions: [
-          if (summary != null && summary.tripCount > 0)
-            IconButton(
-              key: const ValueKey('year-summary-share'),
-              onPressed: _sharing ? null : () => unawaited(_share()),
-              icon: const Icon(Icons.ios_share_rounded),
-              tooltip: t.yearSummaryShare,
-            ),
-        ],
-      ),
-      body: SafeArea(child: _buildBody(context, summary)),
-    );
-  }
-
-  Widget _buildBody(BuildContext context, YearSummary? summary) {
-    final t = context.l10n;
-    if (_failed) {
-      return Center(
-        child: Padding(
-          padding: const EdgeInsets.all(24),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: SystemUiOverlayStyle.dark,
+      child: Theme(
+        data: AppTheme.light(),
+        child: Scaffold(
+          backgroundColor: quickStartCream,
+          body: Stack(
             children: [
-              Text(
-                _outOfSeason
-                    ? t.yearSummarySeasonNotice
-                    : t.yearSummaryLoadFailed,
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 12),
-              if (!_outOfSeason)
-                FilledButton(
-                  onPressed: () => unawaited(_load()),
-                  child: Text(t.yearSummaryRetry),
+              Positioned.fill(
+                child: AnimatedBuilder(
+                  animation: _pageController,
+                  builder: (context, _) => QuickStartBackground(page: _page),
                 ),
+              ),
+              SafeArea(
+                child: Column(
+                  children: [
+                    _topBar(context),
+                    Expanded(
+                      child: _failed
+                          ? _message(context)
+                          : summary == null
+                          ? const Center(
+                              child: CircularProgressIndicator(
+                                key: ValueKey('year-summary-loading'),
+                              ),
+                            )
+                          : summary.tripCount == 0
+                          ? _empty(context, summary)
+                          : _slides(context, summary),
+                    ),
+                  ],
+                ),
+              ),
             ],
           ),
         ),
-      );
-    }
-    if (summary == null) {
-      return const Center(child: CircularProgressIndicator());
-    }
-    final years = <int>{...summary.availableYears, summary.year}.toList()
-      ..sort((a, b) => b.compareTo(a));
-    return Center(
-      child: ConstrainedBox(
-        constraints: BoxConstraints(maxWidth: context.responsive.pageMaxWidth),
-        child: ListView(
-          padding: EdgeInsets.symmetric(
-            horizontal: context.responsive.pageHorizontalPadding,
-            vertical: 12,
+      ),
+    );
+  }
+
+  Widget _topBar(BuildContext context) => Padding(
+    padding: const EdgeInsets.fromLTRB(24, 4, 16, 0),
+    child: Row(
+      children: [
+        Image.asset(
+          'assets/branding/logo_full.png',
+          height: 30,
+          fit: BoxFit.contain,
+          semanticLabel: 'Splyto',
+        ),
+        const SizedBox(width: 12),
+        Expanded(
+          child: Align(
+            alignment: AlignmentDirectional.centerEnd,
+            child: TextButton(
+              key: const ValueKey('year-summary-close'),
+              style: TextButton.styleFrom(
+                foregroundColor: quickStartInk,
+                minimumSize: const Size(48, 48),
+                padding: const EdgeInsets.symmetric(horizontal: 8),
+              ),
+              onPressed: () => Navigator.of(context).maybePop(),
+              child: Text(
+                MaterialLocalizations.of(context).closeButtonLabel,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
           ),
+        ),
+      ],
+    ),
+  );
+
+  Widget _message(BuildContext context) {
+    final t = context.l10n;
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(32),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
           children: [
-            if (years.length > 1) ...[
-              Wrap(
-                spacing: 8,
-                runSpacing: 8,
-                children: [
-                  for (final year in years)
-                    ChoiceChip(
-                      key: ValueKey('year-summary-year-$year'),
-                      label: Text('$year'),
-                      selected: year == summary.year,
-                      onSelected: year == summary.year
-                          ? null
-                          : (_) => unawaited(_load(year: year)),
+            Text(
+              _outOfSeason
+                  ? t.yearSummarySeasonNotice
+                  : t.yearSummaryLoadFailed,
+              textAlign: TextAlign.center,
+              style: _yearSummaryBodyStyle,
+            ),
+            if (!_outOfSeason) ...[
+              const SizedBox(height: 16),
+              _primaryButton(
+                key: const ValueKey('year-summary-retry'),
+                label: t.yearSummaryRetry,
+                onPressed: _retry,
+              ),
+            ],
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _empty(BuildContext context, YearSummary summary) => Center(
+    child: Padding(
+      padding: const EdgeInsets.all(32),
+      child: Text(
+        context.l10n.yearSummaryEmpty('${summary.year}'),
+        key: const ValueKey('year-summary-empty'),
+        textAlign: TextAlign.center,
+        style: _yearSummaryTitleStyle.copyWith(fontSize: 24),
+      ),
+    ),
+  );
+
+  Widget _slides(BuildContext context, YearSummary summary) {
+    final t = context.l10n;
+    final last = _step == _slideCount - 1;
+    return Column(
+      children: [
+        Expanded(
+          child: PageView(
+            key: const ValueKey('year-summary-pages'),
+            controller: _pageController,
+            onPageChanged: (page) => setState(() => _step = page),
+            children: [
+              _YearSlide(summary: summary),
+              _PlacesSlide(summary: summary),
+              _ShareSlide(
+                summary: summary,
+                cardKey: _cardKey,
+                includeSpending: _includeSpending,
+                onIncludeSpendingChanged: (value) =>
+                    setState(() => _includeSpending = value),
+              ),
+            ],
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(24, 8, 24, 16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Semantics(
+                liveRegion: true,
+                label: t.quickStartStep(_step + 1, _slideCount),
+                child: ExcludeSemantics(
+                  child: Row(
+                    key: const ValueKey('year-summary-dots'),
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: List.generate(
+                      _slideCount,
+                      (index) => Container(
+                        width: 8,
+                        height: 8,
+                        margin: const EdgeInsets.symmetric(horizontal: 5),
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: index == _step
+                              ? _yearSummaryTeal
+                              : quickStartInk.withValues(alpha: .22),
+                        ),
+                      ),
                     ),
-                ],
+                  ),
+                ),
               ),
               const SizedBox(height: 16),
-            ],
-            if (summary.tripCount == 0)
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 48),
-                child: Text(
-                  t.yearSummaryEmpty('${summary.year}'),
-                  textAlign: TextAlign.center,
-                  style: TextStyle(color: AppDesign.mutedColor(context)),
-                ),
-              )
-            else
-              RepaintBoundary(
-                key: _cardKey,
-                child: _YearSummaryCard(summary: summary),
+              Row(
+                children: [
+                  if (_step > 0 && !last) ...[
+                    SizedBox(
+                      width: 56,
+                      height: 52,
+                      child: OutlinedButton(
+                        key: const ValueKey('year-summary-back'),
+                        style: OutlinedButton.styleFrom(
+                          padding: EdgeInsets.zero,
+                          foregroundColor: quickStartInk,
+                          backgroundColor: Colors.white.withValues(alpha: .7),
+                          side: BorderSide(
+                            color: quickStartInk.withValues(alpha: .12),
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                        ),
+                        onPressed: () => _goTo(_step - 1),
+                        child: Icon(
+                          Icons.arrow_back,
+                          semanticLabel: MaterialLocalizations.of(
+                            context,
+                          ).backButtonTooltip,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                  ],
+                  Expanded(
+                    child: last
+                        ? _primaryButton(
+                            key: const ValueKey('year-summary-share'),
+                            buttonKey: _shareButtonKey,
+                            label: t.yearSummaryShareAction,
+                            onPressed: _sharing
+                                ? null
+                                : () => unawaited(_share()),
+                          )
+                        : _primaryButton(
+                            key: const ValueKey('year-summary-next'),
+                            label: t.quickStartNext,
+                            onPressed: () => _goTo(_step + 1),
+                          ),
+                  ),
+                ],
               ),
-            if (summary.tripCount > 0 && !summary.conversionComplete) ...[
-              const SizedBox(height: 12),
-              Text(
-                t.yearSummaryPartial,
-                style: TextStyle(
-                  fontSize: 13,
-                  color: AppDesign.mutedColor(context),
+              if (last)
+                TextButton(
+                  key: const ValueKey('year-summary-done'),
+                  style: TextButton.styleFrom(
+                    foregroundColor: quickStartInk,
+                    minimumSize: const Size(48, 48),
+                  ),
+                  onPressed: () => Navigator.of(context).maybePop(),
+                  child: Text(t.yearSummaryDone),
                 ),
-              ),
             ],
-          ],
+          ),
         ),
-      ),
+      ],
     );
   }
-}
 
-/// A fixed dark card, so a shared image looks the same in light and dark mode.
-class _YearSummaryCard extends StatelessWidget {
-  const _YearSummaryCard({required this.summary});
-
-  final YearSummary summary;
-
-  @override
-  Widget build(BuildContext context) {
-    final t = context.l10n;
-    String money(double value) => AppFormatters.currency(
-      context,
-      value,
-      currencyCode: summary.currencyCode,
-    );
-    final category = summary.topCategoryKey;
-    final companion = summary.topCompanionNickname;
-    final biggest = summary.biggestTripName;
-    final biggestShare = summary.biggestTripShare;
-    final hasSpending = summary.totalShare > 0 || summary.conversionComplete;
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(24),
-        gradient: const LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [AppDesign.logoBackgroundStart, AppDesign.logoBackgroundEnd],
-        ),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(24),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              t.yearSummaryTitle,
-              style: const TextStyle(
-                color: Colors.white70,
-                fontSize: 14,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-            Text(
-              '${summary.year}',
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 52,
-                fontWeight: FontWeight.w800,
-                height: 1.15,
-              ),
-            ),
-            const SizedBox(height: 16),
-            Wrap(
-              spacing: 28,
-              runSpacing: 16,
-              children: [
-                _Stat(label: t.yearSummaryTrips, value: '${summary.tripCount}'),
-                _Stat(label: t.yearSummaryDays, value: '${summary.daysAway}'),
-                _Stat(
-                  label: t.yearSummaryCountries,
-                  value: '${summary.countries.length}',
-                ),
-                _Stat(
-                  label: t.yearSummaryCities,
-                  value: '${summary.cities.length}',
-                ),
-              ],
-            ),
-            if (summary.countries.isNotEmpty) ...[
-              const SizedBox(height: 12),
-              Text(
-                summary.countries.join(' · '),
-                style: const TextStyle(color: Colors.white70, fontSize: 14),
-              ),
-            ],
-            const SizedBox(height: 16),
-            const Divider(color: Colors.white24, height: 1),
-            if (hasSpending)
-              _Highlight(
-                label: t.yearSummarySpending,
-                value: money(summary.totalShare),
-              ),
-            if (biggest != null && biggestShare != null)
-              _Highlight(
-                label: t.yearSummaryBiggestTrip,
-                value: '$biggest · ${money(biggestShare)}',
-              ),
-            if (category != null)
-              _Highlight(
-                label: t.yearSummaryTopCategory,
-                value: ExpenseCategoryCatalog.labelFor(
-                  category,
-                  Localizations.localeOf(context),
-                ),
-              ),
-            if (companion != null)
-              _Highlight(
-                label: t.yearSummaryTopCompanion,
-                value: companion,
-                detail: t.yearSummaryTripsTogether(
-                  '${summary.topCompanionTrips}',
-                ),
-              ),
-            const SizedBox(height: 12),
-            const Text(
-              'Splyto',
-              style: TextStyle(
-                color: Colors.white54,
-                fontSize: 13,
-                fontWeight: FontWeight.w700,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _Stat extends StatelessWidget {
-  const _Stat({required this.label, required this.value});
-
-  final String label;
-  final String value;
-
-  @override
-  Widget build(BuildContext context) => Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    mainAxisSize: MainAxisSize.min,
-    children: [
-      Text(
-        value,
-        style: const TextStyle(
-          color: Colors.white,
-          fontSize: 26,
+  Widget _primaryButton({
+    required Key key,
+    Key? buttonKey,
+    required String label,
+    required VoidCallback? onPressed,
+  }) => KeyedSubtree(
+    key: buttonKey,
+    child: FilledButton(
+      key: key,
+      style: FilledButton.styleFrom(
+        minimumSize: const Size(48, 52),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        backgroundColor: quickStartInk,
+        foregroundColor: Colors.white,
+        textStyle: const TextStyle(
+          fontFamily: 'Inter',
+          fontSize: 17,
           fontWeight: FontWeight.w700,
         ),
       ),
-      Text(label, style: const TextStyle(color: Colors.white70, fontSize: 13)),
-    ],
+      onPressed: onPressed,
+      child: Text(label, textAlign: TextAlign.center),
+    ),
   );
-}
-
-class _Highlight extends StatelessWidget {
-  const _Highlight({required this.label, required this.value, this.detail});
-
-  final String label;
-  final String value;
-  final String? detail;
-
-  @override
-  Widget build(BuildContext context) {
-    final detailText = detail;
-    return Padding(
-      padding: const EdgeInsets.only(top: 14),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            label,
-            style: const TextStyle(color: Colors.white70, fontSize: 13),
-          ),
-          const SizedBox(height: 2),
-          Text(
-            value,
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 17,
-              fontWeight: FontWeight.w700,
-            ),
-          ),
-          if (detailText != null)
-            Text(
-              detailText,
-              style: const TextStyle(color: Colors.white70, fontSize: 13),
-            ),
-        ],
-      ),
-    );
-  }
 }

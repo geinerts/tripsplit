@@ -129,7 +129,10 @@ extension _MainShellPageWidgets on _MainShellPageState {
                   onTravelMapRequested: widget.travelPlacesRepository == null
                       ? null
                       : () => _openTravelMap(),
-                  onYearSummaryRequested: widget.tripReportsRepository == null
+                  // Hidden until the owner launches the new year summary.
+                  onYearSummaryRequested:
+                      !yearSummaryOfferedInApp ||
+                          widget.tripReportsRepository == null
                       ? null
                       : _openYearSummary,
                   onEditModeChanged: _onProfileEditModeChanged,

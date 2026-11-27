@@ -9963,12 +9963,6 @@ abstract class AppLocalizations {
   /// **'Couldn\'t load your year in travel.'**
   String get yearSummaryLoadFailed;
 
-  /// No description provided for @yearSummaryTrips.
-  ///
-  /// In en, this message translates to:
-  /// **'Trips'**
-  String get yearSummaryTrips;
-
   /// No description provided for @yearSummaryDays.
   ///
   /// In en, this message translates to:
@@ -10023,12 +10017,6 @@ abstract class AppLocalizations {
   /// **'Some amounts are missing because no exchange rate was available.'**
   String get yearSummaryPartial;
 
-  /// No description provided for @yearSummaryShare.
-  ///
-  /// In en, this message translates to:
-  /// **'Share'**
-  String get yearSummaryShare;
-
   /// No description provided for @yearSummaryShareFailed.
   ///
   /// In en, this message translates to:
@@ -10040,6 +10028,90 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Try again'**
   String get yearSummaryRetry;
+
+  /// No description provided for @yearSummaryIntroTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your {year}, full of memories.'**
+  String yearSummaryIntroTitle(String year);
+
+  /// No description provided for @yearSummaryIntroBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Every trip added something to your year.'**
+  String get yearSummaryIntroBody;
+
+  /// No description provided for @yearSummaryTripsToRemember.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{trip to remember} other{trips to remember}}'**
+  String yearSummaryTripsToRemember(int count);
+
+  /// No description provided for @yearSummaryPlacesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'The places. The memories.'**
+  String get yearSummaryPlacesTitle;
+
+  /// No description provided for @yearSummaryPlacesBody.
+  ///
+  /// In en, this message translates to:
+  /// **'A look at where your year took you.'**
+  String get yearSummaryPlacesBody;
+
+  /// No description provided for @yearSummaryShareTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'A year worth sharing.'**
+  String get yearSummaryShareTitle;
+
+  /// No description provided for @yearSummaryShareBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep the memories. Share your highlights.'**
+  String get yearSummaryShareBody;
+
+  /// No description provided for @yearSummaryIncludeSpending.
+  ///
+  /// In en, this message translates to:
+  /// **'Include spending'**
+  String get yearSummaryIncludeSpending;
+
+  /// No description provided for @yearSummaryShareAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Share my year'**
+  String get yearSummaryShareAction;
+
+  /// No description provided for @yearSummaryDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Done'**
+  String get yearSummaryDone;
+
+  /// No description provided for @yearSummaryTripCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 trip} other{{count} trips}}'**
+  String yearSummaryTripCount(int count);
+
+  /// No description provided for @yearSummaryDayCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 day} other{{count} days}}'**
+  String yearSummaryDayCount(int count);
+
+  /// No description provided for @yearSummaryCountryCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 country} other{{count} countries}}'**
+  String yearSummaryCountryCount(int count);
+
+  /// No description provided for @yearSummaryCityCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 city} other{{count} cities}}'**
+  String yearSummaryCityCount(int count);
 
   /// No description provided for @notificationCommentAddedTitle.
   ///

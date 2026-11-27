@@ -2418,7 +2418,6 @@
   "yearSummarySubtitle": "Your trips, places and spending for the year.",
   "yearSummaryEmpty": "No finished trips in {arg1}.",
   "yearSummaryLoadFailed": "Couldn't load your year in travel.",
-  "yearSummaryTrips": "Trips",
   "yearSummaryDays": "Days away",
   "yearSummaryCountries": "Countries",
   "yearSummaryCities": "Cities",
@@ -2428,9 +2427,64 @@
   "yearSummaryTopCompanion": "Most trips with",
   "yearSummaryTripsTogether": "Trips together: {arg1}",
   "yearSummaryPartial": "Some amounts are missing because no exchange rate was available.",
-  "yearSummaryShare": "Share",
   "yearSummaryShareFailed": "Couldn't share the image.",
   "yearSummaryRetry": "Try again",
+  "yearSummaryIntroTitle": "Your {year}, full of memories.",
+  "yearSummaryIntroBody": "Every trip added something to your year.",
+  "yearSummaryTripsToRemember": "{count, plural, =1{trip to remember} other{trips to remember}}",
+  "yearSummaryPlacesTitle": "The places. The memories.",
+  "yearSummaryPlacesBody": "A look at where your year took you.",
+  "yearSummaryShareTitle": "A year worth sharing.",
+  "yearSummaryShareBody": "Keep the memories. Share your highlights.",
+  "yearSummaryIncludeSpending": "Include spending",
+  "yearSummaryShareAction": "Share my year",
+  "yearSummaryDone": "Done",
+  "yearSummaryTripCount": "{count, plural, =1{1 trip} other{{count} trips}}",
+  "yearSummaryDayCount": "{count, plural, =1{1 day} other{{count} days}}",
+  "yearSummaryCountryCount": "{count, plural, =1{1 country} other{{count} countries}}",
+  "yearSummaryCityCount": "{count, plural, =1{1 city} other{{count} cities}}",
+  "@yearSummaryIntroTitle": {
+    "placeholders": {
+      "year": {
+        "type": "String"
+      }
+    }
+  },
+  "@yearSummaryTripsToRemember": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@yearSummaryTripCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@yearSummaryDayCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@yearSummaryCountryCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@yearSummaryCityCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "notificationCommentAddedTitle": "New comment on your expense",
   "notificationCommentAddedBody": "{name} commented on \"{note}\".",
   "notificationCommentAddedBodyGeneric": "{name} commented on your expense.",

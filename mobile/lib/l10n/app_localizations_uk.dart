@@ -5451,9 +5451,6 @@ class AppLocalizationsUk extends AppLocalizations {
   String get yearSummaryLoadFailed => 'Не вдалося завантажити ваш рік у подорожах.';
 
   @override
-  String get yearSummaryTrips => 'Подорожі';
-
-  @override
   String get yearSummaryDays => 'Днів у подорожах';
 
   @override
@@ -5483,13 +5480,104 @@ class AppLocalizationsUk extends AppLocalizations {
   String get yearSummaryPartial => 'Деякі суми відсутні, бо обмінний курс був недоступний.';
 
   @override
-  String get yearSummaryShare => 'Поділитися';
-
-  @override
   String get yearSummaryShareFailed => 'Не вдалося поділитися зображенням.';
 
   @override
   String get yearSummaryRetry => 'Спробувати ще раз';
+
+  @override
+  String yearSummaryIntroTitle(String year) {
+    return 'Ваш $year, сповнений спогадів.';
+  }
+
+  @override
+  String get yearSummaryIntroBody => 'Кожна поїздка щось додала до вашого року.';
+
+  @override
+  String yearSummaryTripsToRemember(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'поїздки на згадку',
+      many: 'поїздок на згадку',
+      few: 'поїздки на згадку',
+      one: 'поїздка на згадку',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get yearSummaryPlacesTitle => 'Місця. Спогади.';
+
+  @override
+  String get yearSummaryPlacesBody => 'Куди вас привів цей рік.';
+
+  @override
+  String get yearSummaryShareTitle => 'Рік, яким варто поділитися.';
+
+  @override
+  String get yearSummaryShareBody => 'Збережіть спогади. Поділіться найкращим.';
+
+  @override
+  String get yearSummaryIncludeSpending => 'Показати витрати';
+
+  @override
+  String get yearSummaryShareAction => 'Поділитися роком';
+
+  @override
+  String get yearSummaryDone => 'Готово';
+
+  @override
+  String yearSummaryTripCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count поїздки',
+      many: '$count поїздок',
+      few: '$count поїздки',
+      one: '$count поїздка',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String yearSummaryDayCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count дня',
+      many: '$count днів',
+      few: '$count дні',
+      one: '$count день',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String yearSummaryCountryCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count країни',
+      many: '$count країн',
+      few: '$count країни',
+      one: '$count країна',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String yearSummaryCityCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count міста',
+      many: '$count міст',
+      few: '$count міста',
+      one: '$count місто',
+    );
+    return '$_temp0';
+  }
 
   @override
   String get notificationCommentAddedTitle => 'Новий коментар до вашої витрати';
