@@ -150,7 +150,7 @@ class _ShareCard extends StatelessWidget {
             SvgPicture.asset(
               'assets/branding/logo_full_dark_holiday.svg',
               key: const ValueKey('year-summary-card-logo'),
-              height: 46,
+              height: 40,
               semanticsLabel: 'Splyto',
             )
           else

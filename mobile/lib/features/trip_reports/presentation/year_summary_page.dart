@@ -196,7 +196,7 @@ class _YearSummaryPageState extends State<YearSummaryPage> {
         if (_holiday)
           SvgPicture.asset(
             'assets/branding/logo_full_holiday.svg',
-            height: 40,
+            height: 34,
             semanticsLabel: 'Splyto',
           )
         else
