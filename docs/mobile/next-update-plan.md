@@ -516,7 +516,8 @@ izmaiņām). Fonts gadam: Inter, līdz īpašnieks atļauj lejupielādēt citu O
 **Kartīte ar karti (2026-11-27, koncepcija B):** kopīgotais attēls ir kartīte 4:5,
 1080 × 1350 (zīmēta 360 × 450, kopīgota 3×). Īpašnieka izvēle: nevis pilnekrāna stāsts, bet
 kartīte, ko stāstu lietotne parāda mazāku uz sava fona; tā arī netiek aizsegta ar vārdu un
-atbildes lauku. Stūri taisni, jo WhatsApp caurspīdīgus stūrus rāda melnus. Tumši zils fons, gads, karte ar izgaismotām apmeklētajām
+atbildes lauku. Stūri noapaļoti pašā attēlā (caurspīdīgi PNG stūri); lietotnes, kas attēlu
+pārvērš JPEG (WhatsApp), tos aizpilda melnus, kas sakrīt ar kartītes tumšo malu. Tumši zils fons, gads, karte ar izgaismotām apmeklētajām
 valstīm (pēc valstu kodiem, automātiski pietuvināta), skaitļi bez nullēm, līdz 8 valstu
 nosaukumiem un "+N", logo. Ja valstu nav, kartes vietā ir dekoratīvs globuss ar lidmašīnas
 orbītu. Ekrānā redzama tieši tā pati kartīte samazinātā mērogā. Kartes kontūras:

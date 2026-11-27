@@ -294,8 +294,17 @@ class _YearSummaryPageState extends State<YearSummaryPage> {
                         constraints: const BoxConstraints(maxWidth: 340),
                         child: AspectRatio(
                           aspectRatio: yearSummaryStorySize.aspectRatio,
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(24),
+                          child: DecoratedBox(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(22),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: quickStartInk.withValues(alpha: .18),
+                                  blurRadius: 24,
+                                  offset: const Offset(0, 10),
+                                ),
+                              ],
+                            ),
                             child: FittedBox(
                               child: RepaintBoundary(
                                 key: _cardKey,

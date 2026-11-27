@@ -13,6 +13,7 @@ const _storyMint = Color(0xFFA6F0CC);
 const _storyTeal = Color(0xFF2FB8B0);
 const _storyMuted = Color(0xFF7E90AE);
 const _storyCountryNames = 8;
+const _storyCornerRadius = 22.0;
 
 /// The shared picture: the year, a map with the countries visited lit up (or
 /// a globe when no country is known), the counts and the logo. Fixed colours
@@ -62,189 +63,199 @@ class _YearStory extends StatelessWidget {
       data: MediaQuery.of(context).copyWith(textScaler: TextScaler.noScaling),
       child: SizedBox.fromSize(
         size: yearSummaryStorySize,
-        child: DecoratedBox(
-          key: const ValueKey('year-summary-story'),
-          decoration: const BoxDecoration(
-            gradient: RadialGradient(
-              center: Alignment(0, -.2),
-              radius: 1.2,
-              colors: [Color(0xFF123A52), Color(0xFF081C33), Color(0xFF050F1F)],
-              stops: [0, .55, 1],
+        // Rounded in the picture itself; the corners stay transparent, so a
+        // story shows its own background there. Apps that turn the picture
+        // into a JPEG fill them black, which matches the card's dark edge.
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(_storyCornerRadius),
+          child: DecoratedBox(
+            key: const ValueKey('year-summary-story'),
+            decoration: const BoxDecoration(
+              gradient: RadialGradient(
+                center: Alignment(0, -.2),
+                radius: 1.2,
+                colors: [
+                  Color(0xFF123A52),
+                  Color(0xFF081C33),
+                  Color(0xFF050F1F),
+                ],
+                stops: [0, .55, 1],
+              ),
             ),
-          ),
-          child: Stack(
-            children: [
-              const Positioned.fill(
-                child: CustomPaint(painter: _StarsPainter()),
-              ),
-              Positioned(
-                top: 22,
-                left: 20,
-                right: 20,
-                child: Text(
-                  upper(t.yearSummaryTitle),
-                  textAlign: TextAlign.center,
-                  maxLines: 1,
-                  style: const TextStyle(
-                    fontFamily: 'Inter',
-                    fontSize: 9,
-                    letterSpacing: 3.2,
-                    fontWeight: FontWeight.w700,
-                    color: _storyMint,
-                  ),
+            child: Stack(
+              children: [
+                const Positioned.fill(
+                  child: CustomPaint(painter: _StarsPainter()),
                 ),
-              ),
-              Positioned(
-                top: 32,
-                left: 0,
-                right: 0,
-                child: Center(
-                  child: ShaderMask(
-                    blendMode: BlendMode.srcIn,
-                    shaderCallback: (bounds) => const LinearGradient(
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                      colors: [Colors.white, _storyMint],
-                    ).createShader(bounds),
-                    child: Padding(
-                      // Keeps the slanted last digit inside the gradient.
-                      padding: const EdgeInsets.symmetric(horizontal: 10),
-                      child: Text(
-                        '${summary.year}',
-                        key: const ValueKey('year-summary-story-year'),
-                        style: const TextStyle(
-                          fontFamily: 'Inter',
-                          fontSize: 66,
-                          height: 1,
-                          fontWeight: FontWeight.w300,
-                          fontStyle: FontStyle.italic,
-                          letterSpacing: -3,
-                          color: Colors.white,
-                        ),
-                      ),
+                Positioned(
+                  top: 22,
+                  left: 20,
+                  right: 20,
+                  child: Text(
+                    upper(t.yearSummaryTitle),
+                    textAlign: TextAlign.center,
+                    maxLines: 1,
+                    style: const TextStyle(
+                      fontFamily: 'Inter',
+                      fontSize: 9,
+                      letterSpacing: 3.2,
+                      fontWeight: FontWeight.w700,
+                      color: _storyMint,
                     ),
                   ),
                 ),
-              ),
-              Positioned(
-                top: 104,
-                left: 0,
-                right: 0,
-                height: 196,
-                child: countries == null
-                    ? const SizedBox.shrink()
-                    : CustomPaint(
-                        key: ValueKey(
-                          lit.isEmpty
-                              ? 'year-summary-story-globe'
-                              : 'year-summary-story-map',
-                        ),
-                        painter: lit.isEmpty
-                            ? _GlobePainter(countries)
-                            : _CountryMapPainter(countries, lit),
-                      ),
-              ),
-              Positioned(
-                top: 300,
-                left: 16,
-                right: 16,
-                child: Row(
-                  key: const ValueKey('year-summary-story-stats'),
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    for (final (value, label) in stats)
-                      Flexible(
-                        child: FittedBox(
-                          fit: BoxFit.scaleDown,
-                          child: Column(
-                            children: [
-                              Text(
-                                NumberFormat.decimalPattern(
-                                  locale,
-                                ).format(value),
-                                style: const TextStyle(
-                                  fontFamily: 'Inter',
-                                  fontSize: 34,
-                                  height: 1,
-                                  fontWeight: FontWeight.w800,
-                                  color: Colors.white,
-                                ),
-                              ),
-                              const SizedBox(height: 4),
-                              Text(
-                                upper(label),
-                                style: const TextStyle(
-                                  fontFamily: 'Inter',
-                                  fontSize: 8.5,
-                                  letterSpacing: 1.3,
-                                  fontWeight: FontWeight.w600,
-                                  color: _storyMint,
-                                ),
-                              ),
-                            ],
+                Positioned(
+                  top: 32,
+                  left: 0,
+                  right: 0,
+                  child: Center(
+                    child: ShaderMask(
+                      blendMode: BlendMode.srcIn,
+                      shaderCallback: (bounds) => const LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [Colors.white, _storyMint],
+                      ).createShader(bounds),
+                      child: Padding(
+                        // Keeps the slanted last digit inside the gradient.
+                        padding: const EdgeInsets.symmetric(horizontal: 10),
+                        child: Text(
+                          '${summary.year}',
+                          key: const ValueKey('year-summary-story-year'),
+                          style: const TextStyle(
+                            fontFamily: 'Inter',
+                            fontSize: 66,
+                            height: 1,
+                            fontWeight: FontWeight.w300,
+                            fontStyle: FontStyle.italic,
+                            letterSpacing: -3,
+                            color: Colors.white,
                           ),
                         ),
                       ),
-                  ],
-                ),
-              ),
-              if (names.isNotEmpty)
-                Positioned(
-                  top: 358,
-                  left: 28,
-                  right: 28,
-                  child: Text(
-                    names,
-                    key: const ValueKey('year-summary-story-countries'),
-                    textAlign: TextAlign.center,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
-                      fontFamily: 'Inter',
-                      fontSize: 9.5,
-                      height: 1.45,
-                      color: Color(0xFFC7D8FF),
                     ),
                   ),
                 ),
-              Positioned(
-                left: 0,
-                right: 0,
-                bottom: 14,
-                child: Column(
-                  children: [
-                    if (holiday)
-                      SvgPicture.asset(
-                        'assets/branding/logo_full_dark_holiday.svg',
-                        key: const ValueKey('year-summary-story-logo'),
-                        height: 26,
-                        semanticsLabel: 'Splyto',
-                      )
-                    else
-                      Image.asset(
-                        'assets/branding/logo_full_dark.png',
-                        key: const ValueKey('year-summary-story-logo'),
-                        height: 22,
-                        semanticLabel: 'Splyto',
-                      ),
-                    const SizedBox(height: 4),
-                    Text(
-                      holiday
-                          ? '${t.yearSummaryHappyNewYear} · SPLYTO.EU'
-                          : 'SPLYTO.EU',
+                Positioned(
+                  top: 104,
+                  left: 0,
+                  right: 0,
+                  height: 196,
+                  child: countries == null
+                      ? const SizedBox.shrink()
+                      : CustomPaint(
+                          key: ValueKey(
+                            lit.isEmpty
+                                ? 'year-summary-story-globe'
+                                : 'year-summary-story-map',
+                          ),
+                          painter: lit.isEmpty
+                              ? _GlobePainter(countries)
+                              : _CountryMapPainter(countries, lit),
+                        ),
+                ),
+                Positioned(
+                  top: 300,
+                  left: 16,
+                  right: 16,
+                  child: Row(
+                    key: const ValueKey('year-summary-story-stats'),
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      for (final (value, label) in stats)
+                        Flexible(
+                          child: FittedBox(
+                            fit: BoxFit.scaleDown,
+                            child: Column(
+                              children: [
+                                Text(
+                                  NumberFormat.decimalPattern(
+                                    locale,
+                                  ).format(value),
+                                  style: const TextStyle(
+                                    fontFamily: 'Inter',
+                                    fontSize: 34,
+                                    height: 1,
+                                    fontWeight: FontWeight.w800,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                                const SizedBox(height: 4),
+                                Text(
+                                  upper(label),
+                                  style: const TextStyle(
+                                    fontFamily: 'Inter',
+                                    fontSize: 8.5,
+                                    letterSpacing: 1.3,
+                                    fontWeight: FontWeight.w600,
+                                    color: _storyMint,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                    ],
+                  ),
+                ),
+                if (names.isNotEmpty)
+                  Positioned(
+                    top: 358,
+                    left: 28,
+                    right: 28,
+                    child: Text(
+                      names,
+                      key: const ValueKey('year-summary-story-countries'),
                       textAlign: TextAlign.center,
-                      maxLines: 1,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
                       style: const TextStyle(
                         fontFamily: 'Inter',
-                        fontSize: 8,
-                        letterSpacing: 1.7,
-                        color: _storyMuted,
+                        fontSize: 9.5,
+                        height: 1.45,
+                        color: Color(0xFFC7D8FF),
                       ),
                     ),
-                  ],
+                  ),
+                Positioned(
+                  left: 0,
+                  right: 0,
+                  bottom: 14,
+                  child: Column(
+                    children: [
+                      if (holiday)
+                        SvgPicture.asset(
+                          'assets/branding/logo_full_dark_holiday.svg',
+                          key: const ValueKey('year-summary-story-logo'),
+                          height: 26,
+                          semanticsLabel: 'Splyto',
+                        )
+                      else
+                        Image.asset(
+                          'assets/branding/logo_full_dark.png',
+                          key: const ValueKey('year-summary-story-logo'),
+                          height: 22,
+                          semanticLabel: 'Splyto',
+                        ),
+                      const SizedBox(height: 4),
+                      Text(
+                        holiday
+                            ? '${t.yearSummaryHappyNewYear} · SPLYTO.EU'
+                            : 'SPLYTO.EU',
+                        textAlign: TextAlign.center,
+                        maxLines: 1,
+                        style: const TextStyle(
+                          fontFamily: 'Inter',
+                          fontSize: 8,
+                          letterSpacing: 1.7,
+                          color: _storyMuted,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
