@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'dart:typed_data';
 import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
@@ -321,7 +322,7 @@ void main() {
     );
     await tester.pumpWidget(_page(repository));
     await tester.pumpAndSettle();
-    expect(find.text('Your 2026 in travel'), findsOneWidget);
+    expect(find.text('A look back at your year'), findsOneWidget);
     String text(String key) =>
         tester.widget<Text>(find.byKey(ValueKey(key))).data!;
     expect(text('year-summary-card-trips'), '3 trips · 23 days');
@@ -386,30 +387,19 @@ void main() {
     expect(find.textContaining('0 '), findsNothing);
   });
 
-  testWidgets('spending stays off the shared card until switched on', (
-    tester,
-  ) async {
-    tester.view.physicalSize = const Size(390, 844);
-    tester.view.devicePixelRatio = 1;
-    addTearDown(tester.view.reset);
+  testWidgets('the shared card never carries amounts', (tester) async {
     final repository = _Repository(
       (_) async =>
           YearSummary.fromMap({..._summaryMap(), 'conversion_complete': true}),
     );
     await tester.pumpWidget(_page(repository));
     await tester.pumpAndSettle();
-    const spending = ValueKey('year-summary-share-spending');
-    expect(find.byKey(spending), findsNothing);
-    const toggle = ValueKey('year-summary-include-spending');
-    await tester.ensureVisible(find.byKey(toggle));
-    await tester.pumpAndSettle();
-    await tester.tap(find.byKey(toggle));
-    await tester.pumpAndSettle();
-    expect(find.byKey(spending), findsOneWidget);
+    final card = find.byKey(const ValueKey('year-summary-share-card'));
     expect(
-      tester.widget<Text>(find.byKey(spending)).data,
-      isNot(contains('≈')),
+      find.descendant(of: card, matching: find.textContaining('¥')),
+      findsNothing,
     );
+    expect(find.byType(Switch), findsNothing);
   });
 
   testWidgets('many countries show five on the card and count the rest', (
@@ -571,27 +561,83 @@ void main() {
           ),
         );
         await tester.pumpAndSettle();
-        for (final spending in [false, true]) {
-          if (spending) {
-            await tester.tap(
-              find.byKey(const ValueKey('year-summary-include-spending')),
-            );
-            await tester.pumpAndSettle();
-          }
+        Future<void> save(ui.Image image, String name) async {
+          final bytes = await image.toByteData(format: ui.ImageByteFormat.png);
+          final file = File('../output/design/year-summary/$name.png');
+          await file.parent.create(recursive: true);
+          await file.writeAsBytes(bytes!.buffer.asUint8List());
+        }
+
+        late Uint8List shared;
+        await tester.runAsync(() async {
+          final screen =
+              await (key.currentContext!.findRenderObject()
+                      as RenderRepaintBoundary)
+                  .toImage(pixelRatio: 2);
+          await save(screen, 'app-$locale');
+          screen.dispose();
+          final card =
+              await (find
+                      .byKey(const ValueKey('year-summary-share-card'))
+                      .evaluate()
+                      .single
+                      .findAncestorRenderObjectOfType<RenderRepaintBoundary>()!)
+                  .toImage(pixelRatio: 3);
+          final image = await yearSummaryShareImage(card);
+          card.dispose();
+          await save(image, 'shared-$locale');
+          final bytes = await image.toByteData(format: ui.ImageByteFormat.png);
+          shared = bytes!.buffer.asUint8List();
+          image.dispose();
+        });
+
+        // The shared picture as it arrives in a chat, in light and dark mode.
+        tester.view.physicalSize = const Size(390, 520);
+        for (final dark in [false, true]) {
+          final chatKey = GlobalKey();
+          await tester.pumpWidget(
+            RepaintBoundary(
+              key: chatKey,
+              child: Directionality(
+                textDirection: TextDirection.ltr,
+                child: ColoredBox(
+                  color: dark
+                      ? const Color(0xFF0B141A)
+                      : const Color(0xFFEFE7DE),
+                  child: Align(
+                    alignment: Alignment.centerRight,
+                    child: Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: Container(
+                        width: 270,
+                        padding: const EdgeInsets.all(4),
+                        decoration: BoxDecoration(
+                          color: dark
+                              ? const Color(0xFF005C4B)
+                              : const Color(0xFFD9FDD3),
+                          borderRadius: BorderRadius.circular(14),
+                        ),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(11),
+                          child: Image.memory(shared),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          );
+          await tester.runAsync(() async {
+            await precacheImage(MemoryImage(shared), chatKey.currentContext!);
+          });
+          await tester.pumpAndSettle();
           await tester.runAsync(() async {
             final image =
-                await (key.currentContext!.findRenderObject()
+                await (chatKey.currentContext!.findRenderObject()
                         as RenderRepaintBoundary)
                     .toImage(pixelRatio: 2);
-            final bytes = await image.toByteData(
-              format: ui.ImageByteFormat.png,
-            );
-            final file = File(
-              '../output/design/year-summary/app-$locale'
-              '${spending ? '-spending' : ''}.png',
-            );
-            await file.parent.create(recursive: true);
-            await file.writeAsBytes(bytes!.buffer.asUint8List());
+            await save(image, 'chat-$locale-${dark ? 'dark' : 'light'}');
             image.dispose();
           });
         }

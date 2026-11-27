@@ -5459,18 +5459,13 @@ class AppLocalizationsLv extends AppLocalizations {
   String get yearSummaryRetry => 'Mēģināt vēlreiz';
 
   @override
-  String yearSummaryScreenTitle(String year) {
-    return 'Tavs $year ceļojumos';
-  }
+  String get yearSummaryScreenTitle => 'Atskats uz aizvadīto gadu';
 
   @override
   String get yearSummaryOnlyForYou => 'Tikai tev, attēlā nenonāk';
 
   @override
   String get yearSummaryShareBody => 'Saglabā atmiņas. Dalies ar spilgtāko.';
-
-  @override
-  String get yearSummaryIncludeSpending => 'Rādīt izdevumus attēlā';
 
   @override
   String get yearSummaryShareAction => 'Dalīties ar savu gadu';

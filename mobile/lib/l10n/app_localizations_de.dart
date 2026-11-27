@@ -5446,18 +5446,13 @@ class AppLocalizationsDe extends AppLocalizations {
   String get yearSummaryRetry => 'Erneut versuchen';
 
   @override
-  String yearSummaryScreenTitle(String year) {
-    return 'Dein $year auf Reisen';
-  }
+  String get yearSummaryScreenTitle => 'Ein Rückblick auf dein Jahr';
 
   @override
   String get yearSummaryOnlyForYou => 'Nur für dich, nicht im Bild';
 
   @override
   String get yearSummaryShareBody => 'Bewahre die Erinnerungen. Teile deine Highlights.';
-
-  @override
-  String get yearSummaryIncludeSpending => 'Ausgaben im Bild zeigen';
 
   @override
   String get yearSummaryShareAction => 'Mein Jahr teilen';

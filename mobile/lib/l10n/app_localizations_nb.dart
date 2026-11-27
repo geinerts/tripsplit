@@ -5446,18 +5446,13 @@ class AppLocalizationsNb extends AppLocalizations {
   String get yearSummaryRetry => 'Prøv igjen';
 
   @override
-  String yearSummaryScreenTitle(String year) {
-    return 'Ditt $year på reise';
-  }
+  String get yearSummaryScreenTitle => 'Et tilbakeblikk på året ditt';
 
   @override
   String get yearSummaryOnlyForYou => 'Bare for deg, ikke på bildet';
 
   @override
   String get yearSummaryShareBody => 'Ta vare på minnene. Del høydepunktene.';
-
-  @override
-  String get yearSummaryIncludeSpending => 'Vis utgifter på bildet';
 
   @override
   String get yearSummaryShareAction => 'Del året mitt';

@@ -5446,18 +5446,13 @@ class AppLocalizationsFi extends AppLocalizations {
   String get yearSummaryRetry => 'Yritä uudelleen';
 
   @override
-  String yearSummaryScreenTitle(String year) {
-    return 'Sinun matkavuotesi $year';
-  }
+  String get yearSummaryScreenTitle => 'Katsaus vuoteesi';
 
   @override
   String get yearSummaryOnlyForYou => 'Vain sinulle, ei kuvassa';
 
   @override
   String get yearSummaryShareBody => 'Säilytä muistot. Jaa kohokohtasi.';
-
-  @override
-  String get yearSummaryIncludeSpending => 'Näytä kulut kuvassa';
 
   @override
   String get yearSummaryShareAction => 'Jaa vuoteni';

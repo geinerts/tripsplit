@@ -2425,17 +2425,9 @@
   "yearSummaryPartial": "Some amounts are missing because no exchange rate was available.",
   "yearSummaryShareFailed": "Couldn't share the image.",
   "yearSummaryRetry": "Try again",
-  "yearSummaryScreenTitle": "Your {year} in travel",
+  "yearSummaryScreenTitle": "A look back at your year",
   "yearSummaryOnlyForYou": "Only for you, not in the image",
-  "@yearSummaryScreenTitle": {
-    "placeholders": {
-      "year": {
-        "type": "String"
-      }
-    }
-  },
   "yearSummaryShareBody": "Keep the memories. Share your highlights.",
-  "yearSummaryIncludeSpending": "Show spending in the image",
   "yearSummaryShareAction": "Share my year",
   "yearSummaryDone": "Done",
   "yearSummaryTripCount": "{count, plural, =1{1 trip} other{{count} trips}}",

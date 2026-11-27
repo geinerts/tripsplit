@@ -5472,18 +5472,13 @@ class AppLocalizationsRu extends AppLocalizations {
   String get yearSummaryRetry => 'Повторить';
 
   @override
-  String yearSummaryScreenTitle(String year) {
-    return 'Ваш $year в поездках';
-  }
+  String get yearSummaryScreenTitle => 'Оглядываясь на ваш год';
 
   @override
   String get yearSummaryOnlyForYou => 'Только для вас, не попадёт на картинку';
 
   @override
   String get yearSummaryShareBody => 'Сохраните воспоминания. Поделитесь лучшим.';
-
-  @override
-  String get yearSummaryIncludeSpending => 'Показать расходы на картинке';
 
   @override
   String get yearSummaryShareAction => 'Поделиться годом';

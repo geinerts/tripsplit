@@ -34,10 +34,9 @@ String _yearSummaryMoney(
 /// The shared image. Fixed colours, so it looks the same in light and dark
 /// mode. Counts that are zero are left out rather than shown as "0".
 class _ShareCard extends StatelessWidget {
-  const _ShareCard({required this.summary, required this.includeSpending});
+  const _ShareCard({required this.summary});
 
   final YearSummary summary;
-  final bool includeSpending;
 
   @override
   Widget build(BuildContext context) {
@@ -74,15 +73,33 @@ class _ShareCard extends StatelessWidget {
         padding: const EdgeInsets.fromLTRB(20, 22, 20, 20),
         child: Column(
           children: [
-            Text(
-              '${summary.year}',
-              style: const TextStyle(
-                fontFamily: 'Inter',
-                fontSize: 64,
-                height: 1,
-                fontWeight: FontWeight.w900,
-                letterSpacing: -1.5,
-                color: _yearSummaryMint,
+            ShaderMask(
+              blendMode: BlendMode.srcIn,
+              shaderCallback: (bounds) => const LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [
+                  Color(0xFFD9FBEA),
+                  _yearSummaryMint,
+                  Color(0xFF5ED6B8),
+                ],
+              ).createShader(bounds),
+              // Padding keeps the slanted last digit inside the gradient.
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 14),
+                child: Text(
+                  '${summary.year}',
+                  key: const ValueKey('year-summary-card-year'),
+                  style: const TextStyle(
+                    fontFamily: 'Inter',
+                    fontSize: 76,
+                    height: 1,
+                    fontWeight: FontWeight.w900,
+                    fontStyle: FontStyle.italic,
+                    letterSpacing: -3,
+                    color: Colors.white,
+                  ),
+                ),
               ),
             ),
             const SizedBox(height: 12),
@@ -109,22 +126,6 @@ class _ShareCard extends StatelessWidget {
                   fontFamily: 'Inter',
                   fontSize: 13,
                   color: Colors.white.withValues(alpha: .8),
-                ),
-              ),
-            ],
-            if (includeSpending) ...[
-              const SizedBox(height: 10),
-              Text(
-                '${t.yearSummarySpending}: '
-                '${summary.conversionComplete ? '' : '≈ '}'
-                '${_yearSummaryMoney(context, summary, summary.totalShare)}',
-                key: const ValueKey('year-summary-share-spending'),
-                textAlign: TextAlign.center,
-                style: const TextStyle(
-                  fontFamily: 'Inter',
-                  fontSize: 15,
-                  fontWeight: FontWeight.w700,
-                  color: _yearSummaryMint,
                 ),
               ),
             ],

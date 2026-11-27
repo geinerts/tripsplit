@@ -5461,18 +5461,13 @@ class AppLocalizationsCs extends AppLocalizations {
   String get yearSummaryRetry => 'Zkusit znovu';
 
   @override
-  String yearSummaryScreenTitle(String year) {
-    return 'Tvůj rok $year na cestách';
-  }
+  String get yearSummaryScreenTitle => 'Ohlédnutí za tvým rokem';
 
   @override
   String get yearSummaryOnlyForYou => 'Jen pro tebe, na obrázku nebude';
 
   @override
   String get yearSummaryShareBody => 'Uchovej si vzpomínky. Sdílej to nejlepší.';
-
-  @override
-  String get yearSummaryIncludeSpending => 'Zobrazit útratu na obrázku';
 
   @override
   String get yearSummaryShareAction => 'Sdílet můj rok';

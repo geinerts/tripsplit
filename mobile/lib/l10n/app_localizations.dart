@@ -10008,8 +10008,8 @@ abstract class AppLocalizations {
   /// No description provided for @yearSummaryScreenTitle.
   ///
   /// In en, this message translates to:
-  /// **'Your {year} in travel'**
-  String yearSummaryScreenTitle(String year);
+  /// **'A look back at your year'**
+  String get yearSummaryScreenTitle;
 
   /// No description provided for @yearSummaryOnlyForYou.
   ///
@@ -10022,12 +10022,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Keep the memories. Share your highlights.'**
   String get yearSummaryShareBody;
-
-  /// No description provided for @yearSummaryIncludeSpending.
-  ///
-  /// In en, this message translates to:
-  /// **'Show spending in the image'**
-  String get yearSummaryIncludeSpending;
 
   /// No description provided for @yearSummaryShareAction.
   ///

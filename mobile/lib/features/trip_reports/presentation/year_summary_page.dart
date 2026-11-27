@@ -24,6 +24,31 @@ const bool yearSummaryOfferedInApp = bool.fromEnvironment(
   'YEAR_SUMMARY_IN_APP',
 );
 
+/// The shared picture: the card on the Quick Start mint-to-cream wash, so its
+/// rounded corners never show as black or white boxes in chats.
+@visibleForTesting
+Future<ui.Image> yearSummaryShareImage(ui.Image card) {
+  final pad = (card.width * .09).roundToDouble();
+  final size = Size(card.width + pad * 2, card.height + pad * 2);
+  final recorder = ui.PictureRecorder();
+  final canvas = Canvas(recorder);
+  canvas.drawRect(
+    Offset.zero & size,
+    Paint()
+      ..shader = const LinearGradient(
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
+        colors: [Color(0xFFBFEFEA), Color(0xFFEFF9F3), quickStartCream],
+        stops: [0, .45, 1],
+      ).createShader(Offset.zero & size),
+  );
+  canvas.drawImage(card, Offset(pad, pad), Paint());
+  return recorder.endRecording().toImage(
+    size.width.toInt(),
+    size.height.toInt(),
+  );
+}
+
 /// The year summary on one screen in the Quick Start style: a card that can be
 /// shared as an image, and below it details that stay private.
 class YearSummaryPage extends StatefulWidget {
@@ -42,7 +67,6 @@ class _YearSummaryPageState extends State<YearSummaryPage> {
   bool _failed = false;
   bool _outOfSeason = false;
   bool _sharing = false;
-  bool _includeSpending = false;
   int _request = 0;
 
   @override
@@ -90,7 +114,9 @@ class _YearSummaryPageState extends State<YearSummaryPage> {
         : null;
     setState(() => _sharing = true);
     try {
-      final image = await boundary.toImage(pixelRatio: 3);
+      final card = await boundary.toImage(pixelRatio: 3);
+      final image = await yearSummaryShareImage(card);
+      card.dispose();
       final data = await image.toByteData(format: ui.ImageByteFormat.png);
       image.dispose();
       if (data == null) throw StateError('No image data.');
@@ -232,7 +258,6 @@ class _YearSummaryPageState extends State<YearSummaryPage> {
 
   Widget _summaryView(BuildContext context, YearSummary summary) {
     final t = context.l10n;
-    final hasSpending = summary.totalShare > 0;
     return Column(
       children: [
         Expanded(
@@ -248,7 +273,7 @@ class _YearSummaryPageState extends State<YearSummaryPage> {
                     Semantics(
                       header: true,
                       child: Text(
-                        t.yearSummaryScreenTitle('${summary.year}'),
+                        t.yearSummaryScreenTitle,
                         textAlign: TextAlign.center,
                         style: _yearSummaryTitleStyle,
                       ),
@@ -265,30 +290,11 @@ class _YearSummaryPageState extends State<YearSummaryPage> {
                         constraints: const BoxConstraints(maxWidth: 360),
                         child: RepaintBoundary(
                           key: _cardKey,
-                          child: _ShareCard(
-                            summary: summary,
-                            includeSpending: _includeSpending && hasSpending,
-                          ),
+                          child: _ShareCard(summary: summary),
                         ),
                       ),
                     ),
                     _PrivateDetails(summary: summary),
-                    if (hasSpending)
-                      SwitchListTile.adaptive(
-                        key: const ValueKey('year-summary-include-spending'),
-                        contentPadding: const EdgeInsets.symmetric(
-                          horizontal: 4,
-                        ),
-                        title: Text(
-                          t.yearSummaryIncludeSpending,
-                          style: _yearSummaryBodyStyle.copyWith(
-                            color: quickStartInk,
-                          ),
-                        ),
-                        value: _includeSpending,
-                        onChanged: (value) =>
-                            setState(() => _includeSpending = value),
-                      ),
                   ],
                 ),
               ),

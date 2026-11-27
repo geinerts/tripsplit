@@ -5472,18 +5472,13 @@ class AppLocalizationsUk extends AppLocalizations {
   String get yearSummaryRetry => 'Спробувати ще раз';
 
   @override
-  String yearSummaryScreenTitle(String year) {
-    return 'Ваш $year у подорожах';
-  }
+  String get yearSummaryScreenTitle => 'Озираючись на ваш рік';
 
   @override
   String get yearSummaryOnlyForYou => 'Лише для вас, не потрапить на зображення';
 
   @override
   String get yearSummaryShareBody => 'Збережіть спогади. Поділіться найкращим.';
-
-  @override
-  String get yearSummaryIncludeSpending => 'Показати витрати на зображенні';
 
   @override
   String get yearSummaryShareAction => 'Поділитися роком';
