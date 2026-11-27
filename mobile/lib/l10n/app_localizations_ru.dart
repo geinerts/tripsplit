@@ -5451,15 +5451,6 @@ class AppLocalizationsRu extends AppLocalizations {
   String get yearSummaryLoadFailed => 'Не удалось загрузить ваш год в путешествиях.';
 
   @override
-  String get yearSummaryDays => 'Дней в пути';
-
-  @override
-  String get yearSummaryCountries => 'Страны';
-
-  @override
-  String get yearSummaryCities => 'Города';
-
-  @override
   String get yearSummarySpending => 'Ваши расходы';
 
   @override
@@ -5472,11 +5463,6 @@ class AppLocalizationsRu extends AppLocalizations {
   String get yearSummaryTopCompanion => 'Больше всего поездок с';
 
   @override
-  String yearSummaryTripsTogether(Object arg1) {
-    return 'Совместных поездок: $arg1';
-  }
-
-  @override
   String get yearSummaryPartial => 'Некоторых сумм нет, потому что курс валюты был недоступен.';
 
   @override
@@ -5486,40 +5472,18 @@ class AppLocalizationsRu extends AppLocalizations {
   String get yearSummaryRetry => 'Повторить';
 
   @override
-  String yearSummaryIntroTitle(String year) {
-    return 'Ваш $year, полный воспоминаний.';
+  String yearSummaryScreenTitle(String year) {
+    return 'Ваш $year в поездках';
   }
 
   @override
-  String get yearSummaryIntroBody => 'Каждая поездка что-то добавила вашему году.';
-
-  @override
-  String yearSummaryTripsToRemember(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: 'поездки на память',
-      many: 'поездок на память',
-      few: 'поездки на память',
-      one: 'поездка на память',
-    );
-    return '$_temp0';
-  }
-
-  @override
-  String get yearSummaryPlacesTitle => 'Места. Воспоминания.';
-
-  @override
-  String get yearSummaryPlacesBody => 'Куда вас привёл этот год.';
-
-  @override
-  String get yearSummaryShareTitle => 'Год, которым стоит поделиться.';
+  String get yearSummaryOnlyForYou => 'Только для вас, не попадёт на картинку';
 
   @override
   String get yearSummaryShareBody => 'Сохраните воспоминания. Поделитесь лучшим.';
 
   @override
-  String get yearSummaryIncludeSpending => 'Показать расходы';
+  String get yearSummaryIncludeSpending => 'Показать расходы на картинке';
 
   @override
   String get yearSummaryShareAction => 'Поделиться годом';

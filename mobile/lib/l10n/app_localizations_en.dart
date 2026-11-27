@@ -5425,15 +5425,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get yearSummaryLoadFailed => 'Couldn\'t load your year in travel.';
 
   @override
-  String get yearSummaryDays => 'Days away';
-
-  @override
-  String get yearSummaryCountries => 'Countries';
-
-  @override
-  String get yearSummaryCities => 'Cities';
-
-  @override
   String get yearSummarySpending => 'Your spending';
 
   @override
@@ -5446,11 +5437,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get yearSummaryTopCompanion => 'Most trips with';
 
   @override
-  String yearSummaryTripsTogether(Object arg1) {
-    return 'Trips together: $arg1';
-  }
-
-  @override
   String get yearSummaryPartial => 'Some amounts are missing because no exchange rate was available.';
 
   @override
@@ -5460,38 +5446,18 @@ class AppLocalizationsEn extends AppLocalizations {
   String get yearSummaryRetry => 'Try again';
 
   @override
-  String yearSummaryIntroTitle(String year) {
-    return 'Your $year, full of memories.';
+  String yearSummaryScreenTitle(String year) {
+    return 'Your $year in travel';
   }
 
   @override
-  String get yearSummaryIntroBody => 'Every trip added something to your year.';
-
-  @override
-  String yearSummaryTripsToRemember(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: 'trips to remember',
-      one: 'trip to remember',
-    );
-    return '$_temp0';
-  }
-
-  @override
-  String get yearSummaryPlacesTitle => 'The places. The memories.';
-
-  @override
-  String get yearSummaryPlacesBody => 'A look at where your year took you.';
-
-  @override
-  String get yearSummaryShareTitle => 'A year worth sharing.';
+  String get yearSummaryOnlyForYou => 'Only for you, not in the image';
 
   @override
   String get yearSummaryShareBody => 'Keep the memories. Share your highlights.';
 
   @override
-  String get yearSummaryIncludeSpending => 'Include spending';
+  String get yearSummaryIncludeSpending => 'Show spending in the image';
 
   @override
   String get yearSummaryShareAction => 'Share my year';

@@ -5438,15 +5438,6 @@ class AppLocalizationsLv extends AppLocalizations {
   String get yearSummaryLoadFailed => 'Neizdevās ielādēt tavu ceļojumu gadu.';
 
   @override
-  String get yearSummaryDays => 'Dienas ceļā';
-
-  @override
-  String get yearSummaryCountries => 'Valstis';
-
-  @override
-  String get yearSummaryCities => 'Pilsētas';
-
-  @override
   String get yearSummarySpending => 'Tavi izdevumi';
 
   @override
@@ -5459,11 +5450,6 @@ class AppLocalizationsLv extends AppLocalizations {
   String get yearSummaryTopCompanion => 'Visvairāk ceļojumu ar';
 
   @override
-  String yearSummaryTripsTogether(Object arg1) {
-    return 'Kopīgi ceļojumi: $arg1';
-  }
-
-  @override
   String get yearSummaryPartial => 'Dažu summu trūkst, jo valūtas kurss nebija pieejams.';
 
   @override
@@ -5473,39 +5459,18 @@ class AppLocalizationsLv extends AppLocalizations {
   String get yearSummaryRetry => 'Mēģināt vēlreiz';
 
   @override
-  String yearSummaryIntroTitle(String year) {
-    return 'Tavs $year, atmiņām bagāts.';
+  String yearSummaryScreenTitle(String year) {
+    return 'Tavs $year ceļojumos';
   }
 
   @override
-  String get yearSummaryIntroBody => 'Katrs brauciens kaut ko pievienoja tavam gadam.';
-
-  @override
-  String yearSummaryTripsToRemember(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: 'braucieni atmiņā',
-      one: 'brauciens atmiņā',
-      zero: 'braucienu atmiņā',
-    );
-    return '$_temp0';
-  }
-
-  @override
-  String get yearSummaryPlacesTitle => 'Vietas. Atmiņas.';
-
-  @override
-  String get yearSummaryPlacesBody => 'Ieskats, kur tevi aizveda šis gads.';
-
-  @override
-  String get yearSummaryShareTitle => 'Gads, ar ko dalīties.';
+  String get yearSummaryOnlyForYou => 'Tikai tev, attēlā nenonāk';
 
   @override
   String get yearSummaryShareBody => 'Saglabā atmiņas. Dalies ar spilgtāko.';
 
   @override
-  String get yearSummaryIncludeSpending => 'Rādīt izdevumus';
+  String get yearSummaryIncludeSpending => 'Rādīt izdevumus attēlā';
 
   @override
   String get yearSummaryShareAction => 'Dalīties ar savu gadu';

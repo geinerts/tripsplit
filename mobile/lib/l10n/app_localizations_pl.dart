@@ -5451,15 +5451,6 @@ class AppLocalizationsPl extends AppLocalizations {
   String get yearSummaryLoadFailed => 'Nie udało się wczytać Twojego roku w podróży.';
 
   @override
-  String get yearSummaryDays => 'Dni w podróży';
-
-  @override
-  String get yearSummaryCountries => 'Kraje';
-
-  @override
-  String get yearSummaryCities => 'Miasta';
-
-  @override
   String get yearSummarySpending => 'Twoje wydatki';
 
   @override
@@ -5472,11 +5463,6 @@ class AppLocalizationsPl extends AppLocalizations {
   String get yearSummaryTopCompanion => 'Najwięcej podróży z';
 
   @override
-  String yearSummaryTripsTogether(Object arg1) {
-    return 'Wspólne podróże: $arg1';
-  }
-
-  @override
   String get yearSummaryPartial => 'Brakuje niektórych kwot, ponieważ kurs wymiany był niedostępny.';
 
   @override
@@ -5486,40 +5472,18 @@ class AppLocalizationsPl extends AppLocalizations {
   String get yearSummaryRetry => 'Spróbuj ponownie';
 
   @override
-  String yearSummaryIntroTitle(String year) {
-    return 'Twój rok $year, pełen wspomnień.';
+  String yearSummaryScreenTitle(String year) {
+    return 'Twój rok $year w podróży';
   }
 
   @override
-  String get yearSummaryIntroBody => 'Każda podróż coś dodała do Twojego roku.';
-
-  @override
-  String yearSummaryTripsToRemember(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: 'podróży do zapamiętania',
-      many: 'podróży do zapamiętania',
-      few: 'podróże do zapamiętania',
-      one: 'podróż do zapamiętania',
-    );
-    return '$_temp0';
-  }
-
-  @override
-  String get yearSummaryPlacesTitle => 'Miejsca. Wspomnienia.';
-
-  @override
-  String get yearSummaryPlacesBody => 'Spojrzenie na to, dokąd zabrał Cię ten rok.';
-
-  @override
-  String get yearSummaryShareTitle => 'Rok, którym warto się podzielić.';
+  String get yearSummaryOnlyForYou => 'Tylko dla Ciebie, nie trafi na obraz';
 
   @override
   String get yearSummaryShareBody => 'Zachowaj wspomnienia. Podziel się najlepszym.';
 
   @override
-  String get yearSummaryIncludeSpending => 'Pokaż wydatki';
+  String get yearSummaryIncludeSpending => 'Pokaż wydatki na obrazie';
 
   @override
   String get yearSummaryShareAction => 'Udostępnij mój rok';

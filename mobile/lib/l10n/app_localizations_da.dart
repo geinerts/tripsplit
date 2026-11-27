@@ -5425,15 +5425,6 @@ class AppLocalizationsDa extends AppLocalizations {
   String get yearSummaryLoadFailed => 'Dit rejseår kunne ikke indlæses.';
 
   @override
-  String get yearSummaryDays => 'Dage på rejse';
-
-  @override
-  String get yearSummaryCountries => 'Lande';
-
-  @override
-  String get yearSummaryCities => 'Byer';
-
-  @override
   String get yearSummarySpending => 'Dine udgifter';
 
   @override
@@ -5446,11 +5437,6 @@ class AppLocalizationsDa extends AppLocalizations {
   String get yearSummaryTopCompanion => 'Flest rejser med';
 
   @override
-  String yearSummaryTripsTogether(Object arg1) {
-    return 'Rejser sammen: $arg1';
-  }
-
-  @override
   String get yearSummaryPartial => 'Nogle beløb mangler, fordi der ikke var en valutakurs tilgængelig.';
 
   @override
@@ -5460,38 +5446,18 @@ class AppLocalizationsDa extends AppLocalizations {
   String get yearSummaryRetry => 'Prøv igen';
 
   @override
-  String yearSummaryIntroTitle(String year) {
-    return 'Dit $year, fuld af minder.';
+  String yearSummaryScreenTitle(String year) {
+    return 'Dit $year på rejse';
   }
 
   @override
-  String get yearSummaryIntroBody => 'Hver tur gav dit år noget nyt.';
-
-  @override
-  String yearSummaryTripsToRemember(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: 'ture at huske',
-      one: 'tur at huske',
-    );
-    return '$_temp0';
-  }
-
-  @override
-  String get yearSummaryPlacesTitle => 'Stederne. Minderne.';
-
-  @override
-  String get yearSummaryPlacesBody => 'Et kig på, hvor dit år førte dig hen.';
-
-  @override
-  String get yearSummaryShareTitle => 'Et år værd at dele.';
+  String get yearSummaryOnlyForYou => 'Kun for dig, ikke på billedet';
 
   @override
   String get yearSummaryShareBody => 'Gem minderne. Del dine højdepunkter.';
 
   @override
-  String get yearSummaryIncludeSpending => 'Vis forbrug';
+  String get yearSummaryIncludeSpending => 'Vis forbrug på billedet';
 
   @override
   String get yearSummaryShareAction => 'Del mit år';

@@ -5425,15 +5425,6 @@ class AppLocalizationsFi extends AppLocalizations {
   String get yearSummaryLoadFailed => 'Matkavuottasi ei voitu ladata.';
 
   @override
-  String get yearSummaryDays => 'Matkapäivät';
-
-  @override
-  String get yearSummaryCountries => 'Maat';
-
-  @override
-  String get yearSummaryCities => 'Kaupungit';
-
-  @override
   String get yearSummarySpending => 'Sinun kulusi';
 
   @override
@@ -5446,11 +5437,6 @@ class AppLocalizationsFi extends AppLocalizations {
   String get yearSummaryTopCompanion => 'Eniten matkoja kanssa';
 
   @override
-  String yearSummaryTripsTogether(Object arg1) {
-    return 'Yhteiset matkat: $arg1';
-  }
-
-  @override
   String get yearSummaryPartial => 'Joitakin summia puuttuu, koska valuuttakurssia ei ollut saatavilla.';
 
   @override
@@ -5460,38 +5446,18 @@ class AppLocalizationsFi extends AppLocalizations {
   String get yearSummaryRetry => 'Yritä uudelleen';
 
   @override
-  String yearSummaryIntroTitle(String year) {
-    return 'Sinun vuotesi $year, täynnä muistoja.';
+  String yearSummaryScreenTitle(String year) {
+    return 'Sinun matkavuotesi $year';
   }
 
   @override
-  String get yearSummaryIntroBody => 'Jokainen matka toi vuoteesi jotain uutta.';
-
-  @override
-  String yearSummaryTripsToRemember(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: 'muistettavaa matkaa',
-      one: 'muistettava matka',
-    );
-    return '$_temp0';
-  }
-
-  @override
-  String get yearSummaryPlacesTitle => 'Paikat. Muistot.';
-
-  @override
-  String get yearSummaryPlacesBody => 'Katsaus siihen, minne vuotesi vei sinut.';
-
-  @override
-  String get yearSummaryShareTitle => 'Jakamisen arvoinen vuosi.';
+  String get yearSummaryOnlyForYou => 'Vain sinulle, ei kuvassa';
 
   @override
   String get yearSummaryShareBody => 'Säilytä muistot. Jaa kohokohtasi.';
 
   @override
-  String get yearSummaryIncludeSpending => 'Näytä kulut';
+  String get yearSummaryIncludeSpending => 'Näytä kulut kuvassa';
 
   @override
   String get yearSummaryShareAction => 'Jaa vuoteni';

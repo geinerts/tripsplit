@@ -5425,15 +5425,6 @@ class AppLocalizationsNb extends AppLocalizations {
   String get yearSummaryLoadFailed => 'Kunne ikke laste inn reiseåret ditt.';
 
   @override
-  String get yearSummaryDays => 'Dager på reise';
-
-  @override
-  String get yearSummaryCountries => 'Land';
-
-  @override
-  String get yearSummaryCities => 'Byer';
-
-  @override
   String get yearSummarySpending => 'Utgiftene dine';
 
   @override
@@ -5446,11 +5437,6 @@ class AppLocalizationsNb extends AppLocalizations {
   String get yearSummaryTopCompanion => 'Flest reiser med';
 
   @override
-  String yearSummaryTripsTogether(Object arg1) {
-    return 'Reiser sammen: $arg1';
-  }
-
-  @override
   String get yearSummaryPartial => 'Noen beløp mangler fordi ingen valutakurs var tilgjengelig.';
 
   @override
@@ -5460,38 +5446,18 @@ class AppLocalizationsNb extends AppLocalizations {
   String get yearSummaryRetry => 'Prøv igjen';
 
   @override
-  String yearSummaryIntroTitle(String year) {
-    return 'Ditt $year, fullt av minner.';
+  String yearSummaryScreenTitle(String year) {
+    return 'Ditt $year på reise';
   }
 
   @override
-  String get yearSummaryIntroBody => 'Hver tur ga året ditt noe nytt.';
-
-  @override
-  String yearSummaryTripsToRemember(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: 'turer å huske',
-      one: 'tur å huske',
-    );
-    return '$_temp0';
-  }
-
-  @override
-  String get yearSummaryPlacesTitle => 'Stedene. Minnene.';
-
-  @override
-  String get yearSummaryPlacesBody => 'Et blikk på hvor året tok deg.';
-
-  @override
-  String get yearSummaryShareTitle => 'Et år verdt å dele.';
+  String get yearSummaryOnlyForYou => 'Bare for deg, ikke på bildet';
 
   @override
   String get yearSummaryShareBody => 'Ta vare på minnene. Del høydepunktene.';
 
   @override
-  String get yearSummaryIncludeSpending => 'Vis utgifter';
+  String get yearSummaryIncludeSpending => 'Vis utgifter på bildet';
 
   @override
   String get yearSummaryShareAction => 'Del året mitt';

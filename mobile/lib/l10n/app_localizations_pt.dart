@@ -5425,15 +5425,6 @@ class AppLocalizationsPt extends AppLocalizations {
   String get yearSummaryLoadFailed => 'Não foi possível carregar o teu ano de viagens.';
 
   @override
-  String get yearSummaryDays => 'Dias fora';
-
-  @override
-  String get yearSummaryCountries => 'Países';
-
-  @override
-  String get yearSummaryCities => 'Cidades';
-
-  @override
   String get yearSummarySpending => 'As tuas despesas';
 
   @override
@@ -5446,11 +5437,6 @@ class AppLocalizationsPt extends AppLocalizations {
   String get yearSummaryTopCompanion => 'Mais viagens com';
 
   @override
-  String yearSummaryTripsTogether(Object arg1) {
-    return 'Viagens juntos: $arg1';
-  }
-
-  @override
   String get yearSummaryPartial => 'Faltam alguns montantes porque a taxa de câmbio não estava disponível.';
 
   @override
@@ -5460,38 +5446,18 @@ class AppLocalizationsPt extends AppLocalizations {
   String get yearSummaryRetry => 'Tentar novamente';
 
   @override
-  String yearSummaryIntroTitle(String year) {
-    return 'O teu $year, cheio de memórias.';
+  String yearSummaryScreenTitle(String year) {
+    return 'O teu $year em viagem';
   }
 
   @override
-  String get yearSummaryIntroBody => 'Cada viagem acrescentou algo ao teu ano.';
-
-  @override
-  String yearSummaryTripsToRemember(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: 'viagens para recordar',
-      one: 'viagem para recordar',
-    );
-    return '$_temp0';
-  }
-
-  @override
-  String get yearSummaryPlacesTitle => 'Os lugares. As memórias.';
-
-  @override
-  String get yearSummaryPlacesBody => 'Um olhar sobre onde o teu ano te levou.';
-
-  @override
-  String get yearSummaryShareTitle => 'Um ano para partilhar.';
+  String get yearSummaryOnlyForYou => 'Só para ti, não aparece na imagem';
 
   @override
   String get yearSummaryShareBody => 'Guarda as memórias. Partilha os destaques.';
 
   @override
-  String get yearSummaryIncludeSpending => 'Incluir gastos';
+  String get yearSummaryIncludeSpending => 'Mostrar gastos na imagem';
 
   @override
   String get yearSummaryShareAction => 'Partilhar o meu ano';

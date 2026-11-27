@@ -16,7 +16,7 @@ import '../../../core/ui/ribbon_background.dart';
 import '../data/trip_reports_repository.dart';
 import '../domain/year_summary.dart';
 
-part 'year_summary_slides.dart';
+part 'year_summary_card.dart';
 
 /// Whether the app offers the year summary. Off until the owner decides to
 /// launch it; the server's season and Premium rules still apply once it is on.
@@ -24,8 +24,8 @@ const bool yearSummaryOfferedInApp = bool.fromEnvironment(
   'YEAR_SUMMARY_IN_APP',
 );
 
-/// The year summary in three slides, in the Quick Start style: the year, its
-/// places and spending, and a card that can be shared as an image.
+/// The year summary on one screen in the Quick Start style: a card that can be
+/// shared as an image, and below it details that stay private.
 class YearSummaryPage extends StatefulWidget {
   const YearSummaryPage({super.key, required this.repository});
 
@@ -36,29 +36,19 @@ class YearSummaryPage extends StatefulWidget {
 }
 
 class _YearSummaryPageState extends State<YearSummaryPage> {
-  static const _slideCount = 3;
-
   final GlobalKey _cardKey = GlobalKey();
   final GlobalKey _shareButtonKey = GlobalKey();
-  final _pageController = PageController();
   YearSummary? _summary;
   bool _failed = false;
   bool _outOfSeason = false;
   bool _sharing = false;
   bool _includeSpending = false;
-  int _step = 0;
   int _request = 0;
 
   @override
   void initState() {
     super.initState();
     unawaited(_fetch());
-  }
-
-  @override
-  void dispose() {
-    _pageController.dispose();
-    super.dispose();
   }
 
   void _retry() {
@@ -84,27 +74,6 @@ class _YearSummaryPageState extends State<YearSummaryPage> {
         _failed = true;
       });
     }
-  }
-
-  double get _page {
-    if (_pageController.hasClients && _pageController.position.haveDimensions) {
-      return _pageController.page ?? _step.toDouble();
-    }
-    return _step.toDouble();
-  }
-
-  void _goTo(int page) {
-    if (MediaQuery.disableAnimationsOf(context)) {
-      _pageController.jumpToPage(page);
-      return;
-    }
-    unawaited(
-      _pageController.animateToPage(
-        page,
-        duration: const Duration(milliseconds: 320),
-        curve: Curves.easeOutCubic,
-      ),
-    );
   }
 
   Future<void> _share() async {
@@ -158,12 +127,7 @@ class _YearSummaryPageState extends State<YearSummaryPage> {
           backgroundColor: quickStartCream,
           body: Stack(
             children: [
-              Positioned.fill(
-                child: AnimatedBuilder(
-                  animation: _pageController,
-                  builder: (context, _) => QuickStartBackground(page: _page),
-                ),
-              ),
+              Positioned.fill(child: const QuickStartBackground(page: 0)),
               SafeArea(
                 child: Column(
                   children: [
@@ -179,7 +143,7 @@ class _YearSummaryPageState extends State<YearSummaryPage> {
                             )
                           : summary.tripCount == 0
                           ? _empty(context, summary)
-                          : _slides(context, summary),
+                          : _summaryView(context, summary),
                     ),
                   ],
                 ),
@@ -266,108 +230,84 @@ class _YearSummaryPageState extends State<YearSummaryPage> {
     ),
   );
 
-  Widget _slides(BuildContext context, YearSummary summary) {
+  Widget _summaryView(BuildContext context, YearSummary summary) {
     final t = context.l10n;
-    final last = _step == _slideCount - 1;
+    final hasSpending = summary.totalShare > 0;
     return Column(
       children: [
         Expanded(
-          child: PageView(
-            key: const ValueKey('year-summary-pages'),
-            controller: _pageController,
-            onPageChanged: (page) => setState(() => _step = page),
-            children: [
-              _YearSlide(summary: summary),
-              _PlacesSlide(summary: summary),
-              _ShareSlide(
-                summary: summary,
-                cardKey: _cardKey,
-                includeSpending: _includeSpending,
-                onIncludeSpendingChanged: (value) =>
-                    setState(() => _includeSpending = value),
+          child: SingleChildScrollView(
+            key: const ValueKey('year-summary-scroll'),
+            padding: const EdgeInsets.fromLTRB(24, 8, 24, 12),
+            child: Center(
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 420),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Semantics(
+                      header: true,
+                      child: Text(
+                        t.yearSummaryScreenTitle('${summary.year}'),
+                        textAlign: TextAlign.center,
+                        style: _yearSummaryTitleStyle,
+                      ),
+                    ),
+                    const SizedBox(height: 6),
+                    Text(
+                      t.yearSummaryShareBody,
+                      textAlign: TextAlign.center,
+                      style: _yearSummaryBodyStyle,
+                    ),
+                    const SizedBox(height: 18),
+                    Center(
+                      child: ConstrainedBox(
+                        constraints: const BoxConstraints(maxWidth: 360),
+                        child: RepaintBoundary(
+                          key: _cardKey,
+                          child: _ShareCard(
+                            summary: summary,
+                            includeSpending: _includeSpending && hasSpending,
+                          ),
+                        ),
+                      ),
+                    ),
+                    _PrivateDetails(summary: summary),
+                    if (hasSpending)
+                      SwitchListTile.adaptive(
+                        key: const ValueKey('year-summary-include-spending'),
+                        contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 4,
+                        ),
+                        title: Text(
+                          t.yearSummaryIncludeSpending,
+                          style: _yearSummaryBodyStyle.copyWith(
+                            color: quickStartInk,
+                          ),
+                        ),
+                        value: _includeSpending,
+                        onChanged: (value) =>
+                            setState(() => _includeSpending = value),
+                      ),
+                  ],
+                ),
               ),
-            ],
+            ),
           ),
         ),
         Padding(
-          padding: const EdgeInsets.fromLTRB(24, 8, 24, 16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Semantics(
-                liveRegion: true,
-                label: t.quickStartStep(_step + 1, _slideCount),
-                child: ExcludeSemantics(
-                  child: Row(
-                    key: const ValueKey('year-summary-dots'),
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: List.generate(
-                      _slideCount,
-                      (index) => Container(
-                        width: 8,
-                        height: 8,
-                        margin: const EdgeInsets.symmetric(horizontal: 5),
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: index == _step
-                              ? _yearSummaryTeal
-                              : quickStartInk.withValues(alpha: .22),
-                        ),
-                      ),
-                    ),
-                  ),
+          padding: const EdgeInsets.fromLTRB(24, 4, 24, 8),
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 420),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                _primaryButton(
+                  key: const ValueKey('year-summary-share'),
+                  buttonKey: _shareButtonKey,
+                  label: t.yearSummaryShareAction,
+                  onPressed: _sharing ? null : () => unawaited(_share()),
                 ),
-              ),
-              const SizedBox(height: 16),
-              Row(
-                children: [
-                  if (_step > 0 && !last) ...[
-                    SizedBox(
-                      width: 56,
-                      height: 52,
-                      child: OutlinedButton(
-                        key: const ValueKey('year-summary-back'),
-                        style: OutlinedButton.styleFrom(
-                          padding: EdgeInsets.zero,
-                          foregroundColor: quickStartInk,
-                          backgroundColor: Colors.white.withValues(alpha: .7),
-                          side: BorderSide(
-                            color: quickStartInk.withValues(alpha: .12),
-                          ),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(16),
-                          ),
-                        ),
-                        onPressed: () => _goTo(_step - 1),
-                        child: Icon(
-                          Icons.arrow_back,
-                          semanticLabel: MaterialLocalizations.of(
-                            context,
-                          ).backButtonTooltip,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 12),
-                  ],
-                  Expanded(
-                    child: last
-                        ? _primaryButton(
-                            key: const ValueKey('year-summary-share'),
-                            buttonKey: _shareButtonKey,
-                            label: t.yearSummaryShareAction,
-                            onPressed: _sharing
-                                ? null
-                                : () => unawaited(_share()),
-                          )
-                        : _primaryButton(
-                            key: const ValueKey('year-summary-next'),
-                            label: t.quickStartNext,
-                            onPressed: () => _goTo(_step + 1),
-                          ),
-                  ),
-                ],
-              ),
-              if (last)
                 TextButton(
                   key: const ValueKey('year-summary-done'),
                   style: TextButton.styleFrom(
@@ -377,7 +317,8 @@ class _YearSummaryPageState extends State<YearSummaryPage> {
                   onPressed: () => Navigator.of(context).maybePop(),
                   child: Text(t.yearSummaryDone),
                 ),
-            ],
+              ],
+            ),
           ),
         ),
       ],

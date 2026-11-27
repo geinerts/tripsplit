@@ -5425,15 +5425,6 @@ class AppLocalizationsSv extends AppLocalizations {
   String get yearSummaryLoadFailed => 'Det gick inte att läsa in ditt resår.';
 
   @override
-  String get yearSummaryDays => 'Dagar på resa';
-
-  @override
-  String get yearSummaryCountries => 'Länder';
-
-  @override
-  String get yearSummaryCities => 'Städer';
-
-  @override
   String get yearSummarySpending => 'Dina utgifter';
 
   @override
@@ -5446,11 +5437,6 @@ class AppLocalizationsSv extends AppLocalizations {
   String get yearSummaryTopCompanion => 'Flest resor med';
 
   @override
-  String yearSummaryTripsTogether(Object arg1) {
-    return 'Resor tillsammans: $arg1';
-  }
-
-  @override
   String get yearSummaryPartial => 'Vissa belopp saknas eftersom ingen växelkurs fanns tillgänglig.';
 
   @override
@@ -5460,38 +5446,18 @@ class AppLocalizationsSv extends AppLocalizations {
   String get yearSummaryRetry => 'Försök igen';
 
   @override
-  String yearSummaryIntroTitle(String year) {
-    return 'Ditt $year, fullt av minnen.';
+  String yearSummaryScreenTitle(String year) {
+    return 'Ditt $year på resa';
   }
 
   @override
-  String get yearSummaryIntroBody => 'Varje resa gav ditt år något nytt.';
-
-  @override
-  String yearSummaryTripsToRemember(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: 'resor att minnas',
-      one: 'resa att minnas',
-    );
-    return '$_temp0';
-  }
-
-  @override
-  String get yearSummaryPlacesTitle => 'Platserna. Minnena.';
-
-  @override
-  String get yearSummaryPlacesBody => 'En blick på vart ditt år tog dig.';
-
-  @override
-  String get yearSummaryShareTitle => 'Ett år värt att dela.';
+  String get yearSummaryOnlyForYou => 'Bara för dig, inte på bilden';
 
   @override
   String get yearSummaryShareBody => 'Spara minnena. Dela dina höjdpunkter.';
 
   @override
-  String get yearSummaryIncludeSpending => 'Visa utgifter';
+  String get yearSummaryIncludeSpending => 'Visa utgifter på bilden';
 
   @override
   String get yearSummaryShareAction => 'Dela mitt år';

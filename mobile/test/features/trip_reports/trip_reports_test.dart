@@ -307,9 +307,12 @@ void main() {
     },
   );
 
-  testWidgets('three slides show the year, places and a share card', (
+  testWidgets('one screen shows the share card and private details', (
     tester,
   ) async {
+    tester.view.physicalSize = const Size(390, 844);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
     final repository = _Repository(
       (_) async => YearSummary.fromMap({
         ..._summaryMap(),
@@ -318,46 +321,69 @@ void main() {
     );
     await tester.pumpWidget(_page(repository));
     await tester.pumpAndSettle();
-    expect(find.text('Your 2026, full of memories.'), findsOneWidget);
+    expect(find.text('Your 2026 in travel'), findsOneWidget);
+    String text(String key) =>
+        tester.widget<Text>(find.byKey(ValueKey(key))).data!;
+    expect(text('year-summary-card-trips'), '3 trips · 23 days');
+    expect(text('year-summary-card-places'), '2 countries · 2 cities');
+    expect(text('year-summary-card-countries'), 'Italy · Latvia');
     expect(
-      tester
-          .widget<Text>(find.byKey(const ValueKey('year-summary-trip-count')))
-          .data,
-      '3',
+      find.byKey(const ValueKey('year-summary-card-logo')),
+      findsOneWidget,
     );
-    expect(find.text('trips to remember'), findsOneWidget);
-    expect(find.text('23'), findsOneWidget);
-    expect(find.byKey(const ValueKey('year-summary-back')), findsNothing);
-    expect(find.byKey(const ValueKey('year-summary-share')), findsNothing);
-
-    await tester.tap(find.byKey(const ValueKey('year-summary-next')));
-    await tester.pumpAndSettle();
-    expect(find.text('Italy'), findsOneWidget);
-    expect(find.text('Latvia'), findsOneWidget);
+    // The private details are outside the shared image.
+    final card = find.byKey(const ValueKey('year-summary-share-card'));
+    for (final key in [
+      'year-summary-spending',
+      'year-summary-biggest',
+      'year-summary-category',
+      'year-summary-companion',
+    ]) {
+      expect(find.byKey(ValueKey(key)), findsOneWidget);
+      expect(
+        find.descendant(of: card, matching: find.byKey(ValueKey(key))),
+        findsNothing,
+      );
+    }
+    expect(find.text('Anna · 2'), findsOneWidget);
     expect(find.text('Food'), findsOneWidget);
-    expect(find.text('Anna'), findsOneWidget);
-    expect(find.textContaining('Summer · '), findsOneWidget);
     // A missing rate makes the spending an estimate, with a note.
     expect(find.textContaining('≈ '), findsOneWidget);
     expect(find.byKey(const ValueKey('year-summary-partial')), findsOneWidget);
     expect(find.textContaining('.00'), findsNothing);
-
-    await tester.tap(find.byKey(const ValueKey('year-summary-back')));
-    await tester.pumpAndSettle();
-    expect(find.text('Your 2026, full of memories.'), findsOneWidget);
-    await tester.drag(
-      find.byKey(const ValueKey('year-summary-pages')),
-      const Offset(-500, 0),
-    );
-    await tester.pumpAndSettle();
-    await tester.tap(find.byKey(const ValueKey('year-summary-next')));
-    await tester.pumpAndSettle();
-    expect(find.text('A year worth sharing.'), findsOneWidget);
-    expect(find.text('3 trips · 23 days'), findsOneWidget);
-    expect(find.text('2 countries · 2 cities'), findsOneWidget);
     expect(find.byKey(const ValueKey('year-summary-share')), findsOneWidget);
     expect(find.byKey(const ValueKey('year-summary-done')), findsOneWidget);
     expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('a year without places leaves out zero counts', (tester) async {
+    final repository = _Repository(
+      (_) async => YearSummary.fromMap({
+        ..._summaryMap(),
+        'countries': <Object>[],
+        'cities': <Object>[],
+        'days_away': 0,
+        'top_companion': null,
+      }),
+    );
+    await tester.pumpWidget(_page(repository));
+    await tester.pumpAndSettle();
+    expect(
+      tester
+          .widget<Text>(find.byKey(const ValueKey('year-summary-card-trips')))
+          .data,
+      '3 trips',
+    );
+    expect(
+      find.byKey(const ValueKey('year-summary-card-places')),
+      findsNothing,
+    );
+    expect(
+      find.byKey(const ValueKey('year-summary-card-countries')),
+      findsNothing,
+    );
+    expect(find.byKey(const ValueKey('year-summary-companion')), findsNothing);
+    expect(find.textContaining('0 '), findsNothing);
   });
 
   testWidgets('spending stays off the shared card until switched on', (
@@ -372,15 +398,12 @@ void main() {
     );
     await tester.pumpWidget(_page(repository));
     await tester.pumpAndSettle();
-    for (var i = 0; i < 2; i++) {
-      await tester.tap(find.byKey(const ValueKey('year-summary-next')));
-      await tester.pumpAndSettle();
-    }
     const spending = ValueKey('year-summary-share-spending');
     expect(find.byKey(spending), findsNothing);
-    await tester.tap(
-      find.byKey(const ValueKey('year-summary-include-spending')),
-    );
+    const toggle = ValueKey('year-summary-include-spending');
+    await tester.ensureVisible(find.byKey(toggle));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(toggle));
     await tester.pumpAndSettle();
     expect(find.byKey(spending), findsOneWidget);
     expect(
@@ -389,7 +412,9 @@ void main() {
     );
   });
 
-  testWidgets('many countries show six and count the rest', (tester) async {
+  testWidgets('many countries show five on the card and count the rest', (
+    tester,
+  ) async {
     final repository = _Repository(
       (_) async => YearSummary.fromMap({
         ..._summaryMap(),
@@ -401,11 +426,14 @@ void main() {
     );
     await tester.pumpWidget(_page(repository));
     await tester.pumpAndSettle();
-    await tester.tap(find.byKey(const ValueKey('year-summary-next')));
-    await tester.pumpAndSettle();
-    expect(find.text('Land F'), findsOneWidget);
-    expect(find.text('Land G'), findsNothing);
-    expect(find.text('+2'), findsOneWidget);
+    expect(
+      tester
+          .widget<Text>(
+            find.byKey(const ValueKey('year-summary-card-countries')),
+          )
+          .data,
+      'Land A · Land B · Land C · Land D · Land E · +3',
+    );
   });
 
   testWidgets('one trip reads in the singular', (tester) async {
@@ -414,17 +442,17 @@ void main() {
     );
     await tester.pumpWidget(_page(repository));
     await tester.pumpAndSettle();
-    expect(find.text('trip to remember'), findsOneWidget);
+    expect(find.textContaining('1 trip ·'), findsOneWidget);
   });
 
-  testWidgets('an empty year has a message and no slides', (tester) async {
+  testWidgets('an empty year has a message and no card', (tester) async {
     final repository = _Repository(
       (_) async => YearSummary.fromMap(_summaryMap(trips: 0)),
     );
     await tester.pumpWidget(_page(repository));
     await tester.pumpAndSettle();
     expect(find.text('No finished trips in 2026.'), findsOneWidget);
-    expect(find.byKey(const ValueKey('year-summary-pages')), findsNothing);
+    expect(find.byKey(const ValueKey('year-summary-share-card')), findsNothing);
     expect(find.byKey(const ValueKey('year-summary-share')), findsNothing);
   });
 
@@ -441,7 +469,7 @@ void main() {
     await tester.tap(find.text('Try again'));
     await tester.pumpAndSettle();
     expect(
-      find.byKey(const ValueKey('year-summary-trip-count')),
+      find.byKey(const ValueKey('year-summary-share-card')),
       findsOneWidget,
     );
     expect(repository.requests, [null, null]);
@@ -471,16 +499,17 @@ void main() {
         ),
       );
       await tester.pumpAndSettle();
-      for (var i = 0; i < 2; i++) {
-        expect(tester.takeException(), isNull);
-        await tester.tap(find.byKey(const ValueKey('year-summary-next')));
-        await tester.pumpAndSettle();
-      }
+      expect(tester.takeException(), isNull);
+      await tester.drag(
+        find.byKey(const ValueKey('year-summary-scroll')),
+        const Offset(0, -2000),
+      );
+      await tester.pumpAndSettle();
       expect(tester.takeException(), isNull);
     });
   }
 
-  // Opt-in review images of the three slides with demo data:
+  // Opt-in review images of the screen with demo data:
   // flutter test test/features/trip_reports/trip_reports_test.dart
   //   --dart-define=YEAR_SUMMARY_PREVIEWS=true
   if (const bool.fromEnvironment('YEAR_SUMMARY_PREVIEWS')) {
@@ -535,9 +564,15 @@ void main() {
             key.currentContext!,
           ),
         );
+        await tester.runAsync(
+          () => precacheImage(
+            const AssetImage('assets/branding/logo_full_dark.png'),
+            key.currentContext!,
+          ),
+        );
         await tester.pumpAndSettle();
-        for (var slide = 1; slide <= 3; slide++) {
-          if (slide == 3) {
+        for (final spending in [false, true]) {
+          if (spending) {
             await tester.tap(
               find.byKey(const ValueKey('year-summary-include-spending')),
             );
@@ -552,16 +587,13 @@ void main() {
               format: ui.ImageByteFormat.png,
             );
             final file = File(
-              '../output/design/year-summary/app-$locale-$slide.png',
+              '../output/design/year-summary/app-$locale'
+              '${spending ? '-spending' : ''}.png',
             );
             await file.parent.create(recursive: true);
             await file.writeAsBytes(bytes!.buffer.asUint8List());
             image.dispose();
           });
-          if (slide < 3) {
-            await tester.tap(find.byKey(const ValueKey('year-summary-next')));
-            await tester.pumpAndSettle();
-          }
         }
       });
     }

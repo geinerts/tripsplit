@@ -5440,15 +5440,6 @@ class AppLocalizationsCs extends AppLocalizations {
   String get yearSummaryLoadFailed => 'Váš rok na cestách se nepodařilo načíst.';
 
   @override
-  String get yearSummaryDays => 'Dny na cestách';
-
-  @override
-  String get yearSummaryCountries => 'Země';
-
-  @override
-  String get yearSummaryCities => 'Města';
-
-  @override
   String get yearSummarySpending => 'Vaše výdaje';
 
   @override
@@ -5461,11 +5452,6 @@ class AppLocalizationsCs extends AppLocalizations {
   String get yearSummaryTopCompanion => 'Nejvíc cest s';
 
   @override
-  String yearSummaryTripsTogether(Object arg1) {
-    return 'Společné cesty: $arg1';
-  }
-
-  @override
   String get yearSummaryPartial => 'Některé částky chybí, protože nebyl k dispozici směnný kurz.';
 
   @override
@@ -5475,39 +5461,18 @@ class AppLocalizationsCs extends AppLocalizations {
   String get yearSummaryRetry => 'Zkusit znovu';
 
   @override
-  String yearSummaryIntroTitle(String year) {
-    return 'Tvůj rok $year, plný vzpomínek.';
+  String yearSummaryScreenTitle(String year) {
+    return 'Tvůj rok $year na cestách';
   }
 
   @override
-  String get yearSummaryIntroBody => 'Každý výlet přidal tvému roku něco nového.';
-
-  @override
-  String yearSummaryTripsToRemember(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: 'výletů na vzpomínku',
-      few: 'výlety na vzpomínku',
-      one: 'výlet na vzpomínku',
-    );
-    return '$_temp0';
-  }
-
-  @override
-  String get yearSummaryPlacesTitle => 'Místa. Vzpomínky.';
-
-  @override
-  String get yearSummaryPlacesBody => 'Pohled na to, kam tě tvůj rok zavedl.';
-
-  @override
-  String get yearSummaryShareTitle => 'Rok, o který se vyplatí podělit.';
+  String get yearSummaryOnlyForYou => 'Jen pro tebe, na obrázku nebude';
 
   @override
   String get yearSummaryShareBody => 'Uchovej si vzpomínky. Sdílej to nejlepší.';
 
   @override
-  String get yearSummaryIncludeSpending => 'Zahrnout útratu';
+  String get yearSummaryIncludeSpending => 'Zobrazit útratu na obrázku';
 
   @override
   String get yearSummaryShareAction => 'Sdílet můj rok';

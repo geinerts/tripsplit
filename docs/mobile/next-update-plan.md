@@ -488,19 +488,26 @@ Teksti visās 16 valodās (ARB, `flutter gen-l10n`).
 
 ## I. Gada kopsavilkums Quick Start stilā (vēlāk; izvēlēts 2026-11-22)
 
-**Statuss (2026-11-27):** jaunais ekrāns uzbūvēts, vecais izdzēsts. Lietotnē tas **ir
+**Statuss (2026-11-27):** jaunais ekrāns uzbūvēts (viens logs), vecais izdzēsts. Lietotnē tas **ir
 paslēpts**: ieeju profilā rāda tikai, ja `yearSummaryOfferedInApp` ir ieslēgts
 (`--dart-define=YEAR_SUMMARY_IN_APP=true`, noklusējumā izslēgts). 2026. gada sezonā
 (janvāris–marts) to neatver. Kā un kad ieslēgt (lietotnes versija vai servera karogs
 `docs/api/feature-flags.md`), jāizlemj pirms palaišanas; servera karogs būtu API izmaiņa.
 
 Ekrānuzņēmumi ar demonstrācijas datiem: `flutter test test/features/trip_reports/trip_reports_test.dart
---dart-define=YEAR_SUMMARY_PREVIEWS=true` raksta `output/design/year-summary/app-<valoda>-<slaids>.png`.
+--dart-define=YEAR_SUMMARY_PREVIEWS=true` raksta `output/design/year-summary/app-<valoda>[-spending].png`.
 
-Atšķirības no maketa: summas veselos skaitļos; ja kāda kursa trūkst, summai ir "≈" un
-piezīme; dārgākais ceļojums rāda ceļojuma nosaukumu (to atsūta serveris), ne valsti;
-valstis ne vairāk par sešām, pārējās kā "+N"; 2. slaidā arī "Visvairāk ceļojumu ar".
-Valstu nosaukumi nāk no servera angliski.
+**Izmaiņa 2026-11-27: viens logs trīs slaidu vietā** (īpašnieka lēmums). Augšā zaļā
+kopīgojamā kartīte ar SPLYTO logo; zem tās balts saraksts "Tikai tev, attēlā nenonāk"
+(izdevumi, lielākais ceļojums, galvenā kategorija, visvairāk ceļojumu ar). Izdevumi attēlā
+tikai ar slēdzi. Skaitļi, kas ir 0 (dienas, valstis, pilsētas), kartītē netiek rādīti, un
+saraksts rāda tikai rindas ar datiem. Summas veselos skaitļos; ja trūkst kursa, "≈" un
+piezīme. Valstu nosaukumi nāk no servera angliski.
+
+**Vietu dati (jāizlemj pirms ieslēgšanas):** valstis un pilsētas ir tikai no ceļojuma
+galamērķiem un personīgās kartes; daudziem tās būs tukšas. Ieteikums: ceļojuma beigās
+ieteikt vietu no ceļojuma nosaukuma (lietotājs apstiprina) un parādīt "Kur tu biji?", ja
+galamērķa nav. Neminēt pēc valūtas un nevākt GPS pie izdevumiem.
 
 **Izvēlētais makets:** [trīs slaidi Quick Start stilā](../../output/design/year-summary/d-quick-start-style.png).
 Maketa skaitļi un valstis ir demonstrācijas dati. Iepriekšējie A/B/C varianti paliek

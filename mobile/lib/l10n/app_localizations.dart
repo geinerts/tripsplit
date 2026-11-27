@@ -9963,24 +9963,6 @@ abstract class AppLocalizations {
   /// **'Couldn\'t load your year in travel.'**
   String get yearSummaryLoadFailed;
 
-  /// No description provided for @yearSummaryDays.
-  ///
-  /// In en, this message translates to:
-  /// **'Days away'**
-  String get yearSummaryDays;
-
-  /// No description provided for @yearSummaryCountries.
-  ///
-  /// In en, this message translates to:
-  /// **'Countries'**
-  String get yearSummaryCountries;
-
-  /// No description provided for @yearSummaryCities.
-  ///
-  /// In en, this message translates to:
-  /// **'Cities'**
-  String get yearSummaryCities;
-
   /// No description provided for @yearSummarySpending.
   ///
   /// In en, this message translates to:
@@ -10005,12 +9987,6 @@ abstract class AppLocalizations {
   /// **'Most trips with'**
   String get yearSummaryTopCompanion;
 
-  /// No description provided for @yearSummaryTripsTogether.
-  ///
-  /// In en, this message translates to:
-  /// **'Trips together: {arg1}'**
-  String yearSummaryTripsTogether(Object arg1);
-
   /// No description provided for @yearSummaryPartial.
   ///
   /// In en, this message translates to:
@@ -10029,41 +10005,17 @@ abstract class AppLocalizations {
   /// **'Try again'**
   String get yearSummaryRetry;
 
-  /// No description provided for @yearSummaryIntroTitle.
+  /// No description provided for @yearSummaryScreenTitle.
   ///
   /// In en, this message translates to:
-  /// **'Your {year}, full of memories.'**
-  String yearSummaryIntroTitle(String year);
+  /// **'Your {year} in travel'**
+  String yearSummaryScreenTitle(String year);
 
-  /// No description provided for @yearSummaryIntroBody.
+  /// No description provided for @yearSummaryOnlyForYou.
   ///
   /// In en, this message translates to:
-  /// **'Every trip added something to your year.'**
-  String get yearSummaryIntroBody;
-
-  /// No description provided for @yearSummaryTripsToRemember.
-  ///
-  /// In en, this message translates to:
-  /// **'{count, plural, =1{trip to remember} other{trips to remember}}'**
-  String yearSummaryTripsToRemember(int count);
-
-  /// No description provided for @yearSummaryPlacesTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'The places. The memories.'**
-  String get yearSummaryPlacesTitle;
-
-  /// No description provided for @yearSummaryPlacesBody.
-  ///
-  /// In en, this message translates to:
-  /// **'A look at where your year took you.'**
-  String get yearSummaryPlacesBody;
-
-  /// No description provided for @yearSummaryShareTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'A year worth sharing.'**
-  String get yearSummaryShareTitle;
+  /// **'Only for you, not in the image'**
+  String get yearSummaryOnlyForYou;
 
   /// No description provided for @yearSummaryShareBody.
   ///
@@ -10074,7 +10026,7 @@ abstract class AppLocalizations {
   /// No description provided for @yearSummaryIncludeSpending.
   ///
   /// In en, this message translates to:
-  /// **'Include spending'**
+  /// **'Show spending in the image'**
   String get yearSummaryIncludeSpending;
 
   /// No description provided for @yearSummaryShareAction.

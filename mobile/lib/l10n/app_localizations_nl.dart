@@ -5425,15 +5425,6 @@ class AppLocalizationsNl extends AppLocalizations {
   String get yearSummaryLoadFailed => 'Je reisjaar kon niet worden geladen.';
 
   @override
-  String get yearSummaryDays => 'Dagen op reis';
-
-  @override
-  String get yearSummaryCountries => 'Landen';
-
-  @override
-  String get yearSummaryCities => 'Steden';
-
-  @override
   String get yearSummarySpending => 'Jouw uitgaven';
 
   @override
@@ -5446,11 +5437,6 @@ class AppLocalizationsNl extends AppLocalizations {
   String get yearSummaryTopCompanion => 'De meeste reizen met';
 
   @override
-  String yearSummaryTripsTogether(Object arg1) {
-    return 'Reizen samen: $arg1';
-  }
-
-  @override
   String get yearSummaryPartial => 'Sommige bedragen ontbreken omdat er geen wisselkoers beschikbaar was.';
 
   @override
@@ -5460,38 +5446,18 @@ class AppLocalizationsNl extends AppLocalizations {
   String get yearSummaryRetry => 'Opnieuw proberen';
 
   @override
-  String yearSummaryIntroTitle(String year) {
-    return 'Jouw $year, vol herinneringen.';
+  String yearSummaryScreenTitle(String year) {
+    return 'Jouw $year op reis';
   }
 
   @override
-  String get yearSummaryIntroBody => 'Elke reis voegde iets toe aan je jaar.';
-
-  @override
-  String yearSummaryTripsToRemember(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: 'reizen om te onthouden',
-      one: 'reis om te onthouden',
-    );
-    return '$_temp0';
-  }
-
-  @override
-  String get yearSummaryPlacesTitle => 'De plekken. De herinneringen.';
-
-  @override
-  String get yearSummaryPlacesBody => 'Een blik op waar je jaar je bracht.';
-
-  @override
-  String get yearSummaryShareTitle => 'Een jaar om te delen.';
+  String get yearSummaryOnlyForYou => 'Alleen voor jou, niet in de afbeelding';
 
   @override
   String get yearSummaryShareBody => 'Bewaar de herinneringen. Deel je hoogtepunten.';
 
   @override
-  String get yearSummaryIncludeSpending => 'Uitgaven tonen';
+  String get yearSummaryIncludeSpending => 'Uitgaven tonen in de afbeelding';
 
   @override
   String get yearSummaryShareAction => 'Deel mijn jaar';

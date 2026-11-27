@@ -2418,45 +2418,30 @@
   "yearSummarySubtitle": "Your trips, places and spending for the year.",
   "yearSummaryEmpty": "No finished trips in {arg1}.",
   "yearSummaryLoadFailed": "Couldn't load your year in travel.",
-  "yearSummaryDays": "Days away",
-  "yearSummaryCountries": "Countries",
-  "yearSummaryCities": "Cities",
   "yearSummarySpending": "Your spending",
   "yearSummaryBiggestTrip": "Biggest trip",
   "yearSummaryTopCategory": "Top category",
   "yearSummaryTopCompanion": "Most trips with",
-  "yearSummaryTripsTogether": "Trips together: {arg1}",
   "yearSummaryPartial": "Some amounts are missing because no exchange rate was available.",
   "yearSummaryShareFailed": "Couldn't share the image.",
   "yearSummaryRetry": "Try again",
-  "yearSummaryIntroTitle": "Your {year}, full of memories.",
-  "yearSummaryIntroBody": "Every trip added something to your year.",
-  "yearSummaryTripsToRemember": "{count, plural, =1{trip to remember} other{trips to remember}}",
-  "yearSummaryPlacesTitle": "The places. The memories.",
-  "yearSummaryPlacesBody": "A look at where your year took you.",
-  "yearSummaryShareTitle": "A year worth sharing.",
-  "yearSummaryShareBody": "Keep the memories. Share your highlights.",
-  "yearSummaryIncludeSpending": "Include spending",
-  "yearSummaryShareAction": "Share my year",
-  "yearSummaryDone": "Done",
-  "yearSummaryTripCount": "{count, plural, =1{1 trip} other{{count} trips}}",
-  "yearSummaryDayCount": "{count, plural, =1{1 day} other{{count} days}}",
-  "yearSummaryCountryCount": "{count, plural, =1{1 country} other{{count} countries}}",
-  "yearSummaryCityCount": "{count, plural, =1{1 city} other{{count} cities}}",
-  "@yearSummaryIntroTitle": {
+  "yearSummaryScreenTitle": "Your {year} in travel",
+  "yearSummaryOnlyForYou": "Only for you, not in the image",
+  "@yearSummaryScreenTitle": {
     "placeholders": {
       "year": {
         "type": "String"
       }
     }
   },
-  "@yearSummaryTripsToRemember": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
+  "yearSummaryShareBody": "Keep the memories. Share your highlights.",
+  "yearSummaryIncludeSpending": "Show spending in the image",
+  "yearSummaryShareAction": "Share my year",
+  "yearSummaryDone": "Done",
+  "yearSummaryTripCount": "{count, plural, =1{1 trip} other{{count} trips}}",
+  "yearSummaryDayCount": "{count, plural, =1{1 day} other{{count} days}}",
+  "yearSummaryCountryCount": "{count, plural, =1{1 country} other{{count} countries}}",
+  "yearSummaryCityCount": "{count, plural, =1{1 city} other{{count} cities}}",
   "@yearSummaryTripCount": {
     "placeholders": {
       "count": {
