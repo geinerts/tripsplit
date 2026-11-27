@@ -34,9 +34,13 @@ String _yearSummaryMoney(
 /// The shared image. Fixed colours, so it looks the same in light and dark
 /// mode. Counts that are zero are left out rather than shown as "0".
 class _ShareCard extends StatelessWidget {
-  const _ShareCard({required this.summary});
+  const _ShareCard({required this.summary, this.holiday = false});
 
   final YearSummary summary;
+
+  /// The New Year look: snow, the digits with snow caps, a greeting and the
+  /// logo in a Santa hat.
+  final bool holiday;
 
   @override
   Widget build(BuildContext context) {
@@ -63,79 +67,93 @@ class _ShareCard extends StatelessWidget {
       if (countries.length > _yearSummaryMaxCountries)
         '+${countries.length - _yearSummaryMaxCountries}',
     ].join(' · ');
-    return DecoratedBox(
-      key: const ValueKey('year-summary-share-card'),
-      decoration: BoxDecoration(
-        color: _yearSummaryCardGreen,
-        borderRadius: BorderRadius.circular(28),
-      ),
+    final plainYear = ShaderMask(
+      blendMode: BlendMode.srcIn,
+      shaderCallback: (bounds) => const LinearGradient(
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
+        colors: [Color(0xFFD9FBEA), _yearSummaryMint, Color(0xFF5ED6B8)],
+      ).createShader(bounds),
+      // Padding keeps the slanted last digit inside the gradient.
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(20, 22, 20, 20),
-        child: Column(
-          children: [
-            ShaderMask(
-              blendMode: BlendMode.srcIn,
-              shaderCallback: (bounds) => const LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [
-                  Color(0xFFD9FBEA),
-                  _yearSummaryMint,
-                  Color(0xFF5ED6B8),
-                ],
-              ).createShader(bounds),
-              // Padding keeps the slanted last digit inside the gradient.
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 14),
-                child: Text(
-                  '${summary.year}',
-                  key: const ValueKey('year-summary-card-year'),
-                  style: const TextStyle(
-                    fontFamily: 'Inter',
-                    fontSize: 76,
-                    height: 1,
-                    fontWeight: FontWeight.w900,
-                    fontStyle: FontStyle.italic,
-                    letterSpacing: -3,
-                    color: Colors.white,
-                  ),
-                ),
+        padding: const EdgeInsets.symmetric(horizontal: 14),
+        child: Text(
+          '${summary.year}',
+          key: const ValueKey('year-summary-card-year'),
+          style: const TextStyle(
+            fontFamily: 'Inter',
+            fontSize: 76,
+            height: 1,
+            fontWeight: FontWeight.w900,
+            fontStyle: FontStyle.italic,
+            letterSpacing: -3,
+            color: Colors.white,
+          ),
+        ),
+      ),
+    );
+    final content = Padding(
+      padding: EdgeInsets.fromLTRB(20, 22, 20, holiday ? 46 : 20),
+      child: Column(
+        children: [
+          if (holiday) ...[
+            _HolidayYear(year: summary.year),
+            Text(
+              t.yearSummaryHappyNewYear,
+              key: const ValueKey('year-summary-card-greeting'),
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                fontFamily: 'Inter',
+                fontSize: 15,
+                fontWeight: FontWeight.w700,
+                letterSpacing: 2,
+                color: _yearSummaryMint,
               ),
             ),
-            const SizedBox(height: 12),
+          ] else
+            plainYear,
+          const SizedBox(height: 12),
+          Text(
+            tripLine,
+            key: const ValueKey('year-summary-card-trips'),
+            textAlign: TextAlign.center,
+            style: line,
+          ),
+          if (placeLine.isNotEmpty)
             Text(
-              tripLine,
-              key: const ValueKey('year-summary-card-trips'),
+              placeLine,
+              key: const ValueKey('year-summary-card-places'),
               textAlign: TextAlign.center,
               style: line,
             ),
-            if (placeLine.isNotEmpty)
-              Text(
-                placeLine,
-                key: const ValueKey('year-summary-card-places'),
-                textAlign: TextAlign.center,
-                style: line,
+          if (countryNames.isNotEmpty) ...[
+            const SizedBox(height: 8),
+            Text(
+              countryNames,
+              key: const ValueKey('year-summary-card-countries'),
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontFamily: 'Inter',
+                fontSize: 13,
+                color: Colors.white.withValues(alpha: .8),
               ),
-            if (countryNames.isNotEmpty) ...[
-              const SizedBox(height: 8),
-              Text(
-                countryNames,
-                key: const ValueKey('year-summary-card-countries'),
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontFamily: 'Inter',
-                  fontSize: 13,
-                  color: Colors.white.withValues(alpha: .8),
-                ),
-              ),
-            ],
-            const SizedBox(height: 14),
-            const SizedBox(
-              height: 56,
-              width: double.infinity,
-              child: CustomPaint(painter: _FlightPathPainter()),
             ),
-            const SizedBox(height: 10),
+          ],
+          const SizedBox(height: 14),
+          const SizedBox(
+            height: 56,
+            width: double.infinity,
+            child: CustomPaint(painter: _FlightPathPainter()),
+          ),
+          const SizedBox(height: 10),
+          if (holiday)
+            SvgPicture.asset(
+              'assets/branding/logo_full_dark_holiday.svg',
+              key: const ValueKey('year-summary-card-logo'),
+              height: 46,
+              semanticsLabel: 'Splyto',
+            )
+          else
             Image.asset(
               'assets/branding/logo_full_dark.png',
               key: const ValueKey('year-summary-card-logo'),
@@ -143,6 +161,29 @@ class _ShareCard extends StatelessWidget {
               fit: BoxFit.contain,
               semanticLabel: 'Splyto',
             ),
+        ],
+      ),
+    );
+    return ClipRRect(
+      key: const ValueKey('year-summary-share-card'),
+      borderRadius: BorderRadius.circular(28),
+      child: ColoredBox(
+        color: _yearSummaryCardGreen,
+        child: Stack(
+          children: [
+            if (holiday)
+              const Positioned.fill(
+                child: CustomPaint(painter: _SnowfallPainter()),
+              ),
+            content,
+            if (holiday)
+              const Positioned(
+                left: 0,
+                right: 0,
+                bottom: 0,
+                height: 44,
+                child: CustomPaint(painter: _SnowDriftPainter()),
+              ),
           ],
         ),
       ),

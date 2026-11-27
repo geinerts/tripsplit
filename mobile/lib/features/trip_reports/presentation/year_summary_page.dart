@@ -5,6 +5,7 @@ import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:share_plus/share_plus.dart';
 
 import '../../../app/theme/app_theme.dart';
@@ -17,6 +18,7 @@ import '../data/trip_reports_repository.dart';
 import '../domain/year_summary.dart';
 
 part 'year_summary_card.dart';
+part 'year_summary_holiday.dart';
 
 /// Whether the app offers the year summary. Off until the owner decides to
 /// launch it; the server's season and Premium rules still apply once it is on.
@@ -52,9 +54,12 @@ Future<ui.Image> yearSummaryShareImage(ui.Image card) {
 /// The year summary on one screen in the Quick Start style: a card that can be
 /// shared as an image, and below it details that stay private.
 class YearSummaryPage extends StatefulWidget {
-  const YearSummaryPage({super.key, required this.repository});
+  const YearSummaryPage({super.key, required this.repository, this.clock});
 
   final TripReportsRepository repository;
+
+  /// Today's date; tests set it to see the New Year look.
+  final DateTime Function()? clock;
 
   @override
   State<YearSummaryPage> createState() => _YearSummaryPageState();
@@ -181,16 +186,26 @@ class _YearSummaryPageState extends State<YearSummaryPage> {
     );
   }
 
+  bool get _holiday =>
+      yearSummaryHolidaySeason((widget.clock ?? DateTime.now)());
+
   Widget _topBar(BuildContext context) => Padding(
     padding: const EdgeInsets.fromLTRB(24, 4, 16, 0),
     child: Row(
       children: [
-        Image.asset(
-          'assets/branding/logo_full.png',
-          height: 30,
-          fit: BoxFit.contain,
-          semanticLabel: 'Splyto',
-        ),
+        if (_holiday)
+          SvgPicture.asset(
+            'assets/branding/logo_full_holiday.svg',
+            height: 40,
+            semanticsLabel: 'Splyto',
+          )
+        else
+          Image.asset(
+            'assets/branding/logo_full.png',
+            height: 30,
+            fit: BoxFit.contain,
+            semanticLabel: 'Splyto',
+          ),
         const SizedBox(width: 12),
         Expanded(
           child: Align(
@@ -290,7 +305,10 @@ class _YearSummaryPageState extends State<YearSummaryPage> {
                         constraints: const BoxConstraints(maxWidth: 360),
                         child: RepaintBoundary(
                           key: _cardKey,
-                          child: _ShareCard(summary: summary),
+                          child: _ShareCard(
+                            summary: summary,
+                            holiday: _holiday,
+                          ),
                         ),
                       ),
                     ),

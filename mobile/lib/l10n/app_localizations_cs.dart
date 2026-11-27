@@ -5461,6 +5461,9 @@ class AppLocalizationsCs extends AppLocalizations {
   String get yearSummaryRetry => 'Zkusit znovu';
 
   @override
+  String get yearSummaryHappyNewYear => 'ŠŤASTNÝ NOVÝ ROK';
+
+  @override
   String get yearSummaryScreenTitle => 'Ohlédnutí za tvým rokem';
 
   @override

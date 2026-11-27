@@ -506,6 +506,13 @@ noapaļotie stūri sarakstē neizskatītos kā melni vai balti kvadrāti. Skait�
 netiek rādīti, un saraksts rāda tikai rindas ar datiem. Valstu nosaukumi nāk no servera
 angliski. Cits fonts gadam prasītu jaunu fonta failu (OFL) un īpašnieka atļauju to lejupielādēt.
 
+**Jaungada izskats (2026-11-27):** decembrī un janvārī kartītei ir sniegs, kupena apakšā,
+gads ar katru ciparu pagrieztu, 3D dziļumu un sniega cepurīti (`year_snow_cap.svg`),
+uzraksts "Laimīgu Jauno gadu" un logo ar Ziemassvētku cepuri uz "O"
+(`logo_full_holiday.svg` gaišam fonam, `logo_full_dark_holiday.svg` tumšam). No februāra
+kartīte ir bez tā. Izvēlēts rādīt no 1. janvāra, nevis 31. decembra (pilns gads, bez servera
+izmaiņām). Fonts gadam: Inter, līdz īpašnieks atļauj lejupielādēt citu OFL fontu.
+
 **Vietu dati (jāizlemj pirms ieslēgšanas):** valstis un pilsētas ir tikai no ceļojuma
 galamērķiem un personīgās kartes; daudziem tās būs tukšas. Ieteikums: ceļojuma beigās
 ieteikt vietu no ceļojuma nosaukuma (lietotājs apstiprina) un parādīt "Kur tu biji?", ja

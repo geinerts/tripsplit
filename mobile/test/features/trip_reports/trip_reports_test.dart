@@ -6,6 +6,7 @@ import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tripsplit/app/theme/app_theme.dart';
 import 'package:tripsplit/core/errors/api_exception.dart';
@@ -90,13 +91,20 @@ Map<String, dynamic> _summaryMap({int year = 2026, int trips = 3}) => {
   'top_companion': {'nickname': 'Anna', 'trip_count': 2},
 };
 
-Widget _page(TripReportsRepository repository, {Locale? locale}) => MaterialApp(
+Widget _page(
+  TripReportsRepository repository, {
+  Locale? locale,
+  DateTime? today,
+}) => MaterialApp(
   debugShowCheckedModeBanner: false,
   theme: AppTheme.light(),
   locale: locale ?? const Locale('en'),
   localizationsDelegates: AppLocalizations.localizationsDelegates,
   supportedLocales: AppLocalizations.supportedLocales,
-  home: YearSummaryPage(repository: repository),
+  home: YearSummaryPage(
+    repository: repository,
+    clock: () => today ?? DateTime(2027, 3, 1),
+  ),
 );
 
 void main() {
@@ -356,6 +364,21 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
+  testWidgets('December and January get the New Year look', (tester) async {
+    final repository = _Repository(
+      (_) async => YearSummary.fromMap(_summaryMap()),
+    );
+    await tester.pumpWidget(_page(repository, today: DateTime(2027, 1, 2)));
+    await tester.pumpAndSettle();
+    expect(find.text('HAPPY NEW YEAR'), findsOneWidget);
+    expect(find.byType(SvgPicture), findsWidgets);
+    await tester.pumpWidget(_page(repository, today: DateTime(2027, 2, 1)));
+    await tester.pumpAndSettle();
+    expect(find.text('HAPPY NEW YEAR'), findsNothing);
+    expect(yearSummaryHolidaySeason(DateTime(2026, 12, 31)), isTrue);
+    expect(yearSummaryHolidaySeason(DateTime(2027, 2, 1)), isFalse);
+  });
+
   testWidgets('a year without places leaves out zero counts', (tester) async {
     final repository = _Repository(
       (_) async => YearSummary.fromMap({
@@ -544,7 +567,11 @@ void main() {
         await tester.pumpWidget(
           RepaintBoundary(
             key: key,
-            child: _page(repository, locale: Locale(locale)),
+            child: _page(
+              repository,
+              locale: Locale(locale),
+              today: DateTime(2027, 1, 1),
+            ),
           ),
         );
         await tester.runAsync(

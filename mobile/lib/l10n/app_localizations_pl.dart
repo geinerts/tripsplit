@@ -5472,6 +5472,9 @@ class AppLocalizationsPl extends AppLocalizations {
   String get yearSummaryRetry => 'Spróbuj ponownie';
 
   @override
+  String get yearSummaryHappyNewYear => 'SZCZĘŚLIWEGO NOWEGO ROKU';
+
+  @override
   String get yearSummaryScreenTitle => 'Podsumowanie Twojego roku';
 
   @override

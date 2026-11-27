@@ -5446,6 +5446,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get yearSummaryRetry => 'Try again';
 
   @override
+  String get yearSummaryHappyNewYear => 'HAPPY NEW YEAR';
+
+  @override
   String get yearSummaryScreenTitle => 'A look back at your year';
 
   @override

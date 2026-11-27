@@ -10005,6 +10005,12 @@ abstract class AppLocalizations {
   /// **'Try again'**
   String get yearSummaryRetry;
 
+  /// No description provided for @yearSummaryHappyNewYear.
+  ///
+  /// In en, this message translates to:
+  /// **'HAPPY NEW YEAR'**
+  String get yearSummaryHappyNewYear;
+
   /// No description provided for @yearSummaryScreenTitle.
   ///
   /// In en, this message translates to:

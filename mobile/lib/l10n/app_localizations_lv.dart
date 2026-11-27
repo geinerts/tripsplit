@@ -5459,6 +5459,9 @@ class AppLocalizationsLv extends AppLocalizations {
   String get yearSummaryRetry => 'Mēģināt vēlreiz';
 
   @override
+  String get yearSummaryHappyNewYear => 'LAIMĪGU JAUNO GADU';
+
+  @override
   String get yearSummaryScreenTitle => 'Atskats uz aizvadīto gadu';
 
   @override

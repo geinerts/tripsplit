@@ -5472,6 +5472,9 @@ class AppLocalizationsUk extends AppLocalizations {
   String get yearSummaryRetry => 'Спробувати ще раз';
 
   @override
+  String get yearSummaryHappyNewYear => 'З НОВИМ РОКОМ';
+
+  @override
   String get yearSummaryScreenTitle => 'Озираючись на ваш рік';
 
   @override
