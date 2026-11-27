@@ -1,6 +1,5 @@
 part of 'year_summary_page.dart';
 
-const _yearSummaryMuted = Color(0xFF4A5874);
 
 const _yearSummaryTitleStyle = TextStyle(
   fontFamily: 'Inter',
@@ -97,63 +96,46 @@ class _PrivateDetails extends StatelessWidget {
         ),
     ];
     if (rows.isEmpty) return const SizedBox(height: 12);
+    const muted = Color(0xB3FFFFFF);
+    // Straight on the dimmed background, as wide as the card above.
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        const SizedBox(height: 16),
-        DecoratedBox(
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(20),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
-            child: Column(
-              children: [
-                Row(
-                  children: [
-                    const Icon(
-                      Icons.lock_outline,
-                      size: 15,
-                      color: _yearSummaryMuted,
-                    ),
-                    const SizedBox(width: 6),
-                    Expanded(
-                      child: Text(
-                        t.yearSummaryOnlyForYou,
-                        key: const ValueKey('year-summary-private'),
-                        style: const TextStyle(
-                          fontFamily: 'Inter',
-                          fontSize: 12,
-                          color: _yearSummaryMuted,
-                        ),
-                      ),
-                    ),
-                  ],
+        const SizedBox(height: 22),
+        Row(
+          children: [
+            const Icon(Icons.lock_outline, size: 14, color: muted),
+            const SizedBox(width: 6),
+            Expanded(
+              child: Text(
+                t.yearSummaryOnlyForYou,
+                key: const ValueKey('year-summary-private'),
+                style: const TextStyle(
+                  fontFamily: 'Inter',
+                  fontSize: 12,
+                  letterSpacing: .2,
+                  color: muted,
                 ),
-                const SizedBox(height: 2),
-                for (var i = 0; i < rows.length; i++) ...[
-                  if (i > 0)
-                    Divider(
-                      height: 1,
-                      color: quickStartInk.withValues(alpha: .08),
-                    ),
-                  rows[i],
-                ],
-              ],
+              ),
             ),
-          ),
+          ],
         ),
+        const SizedBox(height: 6),
+        for (var i = 0; i < rows.length; i++) ...[
+          Divider(height: 1, color: Colors.white.withValues(alpha: .14)),
+          rows[i],
+        ],
+        Divider(height: 1, color: Colors.white.withValues(alpha: .14)),
         if (!summary.conversionComplete)
           Padding(
-            padding: const EdgeInsets.only(top: 8),
+            padding: const EdgeInsets.only(top: 10),
             child: Text(
               t.yearSummaryPartial,
               key: const ValueKey('year-summary-partial'),
               style: const TextStyle(
                 fontFamily: 'Inter',
                 fontSize: 12,
-                color: _yearSummaryMuted,
+                color: muted,
               ),
             ),
           ),
@@ -182,7 +164,7 @@ class _Row extends StatelessWidget {
             style: const TextStyle(
               fontFamily: 'Inter',
               fontSize: 15,
-              color: _yearSummaryMuted,
+              color: Color(0xB3FFFFFF),
             ),
           ),
         ),
@@ -196,7 +178,7 @@ class _Row extends StatelessWidget {
               fontFamily: 'Inter',
               fontSize: 15,
               fontWeight: FontWeight.w700,
-              color: quickStartInk,
+              color: Colors.white,
             ),
           ),
         ),

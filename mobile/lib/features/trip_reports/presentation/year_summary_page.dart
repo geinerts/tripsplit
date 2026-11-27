@@ -189,7 +189,7 @@ class _YearSummaryPageState extends State<YearSummaryPage> {
                   child: BackdropFilter(
                     filter: ui.ImageFilter.blur(sigmaX: 8, sigmaY: 8),
                     child: ColoredBox(
-                      color: quickStartInk.withValues(alpha: .62),
+                      color: quickStartInk.withValues(alpha: .82),
                     ),
                   ),
                 ),
@@ -353,7 +353,7 @@ class _YearSummaryPageState extends State<YearSummaryPage> {
         Padding(
           padding: const EdgeInsets.fromLTRB(24, 0, 24, 12),
           child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 380),
+            constraints: const BoxConstraints(maxWidth: 340),
             child: SizedBox(
               width: double.infinity,
               child: _primaryButton(
