@@ -18,6 +18,28 @@ class AppLocalizationsFi extends AppLocalizations {
   String get homeAllTime => 'Koko ajalta';
 
   @override
+  String get homeShareByCurrencyTitle => 'Osuutesi valuutoittain';
+
+  @override
+  String homeShareByCurrencySubtitle(String currency) {
+    return 'Muunnettu valuuttaan $currency kunkin kulun kurssilla';
+  }
+
+  @override
+  String homeShareByCurrencyTrips(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count matkaa',
+      one: '1 matka',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get homeShareByCurrencyTotal => 'Yhteensä';
+
+  @override
   String get homeSolo => 'Yksin';
 
   @override

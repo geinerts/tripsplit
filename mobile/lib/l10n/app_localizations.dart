@@ -141,6 +141,30 @@ abstract class AppLocalizations {
   /// **'All time'**
   String get homeAllTime;
 
+  /// No description provided for @homeShareByCurrencyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your share by currency'**
+  String get homeShareByCurrencyTitle;
+
+  /// No description provided for @homeShareByCurrencySubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Converted to {currency} at each expense\'s rate'**
+  String homeShareByCurrencySubtitle(String currency);
+
+  /// No description provided for @homeShareByCurrencyTrips.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 trip} other{{count} trips}}'**
+  String homeShareByCurrencyTrips(int count);
+
+  /// No description provided for @homeShareByCurrencyTotal.
+  ///
+  /// In en, this message translates to:
+  /// **'Total'**
+  String get homeShareByCurrencyTotal;
+
   /// No description provided for @homeSolo.
   ///
   /// In en, this message translates to:

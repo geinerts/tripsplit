@@ -3,6 +3,24 @@
   "homeFirstTrip": "Váš první výlet",
   "homeYourShareAllTrips": "Tvůj podíl na všech cestách",
   "homeAllTime": "Celé období",
+  "homeShareByCurrencyTitle": "Tvůj podíl podle měny",
+  "homeShareByCurrencySubtitle": "Přepočteno na {currency} kurzem každého výdaje",
+  "homeShareByCurrencyTrips": "{count, plural, one{{count} výlet} few{{count} výlety} other{{count} výletů}}",
+  "homeShareByCurrencyTotal": "Celkem",
+  "@homeShareByCurrencySubtitle": {
+    "placeholders": {
+      "currency": {
+        "type": "String"
+      }
+    }
+  },
+  "@homeShareByCurrencyTrips": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "homeSolo": "Sólo",
   "homePeople": "{count, plural, one{{count} osoba} few{{count} osoby} other{{count} osob}}",
   "homeTripActions": "Akce související s cestou: {name}",

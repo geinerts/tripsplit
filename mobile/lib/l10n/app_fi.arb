@@ -3,6 +3,24 @@
   "homeFirstTrip": "Ensimmäinen matkasi",
   "homeYourShareAllTrips": "Oma osuutesi kaikista matkoista",
   "homeAllTime": "Koko ajalta",
+  "homeShareByCurrencyTitle": "Osuutesi valuutoittain",
+  "homeShareByCurrencySubtitle": "Muunnettu valuuttaan {currency} kunkin kulun kurssilla",
+  "homeShareByCurrencyTrips": "{count, plural, =1{1 matka} other{{count} matkaa}}",
+  "homeShareByCurrencyTotal": "Yhteensä",
+  "@homeShareByCurrencySubtitle": {
+    "placeholders": {
+      "currency": {
+        "type": "String"
+      }
+    }
+  },
+  "@homeShareByCurrencyTrips": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "homeSolo": "Yksin",
   "homePeople": "{count, plural, one{{count} henkilö} other{{count} henkilöä}}",
   "homeTripActions": "Matkan toiminnot: {name}",

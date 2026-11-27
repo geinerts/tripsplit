@@ -3,6 +3,24 @@
   "homeFirstTrip": "Din första resa",
   "homeYourShareAllTrips": "Din andel av alla resor",
   "homeAllTime": "Hela perioden",
+  "homeShareByCurrencyTitle": "Din andel per valuta",
+  "homeShareByCurrencySubtitle": "Omräknat till {currency} med varje utgifts kurs",
+  "homeShareByCurrencyTrips": "{count, plural, =1{1 resa} other{{count} resor}}",
+  "homeShareByCurrencyTotal": "Totalt",
+  "@homeShareByCurrencySubtitle": {
+    "placeholders": {
+      "currency": {
+        "type": "String"
+      }
+    }
+  },
+  "@homeShareByCurrencyTrips": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "homeSolo": "Solo",
   "homePeople": "{count, plural, one{{count} person} other{{count} personer}}",
   "homeTripActions": "Reserelaterade åtgärder: {name}",

@@ -18,6 +18,28 @@ class AppLocalizationsSv extends AppLocalizations {
   String get homeAllTime => 'Hela perioden';
 
   @override
+  String get homeShareByCurrencyTitle => 'Din andel per valuta';
+
+  @override
+  String homeShareByCurrencySubtitle(String currency) {
+    return 'Omräknat till $currency med varje utgifts kurs';
+  }
+
+  @override
+  String homeShareByCurrencyTrips(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count resor',
+      one: '1 resa',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get homeShareByCurrencyTotal => 'Totalt';
+
+  @override
   String get homeSolo => 'Solo';
 
   @override

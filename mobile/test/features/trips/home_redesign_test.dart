@@ -550,6 +550,86 @@ void main() {
     );
   });
 
+  testWidgets('the total shows two currencies and opens all of them', (
+    tester,
+  ) async {
+    final trips = _Trips()
+      ..trips = [
+        _trip(1, share: 4200, preferred: 'EUR', sharePreferred: 4200),
+        _trip(2, share: 800, preferred: 'EUR', sharePreferred: 800),
+        _trip(
+          3,
+          currency: 'USD',
+          share: 12000,
+          preferred: 'EUR',
+          sharePreferred: 11000,
+        ),
+        _trip(
+          4,
+          currency: 'GBP',
+          share: 1000,
+          preferred: 'EUR',
+          sharePreferred: 1150,
+        ),
+        _trip(
+          5,
+          currency: 'SEK',
+          share: 500,
+          preferred: 'EUR',
+          sharePreferred: 45,
+        ),
+      ];
+    await _pump(tester, trips, profileCurrency: 'EUR');
+    await tester.pumpAndSettle();
+    final breakdown = tester
+        .widget<Text>(find.byKey(const ValueKey('home-total-breakdown')))
+        .data!;
+    expect(breakdown, startsWith('USD 120.00 · €50.00'));
+    expect(breakdown, endsWith(' · +2'));
+
+    await tester.tap(find.byKey(const ValueKey('home-total-open-currencies')));
+    await tester.pumpAndSettle();
+    expect(find.byKey(const ValueKey('home-currencies-sheet')), findsOneWidget);
+    for (final code in ['USD', 'EUR', 'GBP', 'SEK']) {
+      expect(find.byKey(ValueKey('home-currency-$code')), findsOneWidget);
+    }
+    expect(
+      tester.getTopLeft(find.byKey(const ValueKey('home-currency-USD'))).dy,
+      lessThan(
+        tester.getTopLeft(find.byKey(const ValueKey('home-currency-SEK'))).dy,
+      ),
+    );
+    expect(find.textContaining('2 trips'), findsOneWidget);
+    expect(
+      tester
+          .widget<Text>(find.byKey(const ValueKey('home-currencies-total')))
+          .data,
+      '≈ €171.95',
+    );
+    await tester.pumpWidget(const SizedBox.shrink());
+  });
+
+  testWidgets('one foreign currency is not tappable', (tester) async {
+    final trips = _Trips()
+      ..trips = [
+        _trip(
+          1,
+          currency: 'USD',
+          share: 1200,
+          preferred: 'EUR',
+          sharePreferred: 1100,
+        ),
+      ];
+    await _pump(tester, trips, profileCurrency: 'EUR');
+    await tester.pumpAndSettle();
+    expect(find.byKey(const ValueKey('home-total-converted')), findsOneWidget);
+    expect(
+      find.byKey(const ValueKey('home-total-open-currencies')),
+      findsNothing,
+    );
+    await tester.pumpWidget(const SizedBox.shrink());
+  });
+
   testWidgets('shares add up in the profile currency as an estimate', (
     tester,
   ) async {
@@ -570,7 +650,8 @@ void main() {
     expect(
       tester
           .widget<Text>(find.byKey(const ValueKey('home-total-converted')))
-          .data,
+          .textSpan!
+          .toPlainText(),
       '≈ €103.00',
     );
     final breakdown = tester

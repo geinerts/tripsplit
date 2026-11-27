@@ -18,6 +18,30 @@ class AppLocalizationsRu extends AppLocalizations {
   String get homeAllTime => 'За всё время';
 
   @override
+  String get homeShareByCurrencyTitle => 'Ваша доля по валютам';
+
+  @override
+  String homeShareByCurrencySubtitle(String currency) {
+    return 'Пересчитано в $currency по курсу каждого расхода';
+  }
+
+  @override
+  String homeShareByCurrencyTrips(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count поездки',
+      many: '$count поездок',
+      few: '$count поездки',
+      one: '$count поездка',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get homeShareByCurrencyTotal => 'Итого';
+
+  @override
   String get homeSolo => 'Один';
 
   @override

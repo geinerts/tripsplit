@@ -43,6 +43,7 @@ part 'trips_page_dialogs_helpers.dart';
 part 'trips_page_invite.dart';
 part 'trips_page_widgets.dart';
 part 'trips_page_widgets_cards.dart';
+part 'trips_page_widgets_currencies.dart';
 part 'trips_page_widgets_hero.dart';
 part 'trips_page_widgets_navigation.dart';
 part 'trips_page_support.dart';

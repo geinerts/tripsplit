@@ -181,7 +181,17 @@ extension _TripsPageWidgets on _TripsPageState {
     final currencies = totals.keys.toList()..sort();
     final converted = _homeTotalInProfileCurrency(allTrips, currencies);
     final theme = Theme.of(context);
-    return Column(
+    final muted = theme.textTheme.bodyMedium?.copyWith(
+      color: theme.colorScheme.onSurfaceVariant,
+    );
+    // Largest first; the line shows two and counts the rest.
+    final byAmount = [...currencies]
+      ..sort((a, b) {
+        final order = totals[b]!.compareTo(totals[a]!);
+        return order != 0 ? order : a.compareTo(b);
+      });
+    final canOpen = converted != null && currencies.length > 1;
+    final column = Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
@@ -193,25 +203,55 @@ extension _TripsPageWidgets on _TripsPageState {
         const SizedBox(height: 2),
         if (converted != null) ...[
           // An estimate: each share is converted at its own expense's rate.
-          Text(
-            '≈ ${AppFormatters.displayCurrencyFromCents(context, converted.cents, currencyCode: converted.currency)}',
+          Text.rich(
+            TextSpan(
+              children: [
+                TextSpan(
+                  text: '≈ ',
+                  style: TextStyle(
+                    fontWeight: FontWeight.w400,
+                    color: theme.colorScheme.onSurfaceVariant,
+                  ),
+                ),
+                TextSpan(
+                  text: AppFormatters.displayCurrencyFromCents(
+                    context,
+                    converted.cents,
+                    currencyCode: converted.currency,
+                  ),
+                ),
+              ],
+            ),
             key: const ValueKey('home-total-converted'),
             style: theme.textTheme.displaySmall?.copyWith(height: 1.15),
           ),
           const SizedBox(height: 2),
-          Text(
-            [
-              for (final currency in currencies)
-                AppFormatters.displayCurrencyFromCents(
-                  context,
-                  totals[currency]!,
-                  currencyCode: currency,
+          Row(
+            children: [
+              Flexible(
+                child: Text(
+                  [
+                    for (final currency in byAmount.take(2))
+                      AppFormatters.displayCurrencyFromCents(
+                        context,
+                        totals[currency]!,
+                        currencyCode: currency,
+                      ),
+                    if (byAmount.length > 2) '+${byAmount.length - 2}',
+                  ].join(' · '),
+                  key: const ValueKey('home-total-breakdown'),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: muted,
                 ),
-            ].join(' · '),
-            key: const ValueKey('home-total-breakdown'),
-            style: theme.textTheme.bodyMedium?.copyWith(
-              color: theme.colorScheme.onSurfaceVariant,
-            ),
+              ),
+              if (canOpen)
+                Icon(
+                  Icons.chevron_right,
+                  size: 18,
+                  color: theme.colorScheme.onSurfaceVariant,
+                ),
+            ],
           ),
         ] else
           for (final currency in currencies)
@@ -227,13 +267,24 @@ extension _TripsPageWidgets on _TripsPageState {
                   : theme.textTheme.headlineSmall,
             ),
         const SizedBox(height: 2),
-        Text(
-          context.l10n.homeAllTime,
-          style: theme.textTheme.bodyMedium?.copyWith(
-            color: theme.colorScheme.onSurfaceVariant,
-          ),
-        ),
+        Text(context.l10n.homeAllTime, style: muted),
       ],
+    );
+    if (!canOpen) return column;
+    return Semantics(
+      button: true,
+      hint: context.l10n.homeShareByCurrencyTitle,
+      child: InkWell(
+        key: const ValueKey('home-total-open-currencies'),
+        borderRadius: BorderRadius.circular(AppDesign.radiusMd),
+        onTap: () => _openShareByCurrencySheet(
+          allTrips,
+          byAmount,
+          totals,
+          converted.currency,
+        ),
+        child: column,
+      ),
     );
   }
 

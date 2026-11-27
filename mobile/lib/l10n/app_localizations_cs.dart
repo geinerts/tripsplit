@@ -18,6 +18,29 @@ class AppLocalizationsCs extends AppLocalizations {
   String get homeAllTime => 'Celé období';
 
   @override
+  String get homeShareByCurrencyTitle => 'Tvůj podíl podle měny';
+
+  @override
+  String homeShareByCurrencySubtitle(String currency) {
+    return 'Přepočteno na $currency kurzem každého výdaje';
+  }
+
+  @override
+  String homeShareByCurrencyTrips(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count výletů',
+      few: '$count výlety',
+      one: '$count výlet',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get homeShareByCurrencyTotal => 'Celkem';
+
+  @override
   String get homeSolo => 'Sólo';
 
   @override
