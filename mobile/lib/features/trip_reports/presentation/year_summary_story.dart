@@ -238,17 +238,21 @@ class _YearStory extends StatelessWidget {
                           semanticLabel: 'Splyto',
                         ),
                       const SizedBox(height: 4),
-                      Text(
-                        holiday
-                            ? '${t.yearSummaryHappyNewYear} · SPLYTO.EU'
-                            : 'SPLYTO.EU',
-                        textAlign: TextAlign.center,
-                        maxLines: 1,
-                        style: const TextStyle(
-                          fontFamily: 'Inter',
-                          fontSize: 8,
-                          letterSpacing: 1.7,
-                          color: _storyMuted,
+                      // A long greeting shrinks rather than being cut off.
+                      FittedBox(
+                        fit: BoxFit.scaleDown,
+                        child: Text(
+                          holiday
+                              ? '${upper(t.yearSummaryHappyNewYear('${summary.year + 1}'))} · SPLYTO.EU'
+                              : 'SPLYTO.EU',
+                          textAlign: TextAlign.center,
+                          maxLines: 1,
+                          style: const TextStyle(
+                            fontFamily: 'Inter',
+                            fontSize: 8,
+                            letterSpacing: 1.7,
+                            color: _storyMuted,
+                          ),
                         ),
                       ),
                     ],

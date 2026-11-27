@@ -5523,10 +5523,9 @@ class AppLocalizationsCs extends AppLocalizations {
   }
 
   @override
-  String get yearSummaryHappyNewYear => 'ŠŤASTNÝ NOVÝ ROK';
-
-  @override
-  String get yearSummaryOnlyForYou => 'Jen pro tebe, na obrázku nebude';
+  String yearSummaryHappyNewYear(String year) {
+    return 'Šťastný nový rok $year';
+  }
 
   @override
   String get yearSummaryShareAction => 'Sdílet můj rok';

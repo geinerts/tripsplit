@@ -5521,10 +5521,9 @@ class AppLocalizationsLv extends AppLocalizations {
   }
 
   @override
-  String get yearSummaryHappyNewYear => 'LAIMĪGU JAUNO GADU';
-
-  @override
-  String get yearSummaryOnlyForYou => 'Tikai tev, attēlā nenonāk';
+  String yearSummaryHappyNewYear(String year) {
+    return 'Laimīgu Jauno $year. gadu';
+  }
 
   @override
   String get yearSummaryShareAction => 'Dalīties ar savu gadu';

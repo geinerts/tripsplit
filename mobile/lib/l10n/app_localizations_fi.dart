@@ -5504,10 +5504,9 @@ class AppLocalizationsFi extends AppLocalizations {
   }
 
   @override
-  String get yearSummaryHappyNewYear => 'HYVÄÄ UUTTA VUOTTA';
-
-  @override
-  String get yearSummaryOnlyForYou => 'Vain sinulle, ei kuvassa';
+  String yearSummaryHappyNewYear(String year) {
+    return 'Hyvää uutta vuotta $year';
+  }
 
   @override
   String get yearSummaryShareAction => 'Jaa vuoteni';

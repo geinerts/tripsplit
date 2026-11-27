@@ -535,6 +535,9 @@ lielākais ceļojums, kategorija, ar ko visvairāk, pievienotie izdevumi, visas 
 pilsētas), poga "Dalīties ar savu gadu", ✕ un pieskāriens blakus aizver. Kopīgo tikai
 kartīti. Profila ieeja atver to pašu logu. Lietotne pati logu neatver.
 
+**Apsveikums kartītē:** decembrī un janvārī "Laimīgu Jauno 2027. gadu · splyto.eu" (nākamais
+gads, katrā valodā ar pareizu gramatiku, piemēram "С Новым 2027 годом", "Buon 2027").
+
 **Vietu dati (jāizlemj pirms ieslēgšanas):** valstis un pilsētas ir tikai no ceļojuma
 galamērķiem un personīgās kartes; daudziem tās būs tukšas. Ieteikums: ceļojuma beigās
 ieteikt vietu no ceļojuma nosaukuma (lietotājs apstiprina) un parādīt "Kur tu biji?", ja

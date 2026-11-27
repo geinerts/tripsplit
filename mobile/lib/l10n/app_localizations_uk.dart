@@ -5538,10 +5538,9 @@ class AppLocalizationsUk extends AppLocalizations {
   }
 
   @override
-  String get yearSummaryHappyNewYear => 'З НОВИМ РОКОМ';
-
-  @override
-  String get yearSummaryOnlyForYou => 'Лише для вас, не потрапить на зображення';
+  String yearSummaryHappyNewYear(String year) {
+    return 'З Новим $year роком';
+  }
 
   @override
   String get yearSummaryShareAction => 'Поділитися роком';

@@ -2468,8 +2468,14 @@
       }
     }
   },
-  "yearSummaryHappyNewYear": "HAPPY NEW YEAR",
-  "yearSummaryOnlyForYou": "Only for you, not in the image",
+  "@yearSummaryHappyNewYear": {
+    "placeholders": {
+      "year": {
+        "type": "String"
+      }
+    }
+  },
+  "yearSummaryHappyNewYear": "Happy New Year {year}",
   "yearSummaryShareAction": "Share my year",
   "notificationCommentAddedTitle": "New comment on your expense",
   "notificationCommentAddedBody": "{name} commented on \"{note}\".",

@@ -10056,14 +10056,8 @@ abstract class AppLocalizations {
   /// No description provided for @yearSummaryHappyNewYear.
   ///
   /// In en, this message translates to:
-  /// **'HAPPY NEW YEAR'**
-  String get yearSummaryHappyNewYear;
-
-  /// No description provided for @yearSummaryOnlyForYou.
-  ///
-  /// In en, this message translates to:
-  /// **'Only for you, not in the image'**
-  String get yearSummaryOnlyForYou;
+  /// **'Happy New Year {year}'**
+  String yearSummaryHappyNewYear(String year);
 
   /// No description provided for @yearSummaryShareAction.
   ///

@@ -1,6 +1,5 @@
 part of 'year_summary_page.dart';
 
-
 const _yearSummaryTitleStyle = TextStyle(
   fontFamily: 'Inter',
   fontSize: 28,
@@ -101,26 +100,7 @@ class _PrivateDetails extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        const SizedBox(height: 22),
-        Row(
-          children: [
-            const Icon(Icons.lock_outline, size: 14, color: muted),
-            const SizedBox(width: 6),
-            Expanded(
-              child: Text(
-                t.yearSummaryOnlyForYou,
-                key: const ValueKey('year-summary-private'),
-                style: const TextStyle(
-                  fontFamily: 'Inter',
-                  fontSize: 12,
-                  letterSpacing: .2,
-                  color: muted,
-                ),
-              ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 6),
+        const SizedBox(height: 18),
         for (var i = 0; i < rows.length; i++) ...[
           Divider(height: 1, color: Colors.white.withValues(alpha: .14)),
           rows[i],

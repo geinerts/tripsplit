@@ -5504,10 +5504,9 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
-  String get yearSummaryHappyNewYear => 'FELIZ AÑO NUEVO';
-
-  @override
-  String get yearSummaryOnlyForYou => 'Solo para ti, no sale en la imagen';
+  String yearSummaryHappyNewYear(String year) {
+    return 'Feliz $year';
+  }
 
   @override
   String get yearSummaryShareAction => 'Compartir mi año';

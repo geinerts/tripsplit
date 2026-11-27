@@ -446,7 +446,16 @@ void main() {
     );
     await tester.pumpWidget(_page(repository, today: DateTime(2027, 1, 2)));
     await tester.pumpAndSettle();
-    expect(find.text('HAPPY NEW YEAR · SPLYTO.EU'), findsOneWidget);
+    expect(find.text('HAPPY NEW YEAR 2027 · SPLYTO.EU'), findsOneWidget);
+    await tester.pumpWidget(
+      _page(
+        repository,
+        locale: const Locale('lv'),
+        today: DateTime(2027, 1, 2),
+      ),
+    );
+    await tester.pumpAndSettle();
+    expect(find.text('LAIMĪGU JAUNO 2027. GADU · SPLYTO.EU'), findsOneWidget);
     expect(find.byType(SvgPicture), findsWidgets);
     await tester.pumpWidget(_page(repository, today: DateTime(2027, 2, 1)));
     await tester.pumpAndSettle();
