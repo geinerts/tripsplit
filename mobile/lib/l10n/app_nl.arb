@@ -3,6 +3,24 @@
   "homeFirstTrip": "Je eerste reis",
   "homeYourShareAllTrips": "Jouw aandeel in alle reizen",
   "homeAllTime": "Altijd",
+  "homeShareByCurrencyTitle": "Jouw deel per valuta",
+  "homeShareByCurrencySubtitle": "Omgerekend naar {currency} tegen de koers van elke uitgave",
+  "homeShareByCurrencyTrips": "{count, plural, =1{1 reis} other{{count} reizen}}",
+  "homeShareByCurrencyTotal": "Totaal",
+  "@homeShareByCurrencySubtitle": {
+    "placeholders": {
+      "currency": {
+        "type": "String"
+      }
+    }
+  },
+  "@homeShareByCurrencyTrips": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "homeSolo": "Solo",
   "homePeople": "{count, plural, one{{count} persoon} other{{count} personen}}",
   "homeTripActions": "Reisacties: {name}",

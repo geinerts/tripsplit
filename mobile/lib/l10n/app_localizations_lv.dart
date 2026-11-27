@@ -18,6 +18,29 @@ class AppLocalizationsLv extends AppLocalizations {
   String get homeAllTime => 'Visā laikā';
 
   @override
+  String get homeShareByCurrencyTitle => 'Tava daļa pa valūtām';
+
+  @override
+  String homeShareByCurrencySubtitle(String currency) {
+    return 'Pārrēķināts uz $currency pēc katra izdevuma kursa';
+  }
+
+  @override
+  String homeShareByCurrencyTrips(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count braucieni',
+      one: '$count brauciens',
+      zero: '$count braucienu',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get homeShareByCurrencyTotal => 'Kopā';
+
+  @override
   String get homeSolo => 'Solo';
 
   @override

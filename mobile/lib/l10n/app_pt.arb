@@ -3,6 +3,24 @@
   "homeFirstTrip": "A sua primeira viagem",
   "homeYourShareAllTrips": "A tua parte em todas as viagens",
   "homeAllTime": "Todo o período",
+  "homeShareByCurrencyTitle": "A tua parte por moeda",
+  "homeShareByCurrencySubtitle": "Convertido para {currency} à taxa de cada despesa",
+  "homeShareByCurrencyTrips": "{count, plural, =1{1 viagem} other{{count} viagens}}",
+  "homeShareByCurrencyTotal": "Total",
+  "@homeShareByCurrencySubtitle": {
+    "placeholders": {
+      "currency": {
+        "type": "String"
+      }
+    }
+  },
+  "@homeShareByCurrencyTrips": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "homeSolo": "A solo",
   "homePeople": "{count, plural, one{{count} pessoa} other{{count} pessoas}}",
   "homeTripActions": "Ações da viagem: {name}",

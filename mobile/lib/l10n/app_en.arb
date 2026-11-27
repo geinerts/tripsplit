@@ -2,6 +2,24 @@
   "homeFirstTrip": "Your first trip",
   "homeYourShareAllTrips": "Your share across all trips",
   "homeAllTime": "All time",
+  "homeShareByCurrencyTitle": "Your share by currency",
+  "homeShareByCurrencySubtitle": "Converted to {currency} at each expense's rate",
+  "homeShareByCurrencyTrips": "{count, plural, =1{1 trip} other{{count} trips}}",
+  "homeShareByCurrencyTotal": "Total",
+  "@homeShareByCurrencySubtitle": {
+    "placeholders": {
+      "currency": {
+        "type": "String"
+      }
+    }
+  },
+  "@homeShareByCurrencyTrips": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "homeSolo": "Solo",
   "homePeople": "{count, plural, =1{1 person} other{{count} people}}",
   "homeTripActions": "Trip actions: {name}",

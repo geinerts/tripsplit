@@ -18,6 +18,28 @@ class AppLocalizationsEs extends AppLocalizations {
   String get homeAllTime => 'Todo el período';
 
   @override
+  String get homeShareByCurrencyTitle => 'Tu parte por moneda';
+
+  @override
+  String homeShareByCurrencySubtitle(String currency) {
+    return 'Convertido a $currency al tipo de cada gasto';
+  }
+
+  @override
+  String homeShareByCurrencyTrips(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count viajes',
+      one: '1 viaje',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get homeShareByCurrencyTotal => 'Total';
+
+  @override
   String get homeSolo => 'Solo';
 
   @override

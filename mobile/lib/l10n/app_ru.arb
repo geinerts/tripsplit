@@ -3,6 +3,24 @@
   "homeFirstTrip": "Ваша первая поездка",
   "homeYourShareAllTrips": "Ваша доля по всем поездкам",
   "homeAllTime": "За всё время",
+  "homeShareByCurrencyTitle": "Ваша доля по валютам",
+  "homeShareByCurrencySubtitle": "Пересчитано в {currency} по курсу каждого расхода",
+  "homeShareByCurrencyTrips": "{count, plural, one{{count} поездка} few{{count} поездки} many{{count} поездок} other{{count} поездки}}",
+  "homeShareByCurrencyTotal": "Итого",
+  "@homeShareByCurrencySubtitle": {
+    "placeholders": {
+      "currency": {
+        "type": "String"
+      }
+    }
+  },
+  "@homeShareByCurrencyTrips": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "homeSolo": "Один",
   "homePeople": "{count, plural, one{{count} человек} few{{count} человека} many{{count} человек} other{{count} человека}}",
   "homeTripActions": "Действия с поездкой: {name}",
