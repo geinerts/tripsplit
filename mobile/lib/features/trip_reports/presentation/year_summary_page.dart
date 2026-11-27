@@ -108,7 +108,7 @@ class _YearSummaryPageState extends State<YearSummaryPage> {
         : null;
     setState(() => _sharing = true);
     try {
-      // The story is drawn at 360 × 640 and shared at 1080 × 1920.
+      // The card is drawn at 360 × 450 and shared at 1080 × 1350.
       final image = await boundary.toImage(pixelRatio: 3);
       final data = await image.toByteData(format: ui.ImageByteFormat.png);
       image.dispose();
@@ -291,7 +291,7 @@ class _YearSummaryPageState extends State<YearSummaryPage> {
                     // The exact picture that is shared, scaled to fit.
                     Center(
                       child: ConstrainedBox(
-                        constraints: const BoxConstraints(maxWidth: 300),
+                        constraints: const BoxConstraints(maxWidth: 340),
                         child: AspectRatio(
                           aspectRatio: yearSummaryStorySize.aspectRatio,
                           child: ClipRRect(

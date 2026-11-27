@@ -4,9 +4,10 @@ part of 'year_summary_page.dart';
 bool yearSummaryHolidaySeason(DateTime now) =>
     now.month == DateTime.december || now.month == DateTime.january;
 
-/// The story's design size. It is shared at three times this, 1080 × 1920,
-/// the size of an Instagram or WhatsApp story.
-const yearSummaryStorySize = Size(360, 640);
+/// The card's design size. It is shared at three times this, 1080 × 1350
+/// (4:5): a story app shows it as a card on its own background instead of
+/// filling the screen, and chats show it whole.
+const yearSummaryStorySize = Size(360, 450);
 
 const _storyMint = Color(0xFFA6F0CC);
 const _storyTeal = Color(0xFF2FB8B0);
@@ -54,7 +55,8 @@ class _YearStory extends StatelessWidget {
       ...summary.countries.take(_storyCountryNames),
       if (summary.countries.length > _storyCountryNames)
         '+${summary.countries.length - _storyCountryNames}',
-    ].join(' · ');
+      // A no-break space keeps each dot with the name before it.
+    ].join('\u00A0· ');
     final countries = world;
     return MediaQuery(
       data: MediaQuery.of(context).copyWith(textScaler: TextScaler.noScaling),
@@ -76,7 +78,7 @@ class _YearStory extends StatelessWidget {
                 child: CustomPaint(painter: _StarsPainter()),
               ),
               Positioned(
-                top: 34,
+                top: 22,
                 left: 20,
                 right: 20,
                 child: Text(
@@ -93,7 +95,7 @@ class _YearStory extends StatelessWidget {
                 ),
               ),
               Positioned(
-                top: 50,
+                top: 32,
                 left: 0,
                 right: 0,
                 child: Center(
@@ -112,7 +114,7 @@ class _YearStory extends StatelessWidget {
                         key: const ValueKey('year-summary-story-year'),
                         style: const TextStyle(
                           fontFamily: 'Inter',
-                          fontSize: 84,
+                          fontSize: 66,
                           height: 1,
                           fontWeight: FontWeight.w300,
                           fontStyle: FontStyle.italic,
@@ -125,10 +127,10 @@ class _YearStory extends StatelessWidget {
                 ),
               ),
               Positioned(
-                top: 150,
+                top: 104,
                 left: 0,
                 right: 0,
-                height: 280,
+                height: 196,
                 child: countries == null
                     ? const SizedBox.shrink()
                     : CustomPaint(
@@ -143,7 +145,7 @@ class _YearStory extends StatelessWidget {
                       ),
               ),
               Positioned(
-                top: 444,
+                top: 300,
                 left: 16,
                 right: 16,
                 child: Row(
@@ -162,7 +164,7 @@ class _YearStory extends StatelessWidget {
                                 ).format(value),
                                 style: const TextStyle(
                                   fontFamily: 'Inter',
-                                  fontSize: 40,
+                                  fontSize: 34,
                                   height: 1,
                                   fontWeight: FontWeight.w800,
                                   color: Colors.white,
@@ -188,7 +190,7 @@ class _YearStory extends StatelessWidget {
               ),
               if (names.isNotEmpty)
                 Positioned(
-                  top: 516,
+                  top: 358,
                   left: 28,
                   right: 28,
                   child: Text(
@@ -199,8 +201,8 @@ class _YearStory extends StatelessWidget {
                     overflow: TextOverflow.ellipsis,
                     style: const TextStyle(
                       fontFamily: 'Inter',
-                      fontSize: 10,
-                      height: 1.5,
+                      fontSize: 9.5,
+                      height: 1.45,
                       color: Color(0xFFC7D8FF),
                     ),
                   ),
@@ -208,24 +210,24 @@ class _YearStory extends StatelessWidget {
               Positioned(
                 left: 0,
                 right: 0,
-                bottom: 30,
+                bottom: 14,
                 child: Column(
                   children: [
                     if (holiday)
                       SvgPicture.asset(
                         'assets/branding/logo_full_dark_holiday.svg',
                         key: const ValueKey('year-summary-story-logo'),
-                        height: 30,
+                        height: 26,
                         semanticsLabel: 'Splyto',
                       )
                     else
                       Image.asset(
                         'assets/branding/logo_full_dark.png',
                         key: const ValueKey('year-summary-story-logo'),
-                        height: 26,
+                        height: 22,
                         semanticLabel: 'Splyto',
                       ),
-                    const SizedBox(height: 6),
+                    const SizedBox(height: 4),
                     Text(
                       holiday
                           ? '${t.yearSummaryHappyNewYear} · SPLYTO.EU'
@@ -491,8 +493,8 @@ class _GlobePainter extends CustomPainter {
     canvas.rotate(-18 * math.pi / 180);
     final orbit = Rect.fromCenter(
       center: Offset.zero,
-      width: (radius + 40) * 2,
-      height: 80,
+      width: (radius + 34) * 2,
+      height: 56,
     );
     final dots = Paint()..strokeCap = StrokeCap.round;
     for (var a = 0.0; a < math.pi * 2; a += .075) {
@@ -523,7 +525,7 @@ class _GlobePainter extends CustomPainter {
         style: TextStyle(
           fontFamily: Icons.flight.fontFamily,
           package: Icons.flight.fontPackage,
-          fontSize: 18,
+          fontSize: 15,
           color: Colors.white,
         ),
       ),
@@ -558,4 +560,3 @@ class _GlobePainter extends CustomPainter {
   bool shouldRepaint(_GlobePainter oldDelegate) =>
       oldDelegate.countries != countries;
 }
-

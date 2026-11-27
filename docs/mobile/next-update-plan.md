@@ -513,11 +513,13 @@ uzraksts "Laimīgu Jauno gadu" un logo ar Ziemassvētku cepuri uz "O"
 kartīte ir bez tā. Izvēlēts rādīt no 1. janvāra, nevis 31. decembra (pilns gads, bez servera
 izmaiņām). Fonts gadam: Inter, līdz īpašnieks atļauj lejupielādēt citu OFL fontu.
 
-**Stāsts ar karti (2026-11-27, koncepcija B):** kopīgotais attēls ir 1080 × 1920 stāsts
-(zīmēts 360 × 640, kopīgots 3×). Tumši zils fons, gads, karte ar izgaismotām apmeklētajām
+**Kartīte ar karti (2026-11-27, koncepcija B):** kopīgotais attēls ir kartīte 4:5,
+1080 × 1350 (zīmēta 360 × 450, kopīgota 3×). Īpašnieka izvēle: nevis pilnekrāna stāsts, bet
+kartīte, ko stāstu lietotne parāda mazāku uz sava fona; tā arī netiek aizsegta ar vārdu un
+atbildes lauku. Stūri taisni, jo WhatsApp caurspīdīgus stūrus rāda melnus. Tumši zils fons, gads, karte ar izgaismotām apmeklētajām
 valstīm (pēc valstu kodiem, automātiski pietuvināta), skaitļi bez nullēm, līdz 8 valstu
 nosaukumiem un "+N", logo. Ja valstu nav, kartes vietā ir dekoratīvs globuss ar lidmašīnas
-orbītu. Ekrānā redzams tieši tas pats attēls samazinātā mērogā. Kartes kontūras:
+orbītu. Ekrānā redzama tieši tā pati kartīte samazinātā mērogā. Kartes kontūras:
 `assets/maps/world.json` (Natural Earth), lasītājs `lib/core/maps/world_countries.dart`.
 Lēmumi 2026-11-27: maršruta līnijas starp pilsētām **nevajag**. Valstu nosaukumi pirmajā
 versijā paliek **angliski** (kā tos sūta serveris); pirms ieslēgšanas apsvērt nosaukumus

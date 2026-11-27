@@ -339,7 +339,7 @@ void main() {
       expect(inStory(find.text(label)), findsOneWidget);
     }
     expect(inStory(find.text('23')), findsOneWidget);
-    expect(inStory(find.text('Italy · Latvia')), findsOneWidget);
+    expect(inStory(find.text('Italy\u00A0· Latvia')), findsOneWidget);
     expect(
       find.byKey(const ValueKey('year-summary-story-map')),
       findsOneWidget,
@@ -465,7 +465,7 @@ void main() {
             find.byKey(const ValueKey('year-summary-story-countries')),
           )
           .data,
-      'A · B · C · D · E · F · G · H · +2',
+      'A · B · C · D · E · F · G · H · +2'.replaceAll(' ·', '\u00A0·'),
     );
   });
 
@@ -539,8 +539,8 @@ void main() {
     });
   }
 
-  // Opt-in review images with demo data: the screen, the shared 1080 × 1920
-  // story for 12, 1 and no countries, and the story arriving in a chat.
+  // Opt-in review images with demo data: the screen, the shared 1080 × 1350
+  // card for 5, 12, 1 and no countries, and the card arriving in a chat.
   // flutter test test/features/trip_reports/trip_reports_test.dart
   //   --dart-define=YEAR_SUMMARY_PREVIEWS=true
   if (const bool.fromEnvironment('YEAR_SUMMARY_PREVIEWS')) {
