@@ -10,6 +10,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tripsplit/app/theme/app_theme.dart';
 import 'package:tripsplit/core/errors/api_exception.dart';
+import 'package:tripsplit/core/maps/world_countries.dart';
 import 'package:tripsplit/core/network/api_client.dart';
 import 'package:tripsplit/core/network/http_method.dart';
 import 'package:tripsplit/features/auth/data/models/notification_preferences_model.dart';
@@ -315,12 +316,11 @@ void main() {
     },
   );
 
-  testWidgets('one screen shows the share card and private details', (
-    tester,
-  ) async {
+  testWidgets('one screen shows the story and private details', (tester) async {
     tester.view.physicalSize = const Size(390, 844);
     tester.view.devicePixelRatio = 1;
     addTearDown(tester.view.reset);
+    await tester.runAsync(WorldCountry.load);
     final repository = _Repository(
       (_) async => YearSummary.fromMap({
         ..._summaryMap(),
@@ -330,17 +330,25 @@ void main() {
     await tester.pumpWidget(_page(repository));
     await tester.pumpAndSettle();
     expect(find.text('A look back at your year'), findsOneWidget);
-    String text(String key) =>
-        tester.widget<Text>(find.byKey(ValueKey(key))).data!;
-    expect(text('year-summary-card-trips'), '3 trips · 23 days');
-    expect(text('year-summary-card-places'), '2 countries · 2 cities');
-    expect(text('year-summary-card-countries'), 'Italy · Latvia');
+    final story = find.byKey(const ValueKey('year-summary-story'));
+    Finder inStory(Finder finder) =>
+        find.descendant(of: story, matching: finder);
+    expect(inStory(find.text('2026')), findsOneWidget);
+    expect(inStory(find.text('YOUR YEAR IN TRAVEL')), findsOneWidget);
+    for (final label in ['TRIPS', 'DAYS', 'COUNTRIES', 'CITIES']) {
+      expect(inStory(find.text(label)), findsOneWidget);
+    }
+    expect(inStory(find.text('23')), findsOneWidget);
+    expect(inStory(find.text('Italy · Latvia')), findsOneWidget);
     expect(
-      find.byKey(const ValueKey('year-summary-card-logo')),
+      find.byKey(const ValueKey('year-summary-story-map')),
+      findsOneWidget,
+    );
+    expect(
+      find.byKey(const ValueKey('year-summary-story-logo')),
       findsOneWidget,
     );
     // The private details are outside the shared image.
-    final card = find.byKey(const ValueKey('year-summary-share-card'));
     for (final key in [
       'year-summary-spending',
       'year-summary-biggest',
@@ -348,10 +356,7 @@ void main() {
       'year-summary-companion',
     ]) {
       expect(find.byKey(ValueKey(key)), findsOneWidget);
-      expect(
-        find.descendant(of: card, matching: find.byKey(ValueKey(key))),
-        findsNothing,
-      );
+      expect(inStory(find.byKey(ValueKey(key))), findsNothing);
     }
     expect(find.text('Anna · 2'), findsOneWidget);
     expect(find.text('Food'), findsOneWidget);
@@ -364,22 +369,39 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
+  test('the summary keeps country codes next to their names', () {
+    final summary = YearSummary.fromMap({
+      ..._summaryMap(),
+      'countries': [
+        {'code': 'it', 'name': 'Italy'},
+        {'code': '', 'name': 'Nowhere'},
+        {'code': 'LV', 'name': ''},
+      ],
+    });
+    expect(summary.countries, ['Italy', 'Nowhere']);
+    expect(summary.countryCodes, ['IT']);
+  });
+
   testWidgets('December and January get the New Year look', (tester) async {
     final repository = _Repository(
       (_) async => YearSummary.fromMap(_summaryMap()),
     );
     await tester.pumpWidget(_page(repository, today: DateTime(2027, 1, 2)));
     await tester.pumpAndSettle();
-    expect(find.text('HAPPY NEW YEAR'), findsOneWidget);
+    expect(find.text('HAPPY NEW YEAR · SPLYTO.EU'), findsOneWidget);
     expect(find.byType(SvgPicture), findsWidgets);
     await tester.pumpWidget(_page(repository, today: DateTime(2027, 2, 1)));
     await tester.pumpAndSettle();
-    expect(find.text('HAPPY NEW YEAR'), findsNothing);
+    expect(find.textContaining('HAPPY NEW YEAR'), findsNothing);
+    expect(find.text('SPLYTO.EU'), findsOneWidget);
     expect(yearSummaryHolidaySeason(DateTime(2026, 12, 31)), isTrue);
     expect(yearSummaryHolidaySeason(DateTime(2027, 2, 1)), isFalse);
   });
 
-  testWidgets('a year without places leaves out zero counts', (tester) async {
+  testWidgets('a year without places shows a globe and no zero counts', (
+    tester,
+  ) async {
+    await tester.runAsync(WorldCountry.load);
     final repository = _Repository(
       (_) async => YearSummary.fromMap({
         ..._summaryMap(),
@@ -392,47 +414,46 @@ void main() {
     await tester.pumpWidget(_page(repository));
     await tester.pumpAndSettle();
     expect(
-      tester
-          .widget<Text>(find.byKey(const ValueKey('year-summary-card-trips')))
-          .data,
-      '3 trips',
+      find.byKey(const ValueKey('year-summary-story-globe')),
+      findsOneWidget,
     );
+    expect(find.byKey(const ValueKey('year-summary-story-map')), findsNothing);
+    expect(find.text('TRIPS'), findsOneWidget);
+    for (final label in ['DAYS', 'COUNTRIES', 'CITIES']) {
+      expect(find.text(label), findsNothing);
+    }
     expect(
-      find.byKey(const ValueKey('year-summary-card-places')),
-      findsNothing,
-    );
-    expect(
-      find.byKey(const ValueKey('year-summary-card-countries')),
+      find.byKey(const ValueKey('year-summary-story-countries')),
       findsNothing,
     );
     expect(find.byKey(const ValueKey('year-summary-companion')), findsNothing);
-    expect(find.textContaining('0 '), findsNothing);
+    expect(find.text('0'), findsNothing);
   });
 
-  testWidgets('the shared card never carries amounts', (tester) async {
+  testWidgets('the shared story never carries amounts', (tester) async {
     final repository = _Repository(
       (_) async =>
           YearSummary.fromMap({..._summaryMap(), 'conversion_complete': true}),
     );
     await tester.pumpWidget(_page(repository));
     await tester.pumpAndSettle();
-    final card = find.byKey(const ValueKey('year-summary-share-card'));
+    final story = find.byKey(const ValueKey('year-summary-story'));
     expect(
-      find.descendant(of: card, matching: find.textContaining('¥')),
+      find.descendant(of: story, matching: find.textContaining('¥')),
       findsNothing,
     );
     expect(find.byType(Switch), findsNothing);
   });
 
-  testWidgets('many countries show five on the card and count the rest', (
+  testWidgets('many countries show eight names and count the rest', (
     tester,
   ) async {
     final repository = _Repository(
       (_) async => YearSummary.fromMap({
         ..._summaryMap(),
         'countries': [
-          for (final name in ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'])
-            {'code': name, 'name': 'Land $name'},
+          for (final name in 'ABCDEFGHIJ'.split(''))
+            {'code': name, 'name': name},
         ],
       }),
     );
@@ -441,10 +462,10 @@ void main() {
     expect(
       tester
           .widget<Text>(
-            find.byKey(const ValueKey('year-summary-card-countries')),
+            find.byKey(const ValueKey('year-summary-story-countries')),
           )
           .data,
-      'Land A · Land B · Land C · Land D · Land E · +3',
+      'A · B · C · D · E · F · G · H · +2',
     );
   });
 
@@ -454,7 +475,7 @@ void main() {
     );
     await tester.pumpWidget(_page(repository));
     await tester.pumpAndSettle();
-    expect(find.textContaining('1 trip ·'), findsOneWidget);
+    expect(find.text('TRIP'), findsOneWidget);
   });
 
   testWidgets('an empty year has a message and no card', (tester) async {
@@ -464,7 +485,7 @@ void main() {
     await tester.pumpWidget(_page(repository));
     await tester.pumpAndSettle();
     expect(find.text('No finished trips in 2026.'), findsOneWidget);
-    expect(find.byKey(const ValueKey('year-summary-share-card')), findsNothing);
+    expect(find.byKey(const ValueKey('year-summary-story')), findsNothing);
     expect(find.byKey(const ValueKey('year-summary-share')), findsNothing);
   });
 
@@ -480,10 +501,7 @@ void main() {
     fail = false;
     await tester.tap(find.text('Try again'));
     await tester.pumpAndSettle();
-    expect(
-      find.byKey(const ValueKey('year-summary-share-card')),
-      findsOneWidget,
-    );
+    expect(find.byKey(const ValueKey('year-summary-story')), findsOneWidget);
     expect(repository.requests, [null, null]);
   });
 
@@ -521,153 +539,178 @@ void main() {
     });
   }
 
-  // Opt-in review images of the screen with demo data:
+  // Opt-in review images with demo data: the screen, the shared 1080 × 1920
+  // story for 12, 1 and no countries, and the story arriving in a chat.
   // flutter test test/features/trip_reports/trip_reports_test.dart
   //   --dart-define=YEAR_SUMMARY_PREVIEWS=true
   if (const bool.fromEnvironment('YEAR_SUMMARY_PREVIEWS')) {
+    Map<String, dynamic> demo(List<(String, String)> countries, int cities) => {
+      'year': 2026,
+      'available_years': [2026],
+      'trip_count': countries.isEmpty ? 3 : 6 + countries.length,
+      'days_away': countries.isEmpty ? 11 : 20 + countries.length * 6,
+      'countries': [
+        for (final (code, name) in countries) {'code': code, 'name': name},
+      ],
+      'cities': List.generate(cities, (i) => 'City $i'),
+      'currency_code': 'EUR',
+      'total_share': 2480.0,
+      'conversion_complete': true,
+      'biggest_trip': {'name': 'Italy road trip', 'share': 860.0},
+      'top_category': {'key': 'food', 'share': 700.0},
+      'top_companion': {'nickname': 'Anna', 'trip_count': 4},
+    };
+    final cases = {
+      'five': demo([
+        ('IT', 'Italy'),
+        ('ES', 'Spain'),
+        ('PT', 'Portugal'),
+        ('LV', 'Latvia'),
+        ('AL', 'Albania'),
+      ], 9),
+      'twelve': demo([
+        ('LV', 'Latvia'),
+        ('GB', 'United Kingdom'),
+        ('IS', 'Iceland'),
+        ('US', 'United States'),
+        ('MX', 'Mexico'),
+        ('PT', 'Portugal'),
+        ('ES', 'Spain'),
+        ('MA', 'Morocco'),
+        ('IT', 'Italy'),
+        ('TH', 'Thailand'),
+        ('JP', 'Japan'),
+        ('AU', 'Australia'),
+      ], 23),
+      'one': demo([('IT', 'Italy')], 4),
+      'none': demo([], 0),
+    };
     for (final locale in ['en', 'lv']) {
-      testWidgets('year summary review images: $locale', (tester) async {
-        tester.view.physicalSize = const Size(390, 844);
-        tester.view.devicePixelRatio = 1;
-        addTearDown(tester.view.reset);
-        await tester.runAsync(() async {
-          await (FontLoader(
-            'Inter',
-          )..addFont(rootBundle.load('assets/fonts/Inter.ttf'))).load();
-          await (FontLoader('MaterialIcons')
-                ..addFont(rootBundle.load('fonts/MaterialIcons-Regular.otf')))
-              .load();
-        });
-        final repository = _Repository(
-          (_) async => YearSummary.fromMap({
-            'year': 2026,
-            'available_years': [2026],
-            'trip_count': 6,
-            'days_away': 32,
-            'countries': [
-              for (final name in [
-                'Italy',
-                'Spain',
-                'Portugal',
-                'Latvia',
-                'Albania',
-              ])
-                {'code': name, 'name': name},
-            ],
-            'cities': List.generate(9, (i) => 'City $i'),
-            'currency_code': 'EUR',
-            'total_share': 2480.0,
-            'conversion_complete': true,
-            'biggest_trip': {'name': 'Italy road trip', 'share': 860.0},
-            'top_category': {'key': 'food', 'share': 700.0},
-            'top_companion': {'nickname': 'Anna', 'trip_count': 4},
-          }),
-        );
-        final key = GlobalKey();
-        await tester.pumpWidget(
-          RepaintBoundary(
-            key: key,
-            child: _page(
-              repository,
-              locale: Locale(locale),
-              today: DateTime(2027, 1, 1),
-            ),
-          ),
-        );
-        await tester.runAsync(
-          () => precacheImage(
-            const AssetImage('assets/branding/logo_full.png'),
-            key.currentContext!,
-          ),
-        );
-        await tester.runAsync(
-          () => precacheImage(
-            const AssetImage('assets/branding/logo_full_dark.png'),
-            key.currentContext!,
-          ),
-        );
-        await tester.pumpAndSettle();
-        Future<void> save(ui.Image image, String name) async {
-          final bytes = await image.toByteData(format: ui.ImageByteFormat.png);
-          final file = File('../output/design/year-summary/$name.png');
-          await file.parent.create(recursive: true);
-          await file.writeAsBytes(bytes!.buffer.asUint8List());
-        }
-
-        late Uint8List shared;
-        await tester.runAsync(() async {
-          final screen =
-              await (key.currentContext!.findRenderObject()
-                      as RenderRepaintBoundary)
-                  .toImage(pixelRatio: 2);
-          await save(screen, 'app-$locale');
-          screen.dispose();
-          final card =
-              await (find
-                      .byKey(const ValueKey('year-summary-share-card'))
-                      .evaluate()
-                      .single
-                      .findAncestorRenderObjectOfType<RenderRepaintBoundary>()!)
-                  .toImage(pixelRatio: 3);
-          final image = await yearSummaryShareImage(card);
-          card.dispose();
-          await save(image, 'shared-$locale');
-          final bytes = await image.toByteData(format: ui.ImageByteFormat.png);
-          shared = bytes!.buffer.asUint8List();
-          image.dispose();
-        });
-
-        // The shared picture as it arrives in a chat, in light and dark mode.
-        tester.view.physicalSize = const Size(390, 520);
-        for (final dark in [false, true]) {
-          final chatKey = GlobalKey();
+      for (final entry in cases.entries) {
+        testWidgets('year summary review images: $locale ${entry.key}', (
+          tester,
+        ) async {
+          tester.view.physicalSize = const Size(390, 844);
+          tester.view.devicePixelRatio = 1;
+          addTearDown(tester.view.reset);
+          await tester.runAsync(() async {
+            await (FontLoader(
+              'Inter',
+            )..addFont(rootBundle.load('assets/fonts/Inter.ttf'))).load();
+            await (FontLoader('MaterialIcons')
+                  ..addFont(rootBundle.load('fonts/MaterialIcons-Regular.otf')))
+                .load();
+            await WorldCountry.load();
+          });
+          final repository = _Repository(
+            (_) async => YearSummary.fromMap(entry.value),
+          );
+          final key = GlobalKey();
           await tester.pumpWidget(
             RepaintBoundary(
-              key: chatKey,
-              child: Directionality(
-                textDirection: TextDirection.ltr,
-                child: ColoredBox(
-                  color: dark
-                      ? const Color(0xFF0B141A)
-                      : const Color(0xFFEFE7DE),
-                  child: Align(
-                    alignment: Alignment.centerRight,
-                    child: Padding(
-                      padding: const EdgeInsets.all(16),
-                      child: Container(
-                        width: 270,
-                        padding: const EdgeInsets.all(4),
-                        decoration: BoxDecoration(
-                          color: dark
-                              ? const Color(0xFF005C4B)
-                              : const Color(0xFFD9FDD3),
-                          borderRadius: BorderRadius.circular(14),
-                        ),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(11),
-                          child: Image.memory(shared),
+              key: key,
+              child: _page(
+                repository,
+                locale: Locale(locale),
+                today: DateTime(2027, 1, 1),
+              ),
+            ),
+          );
+          await tester.runAsync(
+            () => precacheImage(
+              const AssetImage('assets/branding/logo_full.png'),
+              key.currentContext!,
+            ),
+          );
+          await tester.pumpAndSettle();
+          Future<void> save(ui.Image image, String name) async {
+            final bytes = await image.toByteData(
+              format: ui.ImageByteFormat.png,
+            );
+            final file = File('../output/design/year-summary/$name.png');
+            await file.parent.create(recursive: true);
+            await file.writeAsBytes(bytes!.buffer.asUint8List());
+          }
+
+          late Uint8List shared;
+          await tester.runAsync(() async {
+            if (entry.key == 'five') {
+              final screen =
+                  await (key.currentContext!.findRenderObject()
+                          as RenderRepaintBoundary)
+                      .toImage(pixelRatio: 2);
+              await save(screen, 'app-$locale');
+              screen.dispose();
+            }
+            final image =
+                await (find
+                        .byKey(const ValueKey('year-summary-story'))
+                        .evaluate()
+                        .single
+                        .findAncestorRenderObjectOfType<
+                          RenderRepaintBoundary
+                        >()!)
+                    .toImage(pixelRatio: 3);
+            await save(image, 'story-$locale-${entry.key}');
+            final bytes = await image.toByteData(
+              format: ui.ImageByteFormat.png,
+            );
+            shared = bytes!.buffer.asUint8List();
+            image.dispose();
+          });
+          if (entry.key != 'five') return;
+
+          // The shared story as it arrives in a chat, in light and dark mode.
+          for (final dark in [false, true]) {
+            final chatKey = GlobalKey();
+            await tester.pumpWidget(
+              RepaintBoundary(
+                key: chatKey,
+                child: Directionality(
+                  textDirection: TextDirection.ltr,
+                  child: ColoredBox(
+                    color: dark
+                        ? const Color(0xFF0B141A)
+                        : const Color(0xFFEFE7DE),
+                    child: Align(
+                      alignment: Alignment.centerRight,
+                      child: Padding(
+                        padding: const EdgeInsets.all(16),
+                        child: Container(
+                          width: 230,
+                          padding: const EdgeInsets.all(4),
+                          decoration: BoxDecoration(
+                            color: dark
+                                ? const Color(0xFF005C4B)
+                                : const Color(0xFFD9FDD3),
+                            borderRadius: BorderRadius.circular(14),
+                          ),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(11),
+                            child: Image.memory(shared),
+                          ),
                         ),
                       ),
                     ),
                   ),
                 ),
               ),
-            ),
-          );
-          await tester.runAsync(() async {
-            await precacheImage(MemoryImage(shared), chatKey.currentContext!);
-          });
-          await tester.pumpAndSettle();
-          await tester.runAsync(() async {
-            final image =
-                await (chatKey.currentContext!.findRenderObject()
-                        as RenderRepaintBoundary)
-                    .toImage(pixelRatio: 2);
-            await save(image, 'chat-$locale-${dark ? 'dark' : 'light'}');
-            image.dispose();
-          });
-        }
-      });
+            );
+            await tester.runAsync(() async {
+              await precacheImage(MemoryImage(shared), chatKey.currentContext!);
+            });
+            await tester.pumpAndSettle();
+            await tester.runAsync(() async {
+              final image =
+                  await (chatKey.currentContext!.findRenderObject()
+                          as RenderRepaintBoundary)
+                      .toImage(pixelRatio: 2);
+              await save(image, 'chat-$locale-${dark ? 'dark' : 'light'}');
+              image.dispose();
+            });
+          }
+        });
+      }
     }
   }
 }

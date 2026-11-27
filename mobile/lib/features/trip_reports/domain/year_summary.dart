@@ -6,6 +6,7 @@ class YearSummary {
     required this.tripCount,
     required this.daysAway,
     required this.countries,
+    this.countryCodes = const [],
     required this.cities,
     required this.currencyCode,
     required this.totalShare,
@@ -22,6 +23,10 @@ class YearSummary {
   final int tripCount;
   final int daysAway;
   final List<String> countries;
+
+  /// ISO codes of [countries], in the same order; empty when the server sent
+  /// none.
+  final List<String> countryCodes;
   final List<String> cities;
   final String currencyCode;
   final double totalShare;
@@ -39,6 +44,14 @@ class YearSummary {
     final biggest = map['biggest_trip'];
     final category = map['top_category'];
     final companion = map['top_companion'];
+    final places = [
+      for (final country in asList(map['countries']).whereType<Map>())
+        if ('${country['name'] ?? ''}'.isNotEmpty)
+          (
+            '${country['code'] ?? ''}'.trim().toUpperCase(),
+            '${country['name']}',
+          ),
+    ];
     return YearSummary(
       year: asInt(map['year']),
       availableYears: asList(
@@ -46,11 +59,11 @@ class YearSummary {
       ).whereType<num>().map((value) => value.toInt()).toList(growable: false),
       tripCount: asInt(map['trip_count']),
       daysAway: asInt(map['days_away']),
-      countries: asList(map['countries'])
-          .whereType<Map>()
-          .map((country) => '${country['name'] ?? ''}')
-          .where((name) => name.isNotEmpty)
-          .toList(growable: false),
+      countries: [for (final country in places) country.$2],
+      countryCodes: [
+        for (final country in places)
+          if (country.$1.isNotEmpty) country.$1,
+      ],
       cities: asList(map['cities']).whereType<String>().toList(growable: false),
       currencyCode: '${map['currency_code'] ?? 'EUR'}',
       totalShare: asDouble(map['total_share']),

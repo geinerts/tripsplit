@@ -5446,6 +5446,50 @@ class AppLocalizationsNl extends AppLocalizations {
   String get yearSummaryRetry => 'Opnieuw proberen';
 
   @override
+  String yearSummaryTripsLabel(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'reizen',
+      one: 'reis',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String yearSummaryDaysLabel(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'dagen',
+      one: 'dag',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String yearSummaryCountriesLabel(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'landen',
+      one: 'land',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String yearSummaryCitiesLabel(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'steden',
+      one: 'stad',
+    );
+    return '$_temp0';
+  }
+
+  @override
   String get yearSummaryHappyNewYear => 'GELUKKIG NIEUWJAAR';
 
   @override
@@ -5462,50 +5506,6 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get yearSummaryDone => 'Klaar';
-
-  @override
-  String yearSummaryTripCount(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: '$count reizen',
-      one: '1 reis',
-    );
-    return '$_temp0';
-  }
-
-  @override
-  String yearSummaryDayCount(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: '$count dagen',
-      one: '1 dag',
-    );
-    return '$_temp0';
-  }
-
-  @override
-  String yearSummaryCountryCount(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: '$count landen',
-      one: '1 land',
-    );
-    return '$_temp0';
-  }
-
-  @override
-  String yearSummaryCityCount(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: '$count steden',
-      one: '1 stad',
-    );
-    return '$_temp0';
-  }
 
   @override
   String get notificationCommentAddedTitle => 'Nieuwe reactie op je uitgave';

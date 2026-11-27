@@ -5446,6 +5446,50 @@ class AppLocalizationsIt extends AppLocalizations {
   String get yearSummaryRetry => 'Riprova';
 
   @override
+  String yearSummaryTripsLabel(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'viaggi',
+      one: 'viaggio',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String yearSummaryDaysLabel(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'giorni',
+      one: 'giorno',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String yearSummaryCountriesLabel(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'paesi',
+      one: 'paese',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String yearSummaryCitiesLabel(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'città',
+      one: 'città',
+    );
+    return '$_temp0';
+  }
+
+  @override
   String get yearSummaryHappyNewYear => 'BUON ANNO';
 
   @override
@@ -5462,50 +5506,6 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get yearSummaryDone => 'Fatto';
-
-  @override
-  String yearSummaryTripCount(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: '$count viaggi',
-      one: '1 viaggio',
-    );
-    return '$_temp0';
-  }
-
-  @override
-  String yearSummaryDayCount(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: '$count giorni',
-      one: '1 giorno',
-    );
-    return '$_temp0';
-  }
-
-  @override
-  String yearSummaryCountryCount(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: '$count paesi',
-      one: '1 paese',
-    );
-    return '$_temp0';
-  }
-
-  @override
-  String yearSummaryCityCount(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: '$count città',
-      one: '1 città',
-    );
-    return '$_temp0';
-  }
 
   @override
   String get notificationCommentAddedTitle => 'Nuovo commento sulla tua spesa';

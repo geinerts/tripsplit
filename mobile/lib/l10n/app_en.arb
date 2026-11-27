@@ -2425,44 +2425,44 @@
   "yearSummaryPartial": "Some amounts are missing because no exchange rate was available.",
   "yearSummaryShareFailed": "Couldn't share the image.",
   "yearSummaryRetry": "Try again",
+  "yearSummaryTripsLabel": "{count, plural, =1{trip} other{trips}}",
+  "yearSummaryDaysLabel": "{count, plural, =1{day} other{days}}",
+  "yearSummaryCountriesLabel": "{count, plural, =1{country} other{countries}}",
+  "yearSummaryCitiesLabel": "{count, plural, =1{city} other{cities}}",
+  "@yearSummaryTripsLabel": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@yearSummaryDaysLabel": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@yearSummaryCountriesLabel": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@yearSummaryCitiesLabel": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "yearSummaryHappyNewYear": "HAPPY NEW YEAR",
   "yearSummaryScreenTitle": "A look back at your year",
   "yearSummaryOnlyForYou": "Only for you, not in the image",
   "yearSummaryShareBody": "Keep the memories. Share your highlights.",
   "yearSummaryShareAction": "Share my year",
   "yearSummaryDone": "Done",
-  "yearSummaryTripCount": "{count, plural, =1{1 trip} other{{count} trips}}",
-  "yearSummaryDayCount": "{count, plural, =1{1 day} other{{count} days}}",
-  "yearSummaryCountryCount": "{count, plural, =1{1 country} other{{count} countries}}",
-  "yearSummaryCityCount": "{count, plural, =1{1 city} other{{count} cities}}",
-  "@yearSummaryTripCount": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "@yearSummaryDayCount": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "@yearSummaryCountryCount": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "@yearSummaryCityCount": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
   "notificationCommentAddedTitle": "New comment on your expense",
   "notificationCommentAddedBody": "{name} commented on \"{note}\".",
   "notificationCommentAddedBodyGeneric": "{name} commented on your expense.",

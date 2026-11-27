@@ -5461,6 +5461,54 @@ class AppLocalizationsCs extends AppLocalizations {
   String get yearSummaryRetry => 'Zkusit znovu';
 
   @override
+  String yearSummaryTripsLabel(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'výletů',
+      few: 'výlety',
+      one: 'výlet',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String yearSummaryDaysLabel(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'dní',
+      few: 'dny',
+      one: 'den',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String yearSummaryCountriesLabel(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'zemí',
+      few: 'země',
+      one: 'země',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String yearSummaryCitiesLabel(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'měst',
+      few: 'města',
+      one: 'město',
+    );
+    return '$_temp0';
+  }
+
+  @override
   String get yearSummaryHappyNewYear => 'ŠŤASTNÝ NOVÝ ROK';
 
   @override
@@ -5477,54 +5525,6 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get yearSummaryDone => 'Hotovo';
-
-  @override
-  String yearSummaryTripCount(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: '$count výletů',
-      few: '$count výlety',
-      one: '$count výlet',
-    );
-    return '$_temp0';
-  }
-
-  @override
-  String yearSummaryDayCount(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: '$count dní',
-      few: '$count dny',
-      one: '$count den',
-    );
-    return '$_temp0';
-  }
-
-  @override
-  String yearSummaryCountryCount(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: '$count zemí',
-      few: '$count země',
-      one: '$count země',
-    );
-    return '$_temp0';
-  }
-
-  @override
-  String yearSummaryCityCount(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: '$count měst',
-      few: '$count města',
-      one: '$count město',
-    );
-    return '$_temp0';
-  }
 
   @override
   String get notificationCommentAddedTitle => 'Nový komentář k vašemu výdaji';

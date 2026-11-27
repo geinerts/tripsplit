@@ -2,54 +2,32 @@ import 'dart:async';
 import 'dart:math' as math;
 import 'dart:ui' as ui;
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:intl/intl.dart' show NumberFormat;
 import 'package:share_plus/share_plus.dart';
 
 import '../../../app/theme/app_theme.dart';
 import '../../../core/errors/api_exception.dart';
 import '../../../core/expenses/expense_category_catalog.dart';
 import '../../../core/l10n/l10n.dart';
+import '../../../core/maps/world_countries.dart';
 import '../../../core/ui/app_formatters.dart';
 import '../../../core/ui/ribbon_background.dart';
 import '../data/trip_reports_repository.dart';
 import '../domain/year_summary.dart';
 
 part 'year_summary_card.dart';
-part 'year_summary_holiday.dart';
+part 'year_summary_story.dart';
 
 /// Whether the app offers the year summary. Off until the owner decides to
 /// launch it; the server's season and Premium rules still apply once it is on.
 const bool yearSummaryOfferedInApp = bool.fromEnvironment(
   'YEAR_SUMMARY_IN_APP',
 );
-
-/// The shared picture: the card on the Quick Start mint-to-cream wash, so its
-/// rounded corners never show as black or white boxes in chats.
-@visibleForTesting
-Future<ui.Image> yearSummaryShareImage(ui.Image card) {
-  final pad = (card.width * .09).roundToDouble();
-  final size = Size(card.width + pad * 2, card.height + pad * 2);
-  final recorder = ui.PictureRecorder();
-  final canvas = Canvas(recorder);
-  canvas.drawRect(
-    Offset.zero & size,
-    Paint()
-      ..shader = const LinearGradient(
-        begin: Alignment.topLeft,
-        end: Alignment.bottomRight,
-        colors: [Color(0xFFBFEFEA), Color(0xFFEFF9F3), quickStartCream],
-        stops: [0, .45, 1],
-      ).createShader(Offset.zero & size),
-  );
-  canvas.drawImage(card, Offset(pad, pad), Paint());
-  return recorder.endRecording().toImage(
-    size.width.toInt(),
-    size.height.toInt(),
-  );
-}
 
 /// The year summary on one screen in the Quick Start style: a card that can be
 /// shared as an image, and below it details that stay private.
@@ -67,6 +45,7 @@ class YearSummaryPage extends StatefulWidget {
 
 class _YearSummaryPageState extends State<YearSummaryPage> {
   final GlobalKey _cardKey = GlobalKey();
+  List<WorldCountry>? _world;
   final GlobalKey _shareButtonKey = GlobalKey();
   YearSummary? _summary;
   bool _failed = false;
@@ -78,6 +57,16 @@ class _YearSummaryPageState extends State<YearSummaryPage> {
   void initState() {
     super.initState();
     unawaited(_fetch());
+    unawaited(_loadWorld());
+  }
+
+  Future<void> _loadWorld() async {
+    try {
+      final world = await WorldCountry.load();
+      if (mounted) setState(() => _world = world);
+    } catch (_) {
+      // Without outlines the story simply has no map.
+    }
   }
 
   void _retry() {
@@ -119,9 +108,8 @@ class _YearSummaryPageState extends State<YearSummaryPage> {
         : null;
     setState(() => _sharing = true);
     try {
-      final card = await boundary.toImage(pixelRatio: 3);
-      final image = await yearSummaryShareImage(card);
-      card.dispose();
+      // The story is drawn at 360 × 640 and shared at 1080 × 1920.
+      final image = await boundary.toImage(pixelRatio: 3);
       final data = await image.toByteData(format: ui.ImageByteFormat.png);
       image.dispose();
       if (data == null) throw StateError('No image data.');
@@ -300,14 +288,24 @@ class _YearSummaryPageState extends State<YearSummaryPage> {
                       style: _yearSummaryBodyStyle,
                     ),
                     const SizedBox(height: 18),
+                    // The exact picture that is shared, scaled to fit.
                     Center(
                       child: ConstrainedBox(
-                        constraints: const BoxConstraints(maxWidth: 360),
-                        child: RepaintBoundary(
-                          key: _cardKey,
-                          child: _ShareCard(
-                            summary: summary,
-                            holiday: _holiday,
+                        constraints: const BoxConstraints(maxWidth: 300),
+                        child: AspectRatio(
+                          aspectRatio: yearSummaryStorySize.aspectRatio,
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(24),
+                            child: FittedBox(
+                              child: RepaintBoundary(
+                                key: _cardKey,
+                                child: _YearStory(
+                                  summary: summary,
+                                  world: _world,
+                                  holiday: _holiday,
+                                ),
+                              ),
+                            ),
                           ),
                         ),
                       ),

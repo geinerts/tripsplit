@@ -12,7 +12,9 @@ void main() {
           jsonDecode(File('lib/l10n/app_en.arb').readAsStringSync())
               as Map<String, dynamic>;
       final keys = source.keys.where((key) => !key.startsWith('@')).toSet();
-      final args = RegExp(r'\{(\w+)(?:\}|,)');
+      // A placeholder is {name}; plural branches like =1{trip} or other{trips}
+      // hold plain text.
+      final args = RegExp(r'(?<![=\w])\{(\w+)(?:\}|,)');
       expect(AppLocalizations.supportedLocales, hasLength(16));
       for (final locale in AppLocalizations.supportedLocales) {
         final catalog =

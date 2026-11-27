@@ -10005,6 +10005,30 @@ abstract class AppLocalizations {
   /// **'Try again'**
   String get yearSummaryRetry;
 
+  /// No description provided for @yearSummaryTripsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{trip} other{trips}}'**
+  String yearSummaryTripsLabel(int count);
+
+  /// No description provided for @yearSummaryDaysLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{day} other{days}}'**
+  String yearSummaryDaysLabel(int count);
+
+  /// No description provided for @yearSummaryCountriesLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{country} other{countries}}'**
+  String yearSummaryCountriesLabel(int count);
+
+  /// No description provided for @yearSummaryCitiesLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{city} other{cities}}'**
+  String yearSummaryCitiesLabel(int count);
+
   /// No description provided for @yearSummaryHappyNewYear.
   ///
   /// In en, this message translates to:
@@ -10040,30 +10064,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Done'**
   String get yearSummaryDone;
-
-  /// No description provided for @yearSummaryTripCount.
-  ///
-  /// In en, this message translates to:
-  /// **'{count, plural, =1{1 trip} other{{count} trips}}'**
-  String yearSummaryTripCount(int count);
-
-  /// No description provided for @yearSummaryDayCount.
-  ///
-  /// In en, this message translates to:
-  /// **'{count, plural, =1{1 day} other{{count} days}}'**
-  String yearSummaryDayCount(int count);
-
-  /// No description provided for @yearSummaryCountryCount.
-  ///
-  /// In en, this message translates to:
-  /// **'{count, plural, =1{1 country} other{{count} countries}}'**
-  String yearSummaryCountryCount(int count);
-
-  /// No description provided for @yearSummaryCityCount.
-  ///
-  /// In en, this message translates to:
-  /// **'{count, plural, =1{1 city} other{{count} cities}}'**
-  String yearSummaryCityCount(int count);
 
   /// No description provided for @notificationCommentAddedTitle.
   ///

@@ -5472,6 +5472,58 @@ class AppLocalizationsPl extends AppLocalizations {
   String get yearSummaryRetry => 'Spróbuj ponownie';
 
   @override
+  String yearSummaryTripsLabel(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'podróży',
+      many: 'podróży',
+      few: 'podróże',
+      one: 'podróż',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String yearSummaryDaysLabel(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'dnia',
+      many: 'dni',
+      few: 'dni',
+      one: 'dzień',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String yearSummaryCountriesLabel(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'kraju',
+      many: 'krajów',
+      few: 'kraje',
+      one: 'kraj',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String yearSummaryCitiesLabel(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'miasta',
+      many: 'miast',
+      few: 'miasta',
+      one: 'miasto',
+    );
+    return '$_temp0';
+  }
+
+  @override
   String get yearSummaryHappyNewYear => 'SZCZĘŚLIWEGO NOWEGO ROKU';
 
   @override
@@ -5488,58 +5540,6 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get yearSummaryDone => 'Gotowe';
-
-  @override
-  String yearSummaryTripCount(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: '$count podróży',
-      many: '$count podróży',
-      few: '$count podróże',
-      one: '$count podróż',
-    );
-    return '$_temp0';
-  }
-
-  @override
-  String yearSummaryDayCount(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: '$count dnia',
-      many: '$count dni',
-      few: '$count dni',
-      one: '$count dzień',
-    );
-    return '$_temp0';
-  }
-
-  @override
-  String yearSummaryCountryCount(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: '$count kraju',
-      many: '$count krajów',
-      few: '$count kraje',
-      one: '$count kraj',
-    );
-    return '$_temp0';
-  }
-
-  @override
-  String yearSummaryCityCount(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: '$count miasta',
-      many: '$count miast',
-      few: '$count miasta',
-      one: '$count miasto',
-    );
-    return '$_temp0';
-  }
 
   @override
   String get notificationCommentAddedTitle => 'Nowy komentarz do Twojego wydatku';

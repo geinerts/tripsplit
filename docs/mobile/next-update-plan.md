@@ -513,6 +513,15 @@ uzraksts "Laimīgu Jauno gadu" un logo ar Ziemassvētku cepuri uz "O"
 kartīte ir bez tā. Izvēlēts rādīt no 1. janvāra, nevis 31. decembra (pilns gads, bez servera
 izmaiņām). Fonts gadam: Inter, līdz īpašnieks atļauj lejupielādēt citu OFL fontu.
 
+**Stāsts ar karti (2026-11-27, koncepcija B):** kopīgotais attēls ir 1080 × 1920 stāsts
+(zīmēts 360 × 640, kopīgots 3×). Tumši zils fons, gads, karte ar izgaismotām apmeklētajām
+valstīm (pēc valstu kodiem, automātiski pietuvināta), skaitļi bez nullēm, līdz 8 valstu
+nosaukumiem un "+N", logo. Ja valstu nav, kartes vietā ir dekoratīvs globuss ar lidmašīnas
+orbītu. Ekrānā redzams tieši tas pats attēls samazinātā mērogā. Kartes kontūras:
+`assets/maps/world.json` (Natural Earth), lasītājs `lib/core/maps/world_countries.dart`.
+Vēl nav: maršruta līnijas starp pilsētām (vajag koordinātas), valstu nosaukumi lietotāja
+valodā, OFL fonts gadam (tagad Inter). Jāpārrunā: kā attēls izskatās Instagram stāstā.
+
 **Vietu dati (jāizlemj pirms ieslēgšanas):** valstis un pilsētas ir tikai no ceļojuma
 galamērķiem un personīgās kartes; daudziem tās būs tukšas. Ieteikums: ceļojuma beigās
 ieteikt vietu no ceļojuma nosaukuma (lietotājs apstiprina) un parādīt "Kur tu biji?", ja
