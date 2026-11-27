@@ -2418,19 +2418,65 @@
   "yearSummarySubtitle": "Your trips, places and spending for the year.",
   "yearSummaryEmpty": "No finished trips in {arg1}.",
   "yearSummaryLoadFailed": "Couldn't load your year in travel.",
-  "yearSummaryTrips": "Trips",
-  "yearSummaryDays": "Days away",
-  "yearSummaryCountries": "Countries",
-  "yearSummaryCities": "Cities",
   "yearSummarySpending": "Your spending",
   "yearSummaryBiggestTrip": "Biggest trip",
   "yearSummaryTopCategory": "Top category",
   "yearSummaryTopCompanion": "Most trips with",
-  "yearSummaryTripsTogether": "Trips together: {arg1}",
   "yearSummaryPartial": "Some amounts are missing because no exchange rate was available.",
-  "yearSummaryShare": "Share",
   "yearSummaryShareFailed": "Couldn't share the image.",
   "yearSummaryRetry": "Try again",
+  "yearSummaryBannerTitle": "Your {year} in travel",
+  "yearSummaryBannerBody": "See your year and share it",
+  "yearSummaryBannerNew": "NEW",
+  "yearSummaryExpensesAdded": "Expenses added",
+  "@yearSummaryBannerTitle": {
+    "placeholders": {
+      "year": {
+        "type": "String"
+      }
+    }
+  },
+  "yearSummaryTripsLabel": "{count, plural, =1{trip} other{trips}}",
+  "yearSummaryDaysLabel": "{count, plural, =1{day} other{days}}",
+  "yearSummaryCountriesLabel": "{count, plural, =1{country} other{countries}}",
+  "yearSummaryCitiesLabel": "{count, plural, =1{city} other{cities}}",
+  "@yearSummaryTripsLabel": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@yearSummaryDaysLabel": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@yearSummaryCountriesLabel": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@yearSummaryCitiesLabel": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@yearSummaryHappyNewYear": {
+    "placeholders": {
+      "year": {
+        "type": "String"
+      }
+    }
+  },
+  "yearSummaryHappyNewYear": "Happy New Year {year}",
+  "yearSummaryShareAction": "Share my year",
   "notificationCommentAddedTitle": "New comment on your expense",
   "notificationCommentAddedBody": "{name} commented on \"{note}\".",
   "notificationCommentAddedBodyGeneric": "{name} commented on your expense.",

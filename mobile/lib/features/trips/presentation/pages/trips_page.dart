@@ -100,6 +100,7 @@ class TripsPage extends StatefulWidget {
     this.quickSplitsTab,
     this.onQuickSplitsShown,
     this.onRefreshQuickSplits,
+    this.homeBanner,
   });
 
   final TripsController controller;
@@ -122,6 +123,9 @@ class TripsPage extends StatefulWidget {
   /// Whether Quick splits is the list on show.
   final ValueChanged<bool>? onQuickSplitsShown;
   final Future<void> Function()? onRefreshQuickSplits;
+
+  /// An optional card under the Home total, such as the year summary.
+  final WidgetBuilder? homeBanner;
 
   @override
   State<TripsPage> createState() => _TripsPageState();
@@ -334,6 +338,8 @@ class _TripsPageState extends State<TripsPage> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               _buildSummaryCard(context, allTrips: _trips),
+                              if (widget.homeBanner case final banner?)
+                                banner(context),
                               const SizedBox(height: 16),
                               const Divider(height: 1),
                               const SizedBox(height: 16),

@@ -488,9 +488,60 @@ Teksti visās 16 valodās (ARB, `flutter gen-l10n`).
 
 ## I. Gada kopsavilkums Quick Start stilā (vēlāk; izvēlēts 2026-11-22)
 
-**Statuss:** īpašnieks izvēlējies šo dizaina virzienu un lūdzis saglabāt pie piezīmēm.
-Ieviešana atlikta; šī piezīme nenozīmē, ka ekrāns jau ir pārveidots, un nepiesaista
-darbu konkrētam laidienam.
+**Statuss (2026-11-27):** jaunais ekrāns uzbūvēts (viens logs), vecais izdzēsts. Lietotnē tas **ir
+paslēpts**: ieeju profilā rāda tikai, ja `yearSummaryOfferedInApp` ir ieslēgts
+(`--dart-define=YEAR_SUMMARY_IN_APP=true`, noklusējumā izslēgts). 2026. gada sezonā
+(janvāris–marts) to neatver. Kā un kad ieslēgt (lietotnes versija vai servera karogs
+`docs/api/feature-flags.md`), jāizlemj pirms palaišanas; servera karogs būtu API izmaiņa.
+
+Ekrānuzņēmumi ar demonstrācijas datiem: `flutter test test/features/trip_reports/trip_reports_test.dart
+--dart-define=YEAR_SUMMARY_PREVIEWS=true` raksta `output/design/year-summary/` ekrānu (`app-*`), kopīgoto attēlu (`shared-*`) un to sarakstē (`chat-*`).
+
+**Izmaiņa 2026-11-27: viens logs trīs slaidu vietā** (īpašnieka lēmums). Virsraksts
+"Atskats uz aizvadīto gadu" bez gada; augšā zaļā kopīgojamā kartīte ar gadu (Inter, slīpraksts,
+mintzaļš gradients) un SPLYTO logo; zem tās balts saraksts "Tikai tev, attēlā nenonāk"
+(izdevumi, lielākais ceļojums, galvenā kategorija, visvairāk ceļojumu ar). **Summas attēlā
+nekad nenonāk** (slēdža nav). Kopīgotais attēls ir kartīte uz mintzaļā–krēmkrāsas fona, lai
+noapaļotie stūri sarakstē neizskatītos kā melni vai balti kvadrāti. Skaitļi, kas ir 0, kartītē
+netiek rādīti, un saraksts rāda tikai rindas ar datiem. Valstu nosaukumi nāk no servera
+angliski. Cits fonts gadam prasītu jaunu fonta failu (OFL) un īpašnieka atļauju to lejupielādēt.
+
+**Jaungada izskats (2026-11-27):** decembrī un janvārī kartītei ir sniegs, kupena apakšā,
+gads ar katru ciparu pagrieztu, 3D dziļumu un sniega cepurīti (`year_snow_cap.svg`),
+uzraksts "Laimīgu Jauno gadu" un logo ar Ziemassvētku cepuri uz "O"
+(`logo_full_holiday.svg` gaišam fonam, `logo_full_dark_holiday.svg` tumšam). No februāra
+kartīte ir bez tā. Izvēlēts rādīt no 1. janvāra, nevis 31. decembra (pilns gads, bez servera
+izmaiņām). Fonts gadam: Inter, līdz īpašnieks atļauj lejupielādēt citu OFL fontu.
+
+**Kartīte ar karti (2026-11-27, koncepcija B):** kopīgotais attēls ir kartīte 4:5,
+1080 × 1350 (zīmēta 360 × 450, kopīgota 3×). Īpašnieka izvēle: nevis pilnekrāna stāsts, bet
+kartīte, ko stāstu lietotne parāda mazāku uz sava fona; tā arī netiek aizsegta ar vārdu un
+atbildes lauku. Stūri noapaļoti pašā attēlā (caurspīdīgi PNG stūri); lietotnes, kas attēlu
+pārvērš JPEG (WhatsApp), tos aizpilda melnus, kas sakrīt ar kartītes tumšo malu. Tumši zils fons, gads, karte ar izgaismotām apmeklētajām
+valstīm (pēc valstu kodiem, automātiski pietuvināta), skaitļi bez nullēm, līdz 8 valstu
+nosaukumiem un "+N", logo. Ja valstu nav, kartes vietā ir dekoratīvs globuss ar lidmašīnas
+orbītu. Ekrānā redzama tieši tā pati kartīte samazinātā mērogā. Kartes kontūras:
+`assets/maps/world.json` (Natural Earth), lasītājs `lib/core/maps/world_countries.dart`.
+Lēmumi 2026-11-27: maršruta līnijas starp pilsētām **nevajag**. Valstu nosaukumi pirmajā
+versijā paliek **angliski** (kā tos sūta serveris); pirms ieslēgšanas apsvērt nosaukumus
+lietotāja valodā no Unicode CLDR (lietotnē, bez API izmaiņām; noderētu arī ceļojumu kartei).
+Vēl nav: OFL fonts gadam (tagad Inter).
+
+**Kā tas parādās lietotnē (2026-11-27):** nevis pa visu ekrānu kā Quick Start. Sezonā
+(kad serveris atļauj `year_summary`) Home ekrānā zem kopsummas ir tumša kartīte "JAUNS ·
+Tavs 2026 ceļojumos". Pieskaroties, kopsavilkums izlec virs aptumšota, izplūduša Home
+ekrāna (`showYearSummary`): taisna kartīte, zem tās balts saraksts "Tikai tev" (izdevumi,
+lielākais ceļojums, kategorija, ar ko visvairāk, pievienotie izdevumi, visas valstis un
+pilsētas), poga "Dalīties ar savu gadu", ✕ un pieskāriens blakus aizver. Kopīgo tikai
+kartīti. Profila ieeja atver to pašu logu. Lietotne pati logu neatver.
+
+**Apsveikums kartītē:** decembrī un janvārī "Laimīgu Jauno 2027. gadu · splyto.eu" (nākamais
+gads, katrā valodā ar pareizu gramatiku, piemēram "С Новым 2027 годом", "Buon 2027").
+
+**Vietu dati (jāizlemj pirms ieslēgšanas):** valstis un pilsētas ir tikai no ceļojuma
+galamērķiem un personīgās kartes; daudziem tās būs tukšas. Ieteikums: ceļojuma beigās
+ieteikt vietu no ceļojuma nosaukuma (lietotājs apstiprina) un parādīt "Kur tu biji?", ja
+galamērķa nav. Neminēt pēc valūtas un nevākt GPS pie izdevumiem.
 
 **Izvēlētais makets:** [trīs slaidi Quick Start stilā](../../output/design/year-summary/d-quick-start-style.png).
 Maketa skaitļi un valstis ir demonstrācijas dati. Iepriekšējie A/B/C varianti paliek

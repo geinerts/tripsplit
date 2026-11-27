@@ -12,7 +12,7 @@ import 'package:tripsplit/core/errors/api_exception.dart';
 import 'package:tripsplit/core/network/api_client.dart';
 import 'package:tripsplit/core/network/http_method.dart';
 import 'package:tripsplit/features/quick_start/data/quick_start_service.dart';
-import 'package:tripsplit/features/quick_start/presentation/quick_start_background.dart';
+import 'package:tripsplit/core/ui/ribbon_background.dart';
 import 'package:tripsplit/features/quick_start/presentation/quick_start_sheet.dart';
 import 'package:tripsplit/l10n/app_localizations.dart';
 

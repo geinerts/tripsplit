@@ -95,6 +95,7 @@ extension _MainShellPageWidgets on _MainShellPageState {
                       : _buildQuickSplitsTab,
                   onQuickSplitsShown: _onQuickSplitsShown,
                   onRefreshQuickSplits: widget.quickSplitsController?.load,
+                  homeBanner: _yearSummaryBanner,
                   onServerTripsState: _onHomeServerTripsState,
                   onInteractionStateChanged: (busy) {
                     _homeInteractionBusy = busy;
@@ -129,7 +130,10 @@ extension _MainShellPageWidgets on _MainShellPageState {
                   onTravelMapRequested: widget.travelPlacesRepository == null
                       ? null
                       : () => _openTravelMap(),
-                  onYearSummaryRequested: widget.tripReportsRepository == null
+                  // Hidden until the owner launches the new year summary.
+                  onYearSummaryRequested:
+                      !yearSummaryOfferedInApp ||
+                          widget.tripReportsRepository == null
                       ? null
                       : _openYearSummary,
                   onEditModeChanged: _onProfileEditModeChanged,

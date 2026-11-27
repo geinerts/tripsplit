@@ -5451,18 +5451,6 @@ class AppLocalizationsUk extends AppLocalizations {
   String get yearSummaryLoadFailed => 'Не вдалося завантажити ваш рік у подорожах.';
 
   @override
-  String get yearSummaryTrips => 'Подорожі';
-
-  @override
-  String get yearSummaryDays => 'Днів у подорожах';
-
-  @override
-  String get yearSummaryCountries => 'Країни';
-
-  @override
-  String get yearSummaryCities => 'Міста';
-
-  @override
   String get yearSummarySpending => 'Ваші витрати';
 
   @override
@@ -5475,21 +5463,87 @@ class AppLocalizationsUk extends AppLocalizations {
   String get yearSummaryTopCompanion => 'Найбільше подорожей з';
 
   @override
-  String yearSummaryTripsTogether(Object arg1) {
-    return 'Спільні подорожі: $arg1';
-  }
-
-  @override
   String get yearSummaryPartial => 'Деякі суми відсутні, бо обмінний курс був недоступний.';
-
-  @override
-  String get yearSummaryShare => 'Поділитися';
 
   @override
   String get yearSummaryShareFailed => 'Не вдалося поділитися зображенням.';
 
   @override
   String get yearSummaryRetry => 'Спробувати ще раз';
+
+  @override
+  String yearSummaryBannerTitle(String year) {
+    return 'Ваш $year у подорожах';
+  }
+
+  @override
+  String get yearSummaryBannerBody => 'Перегляньте свій рік і поділіться ним';
+
+  @override
+  String get yearSummaryBannerNew => 'НОВЕ';
+
+  @override
+  String get yearSummaryExpensesAdded => 'Додано витрат';
+
+  @override
+  String yearSummaryTripsLabel(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'поїздки',
+      many: 'поїздок',
+      few: 'поїздки',
+      one: 'поїздка',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String yearSummaryDaysLabel(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'дня',
+      many: 'днів',
+      few: 'дні',
+      one: 'день',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String yearSummaryCountriesLabel(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'країни',
+      many: 'країн',
+      few: 'країни',
+      one: 'країна',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String yearSummaryCitiesLabel(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'міста',
+      many: 'міст',
+      few: 'міста',
+      one: 'місто',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String yearSummaryHappyNewYear(String year) {
+    return 'З Новим $year роком';
+  }
+
+  @override
+  String get yearSummaryShareAction => 'Поділитися роком';
 
   @override
   String get notificationCommentAddedTitle => 'Новий коментар до вашої витрати';

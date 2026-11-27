@@ -5,7 +5,7 @@ import 'package:flutter/services.dart';
 
 import '../../../app/theme/app_theme.dart';
 import '../../../core/l10n/l10n.dart';
-import 'quick_start_background.dart';
+import '../../../core/ui/ribbon_background.dart';
 import 'quick_start_phone_screens.dart';
 
 /// Owns only the guide's route, so an invitation can dismiss it without popping

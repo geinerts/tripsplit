@@ -5440,18 +5440,6 @@ class AppLocalizationsCs extends AppLocalizations {
   String get yearSummaryLoadFailed => 'Váš rok na cestách se nepodařilo načíst.';
 
   @override
-  String get yearSummaryTrips => 'Cesty';
-
-  @override
-  String get yearSummaryDays => 'Dny na cestách';
-
-  @override
-  String get yearSummaryCountries => 'Země';
-
-  @override
-  String get yearSummaryCities => 'Města';
-
-  @override
   String get yearSummarySpending => 'Vaše výdaje';
 
   @override
@@ -5464,21 +5452,83 @@ class AppLocalizationsCs extends AppLocalizations {
   String get yearSummaryTopCompanion => 'Nejvíc cest s';
 
   @override
-  String yearSummaryTripsTogether(Object arg1) {
-    return 'Společné cesty: $arg1';
-  }
-
-  @override
   String get yearSummaryPartial => 'Některé částky chybí, protože nebyl k dispozici směnný kurz.';
-
-  @override
-  String get yearSummaryShare => 'Sdílet';
 
   @override
   String get yearSummaryShareFailed => 'Obrázek se nepodařilo sdílet.';
 
   @override
   String get yearSummaryRetry => 'Zkusit znovu';
+
+  @override
+  String yearSummaryBannerTitle(String year) {
+    return 'Tvůj rok $year na cestách';
+  }
+
+  @override
+  String get yearSummaryBannerBody => 'Prohlédni si svůj rok a sdílej ho';
+
+  @override
+  String get yearSummaryBannerNew => 'NOVÉ';
+
+  @override
+  String get yearSummaryExpensesAdded => 'Přidané výdaje';
+
+  @override
+  String yearSummaryTripsLabel(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'výletů',
+      few: 'výlety',
+      one: 'výlet',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String yearSummaryDaysLabel(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'dní',
+      few: 'dny',
+      one: 'den',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String yearSummaryCountriesLabel(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'zemí',
+      few: 'země',
+      one: 'země',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String yearSummaryCitiesLabel(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'měst',
+      few: 'města',
+      one: 'město',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String yearSummaryHappyNewYear(String year) {
+    return 'Šťastný nový rok $year';
+  }
+
+  @override
+  String get yearSummaryShareAction => 'Sdílet můj rok';
 
   @override
   String get notificationCommentAddedTitle => 'Nový komentář k vašemu výdaji';

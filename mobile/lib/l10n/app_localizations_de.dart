@@ -5425,18 +5425,6 @@ class AppLocalizationsDe extends AppLocalizations {
   String get yearSummaryLoadFailed => 'Dein Reisejahr konnte nicht geladen werden.';
 
   @override
-  String get yearSummaryTrips => 'Reisen';
-
-  @override
-  String get yearSummaryDays => 'Tage unterwegs';
-
-  @override
-  String get yearSummaryCountries => 'Länder';
-
-  @override
-  String get yearSummaryCities => 'Städte';
-
-  @override
   String get yearSummarySpending => 'Deine Ausgaben';
 
   @override
@@ -5449,21 +5437,79 @@ class AppLocalizationsDe extends AppLocalizations {
   String get yearSummaryTopCompanion => 'Die meisten Reisen mit';
 
   @override
-  String yearSummaryTripsTogether(Object arg1) {
-    return 'Gemeinsame Reisen: $arg1';
-  }
-
-  @override
   String get yearSummaryPartial => 'Einige Beträge fehlen, weil kein Wechselkurs verfügbar war.';
-
-  @override
-  String get yearSummaryShare => 'Teilen';
 
   @override
   String get yearSummaryShareFailed => 'Das Bild konnte nicht geteilt werden.';
 
   @override
   String get yearSummaryRetry => 'Erneut versuchen';
+
+  @override
+  String yearSummaryBannerTitle(String year) {
+    return 'Dein $year auf Reisen';
+  }
+
+  @override
+  String get yearSummaryBannerBody => 'Sieh dir dein Jahr an und teile es';
+
+  @override
+  String get yearSummaryBannerNew => 'NEU';
+
+  @override
+  String get yearSummaryExpensesAdded => 'Erfasste Ausgaben';
+
+  @override
+  String yearSummaryTripsLabel(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Reisen',
+      one: 'Reise',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String yearSummaryDaysLabel(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Tage',
+      one: 'Tag',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String yearSummaryCountriesLabel(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Länder',
+      one: 'Land',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String yearSummaryCitiesLabel(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Städte',
+      one: 'Stadt',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String yearSummaryHappyNewYear(String year) {
+    return 'Frohes neues Jahr $year';
+  }
+
+  @override
+  String get yearSummaryShareAction => 'Mein Jahr teilen';
 
   @override
   String get notificationCommentAddedTitle => 'Neuer Kommentar zu deiner Ausgabe';
