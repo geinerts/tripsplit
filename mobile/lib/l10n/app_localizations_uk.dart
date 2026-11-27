@@ -5472,6 +5472,20 @@ class AppLocalizationsUk extends AppLocalizations {
   String get yearSummaryRetry => 'Спробувати ще раз';
 
   @override
+  String yearSummaryBannerTitle(String year) {
+    return 'Ваш $year у подорожах';
+  }
+
+  @override
+  String get yearSummaryBannerBody => 'Перегляньте свій рік і поділіться ним';
+
+  @override
+  String get yearSummaryBannerNew => 'НОВЕ';
+
+  @override
+  String get yearSummaryExpensesAdded => 'Додано витрат';
+
+  @override
   String yearSummaryTripsLabel(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
@@ -5527,19 +5541,10 @@ class AppLocalizationsUk extends AppLocalizations {
   String get yearSummaryHappyNewYear => 'З НОВИМ РОКОМ';
 
   @override
-  String get yearSummaryScreenTitle => 'Озираючись на ваш рік';
-
-  @override
   String get yearSummaryOnlyForYou => 'Лише для вас, не потрапить на зображення';
 
   @override
-  String get yearSummaryShareBody => 'Збережіть спогади. Поділіться найкращим.';
-
-  @override
   String get yearSummaryShareAction => 'Поділитися роком';
-
-  @override
-  String get yearSummaryDone => 'Готово';
 
   @override
   String get notificationCommentAddedTitle => 'Новий коментар до вашої витрати';

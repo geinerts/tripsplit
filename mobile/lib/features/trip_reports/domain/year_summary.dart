@@ -5,6 +5,7 @@ class YearSummary {
     required this.availableYears,
     required this.tripCount,
     required this.daysAway,
+    this.expenseCount = 0,
     required this.countries,
     this.countryCodes = const [],
     required this.cities,
@@ -22,6 +23,9 @@ class YearSummary {
   final List<int> availableYears;
   final int tripCount;
   final int daysAway;
+
+  /// Expenses in the year's trips.
+  final int expenseCount;
   final List<String> countries;
 
   /// ISO codes of [countries], in the same order; empty when the server sent
@@ -59,6 +63,7 @@ class YearSummary {
       ).whereType<num>().map((value) => value.toInt()).toList(growable: false),
       tripCount: asInt(map['trip_count']),
       daysAway: asInt(map['days_away']),
+      expenseCount: asInt(map['expense_count']),
       countries: [for (final country in places) country.$2],
       countryCodes: [
         for (final country in places)

@@ -5446,6 +5446,20 @@ class AppLocalizationsEs extends AppLocalizations {
   String get yearSummaryRetry => 'Reintentar';
 
   @override
+  String yearSummaryBannerTitle(String year) {
+    return 'Tu $year de viajes';
+  }
+
+  @override
+  String get yearSummaryBannerBody => 'Mira tu año y compártelo';
+
+  @override
+  String get yearSummaryBannerNew => 'NUEVO';
+
+  @override
+  String get yearSummaryExpensesAdded => 'Gastos añadidos';
+
+  @override
   String yearSummaryTripsLabel(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
@@ -5493,19 +5507,10 @@ class AppLocalizationsEs extends AppLocalizations {
   String get yearSummaryHappyNewYear => 'FELIZ AÑO NUEVO';
 
   @override
-  String get yearSummaryScreenTitle => 'Un repaso a tu año';
-
-  @override
   String get yearSummaryOnlyForYou => 'Solo para ti, no sale en la imagen';
 
   @override
-  String get yearSummaryShareBody => 'Guarda los recuerdos. Comparte lo mejor.';
-
-  @override
   String get yearSummaryShareAction => 'Compartir mi año';
-
-  @override
-  String get yearSummaryDone => 'Listo';
 
   @override
   String get notificationCommentAddedTitle => 'Nuevo comentario en tu gasto';

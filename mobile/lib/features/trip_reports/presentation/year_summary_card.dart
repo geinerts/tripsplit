@@ -41,6 +41,8 @@ class _PrivateDetails extends StatelessWidget {
     final biggestShare = summary.biggestTripShare;
     final category = summary.topCategoryKey;
     final companion = summary.topCompanionNickname;
+    String capitalise(String text) =>
+        text.isEmpty ? text : text[0].toUpperCase() + text.substring(1);
     final rows = <Widget>[
       if (summary.totalShare > 0 || summary.conversionComplete)
         _Row(
@@ -72,6 +74,26 @@ class _PrivateDetails extends StatelessWidget {
           key: const ValueKey('year-summary-companion'),
           label: t.yearSummaryTopCompanion,
           value: '$companion · ${summary.topCompanionTrips}',
+        ),
+      if (summary.expenseCount > 0)
+        _Row(
+          key: const ValueKey('year-summary-expenses'),
+          label: t.yearSummaryExpensesAdded,
+          value: '${summary.expenseCount}',
+        ),
+      if (summary.countries.isNotEmpty)
+        _Row(
+          key: const ValueKey('year-summary-all-countries'),
+          label: capitalise(
+            t.yearSummaryCountriesLabel(summary.countries.length),
+          ),
+          value: summary.countries.join(', '),
+        ),
+      if (summary.cities.isNotEmpty)
+        _Row(
+          key: const ValueKey('year-summary-all-cities'),
+          label: capitalise(t.yearSummaryCitiesLabel(summary.cities.length)),
+          value: summary.cities.join(', '),
         ),
     ];
     if (rows.isEmpty) return const SizedBox(height: 12);

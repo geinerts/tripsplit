@@ -95,6 +95,7 @@ extension _MainShellPageWidgets on _MainShellPageState {
                       : _buildQuickSplitsTab,
                   onQuickSplitsShown: _onQuickSplitsShown,
                   onRefreshQuickSplits: widget.quickSplitsController?.load,
+                  homeBanner: _yearSummaryBanner,
                   onServerTripsState: _onHomeServerTripsState,
                   onInteractionStateChanged: (busy) {
                     _homeInteractionBusy = busy;

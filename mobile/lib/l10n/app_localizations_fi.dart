@@ -5446,6 +5446,20 @@ class AppLocalizationsFi extends AppLocalizations {
   String get yearSummaryRetry => 'Yritä uudelleen';
 
   @override
+  String yearSummaryBannerTitle(String year) {
+    return 'Matkavuotesi $year';
+  }
+
+  @override
+  String get yearSummaryBannerBody => 'Katso vuotesi ja jaa se';
+
+  @override
+  String get yearSummaryBannerNew => 'UUSI';
+
+  @override
+  String get yearSummaryExpensesAdded => 'Lisätyt kulut';
+
+  @override
   String yearSummaryTripsLabel(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
@@ -5493,19 +5507,10 @@ class AppLocalizationsFi extends AppLocalizations {
   String get yearSummaryHappyNewYear => 'HYVÄÄ UUTTA VUOTTA';
 
   @override
-  String get yearSummaryScreenTitle => 'Katsaus vuoteesi';
-
-  @override
   String get yearSummaryOnlyForYou => 'Vain sinulle, ei kuvassa';
 
   @override
-  String get yearSummaryShareBody => 'Säilytä muistot. Jaa kohokohtasi.';
-
-  @override
   String get yearSummaryShareAction => 'Jaa vuoteni';
-
-  @override
-  String get yearSummaryDone => 'Valmis';
 
   @override
   String get notificationCommentAddedTitle => 'Uusi kommentti kuluusi';

@@ -29,8 +29,43 @@ const bool yearSummaryOfferedInApp = bool.fromEnvironment(
   'YEAR_SUMMARY_IN_APP',
 );
 
-/// The year summary on one screen in the Quick Start style: a card that can be
-/// shared as an image, and below it details that stay private.
+/// Opens the year summary over the current screen: the card pops up on a
+/// dimmed, blurred background, with details below it that stay private.
+Future<void> showYearSummary(
+  BuildContext context,
+  TripReportsRepository repository, {
+  @visibleForTesting DateTime Function()? clock,
+}) {
+  final reduceMotion = MediaQuery.disableAnimationsOf(context);
+  return showGeneralDialog<void>(
+    context: context,
+    barrierDismissible: true,
+    barrierLabel: MaterialLocalizations.of(context).modalBarrierDismissLabel,
+    barrierColor: Colors.transparent,
+    transitionDuration: reduceMotion
+        ? Duration.zero
+        : const Duration(milliseconds: 280),
+    pageBuilder: (_, _, _) =>
+        YearSummaryPage(repository: repository, clock: clock),
+    transitionBuilder: (context, animation, _, child) {
+      final curved = CurvedAnimation(
+        parent: animation,
+        curve: Curves.easeOutBack,
+        reverseCurve: Curves.easeIn,
+      );
+      return FadeTransition(
+        opacity: animation,
+        child: ScaleTransition(
+          scale: Tween<double>(begin: .9, end: 1).animate(curved),
+          child: child,
+        ),
+      );
+    },
+  );
+}
+
+/// The year summary as a pop-up: the card that is shared, and below it
+/// details that stay private.
 class YearSummaryPage extends StatefulWidget {
   const YearSummaryPage({super.key, required this.repository, this.clock});
 
@@ -139,18 +174,49 @@ class _YearSummaryPageState extends State<YearSummaryPage> {
   Widget build(BuildContext context) {
     final summary = _summary;
     return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: SystemUiOverlayStyle.dark,
+      value: SystemUiOverlayStyle.light,
       child: Theme(
         data: AppTheme.light(),
         child: Scaffold(
-          backgroundColor: quickStartCream,
+          backgroundColor: Colors.transparent,
           body: Stack(
             children: [
-              Positioned.fill(child: const QuickStartBackground(page: 0)),
+              // Tapping the dimmed app around the card closes it.
+              Positioned.fill(
+                child: GestureDetector(
+                  key: const ValueKey('year-summary-backdrop'),
+                  onTap: () => Navigator.of(context).maybePop(),
+                  child: BackdropFilter(
+                    filter: ui.ImageFilter.blur(sigmaX: 8, sigmaY: 8),
+                    child: ColoredBox(
+                      color: quickStartInk.withValues(alpha: .62),
+                    ),
+                  ),
+                ),
+              ),
               SafeArea(
                 child: Column(
                   children: [
-                    _topBar(context),
+                    Align(
+                      alignment: AlignmentDirectional.centerEnd,
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(8, 4, 12, 0),
+                        child: IconButton(
+                          key: const ValueKey('year-summary-close'),
+                          tooltip: MaterialLocalizations.of(
+                            context,
+                          ).closeButtonTooltip,
+                          style: IconButton.styleFrom(
+                            backgroundColor: Colors.white.withValues(
+                              alpha: .16,
+                            ),
+                            foregroundColor: Colors.white,
+                          ),
+                          onPressed: () => Navigator.of(context).maybePop(),
+                          icon: const Icon(Icons.close),
+                        ),
+                      ),
+                    ),
                     Expanded(
                       child: _failed
                           ? _message(context)
@@ -158,6 +224,7 @@ class _YearSummaryPageState extends State<YearSummaryPage> {
                           ? const Center(
                               child: CircularProgressIndicator(
                                 key: ValueKey('year-summary-loading'),
+                                color: Colors.white,
                               ),
                             )
                           : summary.tripCount == 0
@@ -177,47 +244,6 @@ class _YearSummaryPageState extends State<YearSummaryPage> {
   bool get _holiday =>
       yearSummaryHolidaySeason((widget.clock ?? DateTime.now)());
 
-  Widget _topBar(BuildContext context) => Padding(
-    padding: const EdgeInsets.fromLTRB(24, 4, 16, 0),
-    child: Row(
-      children: [
-        if (_holiday)
-          SvgPicture.asset(
-            'assets/branding/logo_full_holiday.svg',
-            height: 34,
-            semanticsLabel: 'Splyto',
-          )
-        else
-          Image.asset(
-            'assets/branding/logo_full.png',
-            height: 30,
-            fit: BoxFit.contain,
-            semanticLabel: 'Splyto',
-          ),
-        const SizedBox(width: 12),
-        Expanded(
-          child: Align(
-            alignment: AlignmentDirectional.centerEnd,
-            child: TextButton(
-              key: const ValueKey('year-summary-close'),
-              style: TextButton.styleFrom(
-                foregroundColor: quickStartInk,
-                minimumSize: const Size(48, 48),
-                padding: const EdgeInsets.symmetric(horizontal: 8),
-              ),
-              onPressed: () => Navigator.of(context).maybePop(),
-              child: Text(
-                MaterialLocalizations.of(context).closeButtonLabel,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
-            ),
-          ),
-        ),
-      ],
-    ),
-  );
-
   Widget _message(BuildContext context) {
     final t = context.l10n;
     return Center(
@@ -231,7 +257,7 @@ class _YearSummaryPageState extends State<YearSummaryPage> {
                   ? t.yearSummarySeasonNotice
                   : t.yearSummaryLoadFailed,
               textAlign: TextAlign.center,
-              style: _yearSummaryBodyStyle,
+              style: _yearSummaryBodyStyle.copyWith(color: Colors.white),
             ),
             if (!_outOfSeason) ...[
               const SizedBox(height: 16),
@@ -254,7 +280,10 @@ class _YearSummaryPageState extends State<YearSummaryPage> {
         context.l10n.yearSummaryEmpty('${summary.year}'),
         key: const ValueKey('year-summary-empty'),
         textAlign: TextAlign.center,
-        style: _yearSummaryTitleStyle.copyWith(fontSize: 24),
+        style: _yearSummaryTitleStyle.copyWith(
+          fontSize: 24,
+          color: Colors.white,
+        ),
       ),
     ),
   );
@@ -264,91 +293,76 @@ class _YearSummaryPageState extends State<YearSummaryPage> {
     return Column(
       children: [
         Expanded(
-          child: SingleChildScrollView(
-            key: const ValueKey('year-summary-scroll'),
-            padding: const EdgeInsets.fromLTRB(24, 8, 24, 12),
-            child: Center(
-              child: ConstrainedBox(
-                constraints: const BoxConstraints(maxWidth: 420),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Semantics(
-                      header: true,
-                      child: Text(
-                        t.yearSummaryScreenTitle,
-                        textAlign: TextAlign.center,
-                        style: _yearSummaryTitleStyle,
-                      ),
-                    ),
-                    const SizedBox(height: 6),
-                    Text(
-                      t.yearSummaryShareBody,
-                      textAlign: TextAlign.center,
-                      style: _yearSummaryBodyStyle,
-                    ),
-                    const SizedBox(height: 18),
-                    // The exact picture that is shared, scaled to fit.
-                    Center(
-                      child: ConstrainedBox(
-                        constraints: const BoxConstraints(maxWidth: 340),
-                        child: AspectRatio(
-                          aspectRatio: yearSummaryStorySize.aspectRatio,
-                          child: DecoratedBox(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(22),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: quickStartInk.withValues(alpha: .18),
-                                  blurRadius: 24,
-                                  offset: const Offset(0, 10),
+          // Taps beside the card close it, as on the dimmed area above.
+          child: GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTap: () => Navigator.of(context).maybePop(),
+            child: SingleChildScrollView(
+              key: const ValueKey('year-summary-scroll'),
+              padding: const EdgeInsets.fromLTRB(24, 4, 24, 16),
+              child: Center(
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 380),
+                  // The card and details themselves keep their taps.
+                  child: GestureDetector(
+                    onTap: () {},
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        // The exact picture that is shared, scaled to fit.
+                        Center(
+                          child: ConstrainedBox(
+                            constraints: const BoxConstraints(maxWidth: 340),
+                            child: AspectRatio(
+                              aspectRatio: yearSummaryStorySize.aspectRatio,
+                              child: DecoratedBox(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(22),
+                                  boxShadow: const [
+                                    BoxShadow(
+                                      color: Color(0x59000000),
+                                      blurRadius: 48,
+                                      spreadRadius: -10,
+                                      offset: Offset(0, 22),
+                                    ),
+                                  ],
                                 ),
-                              ],
-                            ),
-                            child: FittedBox(
-                              child: RepaintBoundary(
-                                key: _cardKey,
-                                child: _YearStory(
-                                  summary: summary,
-                                  world: _world,
-                                  holiday: _holiday,
+                                child: FittedBox(
+                                  child: RepaintBoundary(
+                                    key: _cardKey,
+                                    child: _YearStory(
+                                      summary: summary,
+                                      world: _world,
+                                      holiday: _holiday,
+                                    ),
+                                  ),
                                 ),
                               ),
                             ),
                           ),
                         ),
-                      ),
+                        _PrivateDetails(summary: summary),
+                      ],
                     ),
-                    _PrivateDetails(summary: summary),
-                  ],
+                  ),
                 ),
               ),
             ),
           ),
         ),
         Padding(
-          padding: const EdgeInsets.fromLTRB(24, 4, 24, 8),
+          padding: const EdgeInsets.fromLTRB(24, 0, 24, 12),
           child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 420),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                _primaryButton(
-                  key: const ValueKey('year-summary-share'),
-                  buttonKey: _shareButtonKey,
-                  label: t.yearSummaryShareAction,
-                  onPressed: _sharing ? null : () => unawaited(_share()),
-                ),
-                TextButton(
-                  key: const ValueKey('year-summary-done'),
-                  style: TextButton.styleFrom(
-                    foregroundColor: quickStartInk,
-                    minimumSize: const Size(48, 48),
-                  ),
-                  onPressed: () => Navigator.of(context).maybePop(),
-                  child: Text(t.yearSummaryDone),
-                ),
-              ],
+            constraints: const BoxConstraints(maxWidth: 380),
+            child: SizedBox(
+              width: double.infinity,
+              child: _primaryButton(
+                key: const ValueKey('year-summary-share'),
+                buttonKey: _shareButtonKey,
+                label: t.yearSummaryShareAction,
+                icon: Icons.ios_share_rounded,
+                onPressed: _sharing ? null : () => unawaited(_share()),
+              ),
             ),
           ),
         ),
@@ -356,20 +370,22 @@ class _YearSummaryPageState extends State<YearSummaryPage> {
     );
   }
 
+  /// White on the dimmed background, so it stands out from the dark card.
   Widget _primaryButton({
     required Key key,
     Key? buttonKey,
     required String label,
+    IconData? icon,
     required VoidCallback? onPressed,
   }) => KeyedSubtree(
     key: buttonKey,
-    child: FilledButton(
+    child: FilledButton.icon(
       key: key,
       style: FilledButton.styleFrom(
         minimumSize: const Size(48, 52),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        backgroundColor: quickStartInk,
-        foregroundColor: Colors.white,
+        backgroundColor: Colors.white,
+        foregroundColor: quickStartInk,
         textStyle: const TextStyle(
           fontFamily: 'Inter',
           fontSize: 17,
@@ -377,7 +393,8 @@ class _YearSummaryPageState extends State<YearSummaryPage> {
         ),
       ),
       onPressed: onPressed,
-      child: Text(label, textAlign: TextAlign.center),
+      icon: icon == null ? null : Icon(icon, size: 20),
+      label: Text(label, textAlign: TextAlign.center),
     ),
   );
 }

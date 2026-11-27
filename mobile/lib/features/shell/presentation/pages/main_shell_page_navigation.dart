@@ -4,15 +4,28 @@ extension _MainShellPageNavigation on _MainShellPageState {
   void _openYearSummary() {
     final repository = widget.tripReportsRepository;
     if (repository == null) return;
-    unawaited(
-      Navigator.of(context).push<void>(
-        MaterialPageRoute<void>(
-          fullscreenDialog: true,
-          builder: (_) => YearSummaryPage(repository: repository),
-        ),
-      ),
+    unawaited(showYearSummary(context, repository));
+  }
+
+  /// The Home card for the year summary, while the app offers it and the
+  /// server's season and Premium rules allow it.
+  Widget? _yearSummaryBannerOrNull(BuildContext context) {
+    if (!yearSummaryOfferedInApp || widget.tripReportsRepository == null) {
+      return null;
+    }
+    final access = widget.authController.currentUser?.premiumAccess;
+    if (access?.allows(PremiumFeatures.yearSummary) != true) return null;
+    return YearSummaryHomeBanner(
+      year: DateTime.now().year - 1,
+      onOpen: _openYearSummary,
     );
   }
+
+  WidgetBuilder? get _yearSummaryBanner =>
+      !yearSummaryOfferedInApp || widget.tripReportsRepository == null
+      ? null
+      : (context) =>
+            _yearSummaryBannerOrNull(context) ?? const SizedBox.shrink();
 
   Future<void> _openTravelMap({int? tripId}) async {
     final repository = widget.travelPlacesRepository;

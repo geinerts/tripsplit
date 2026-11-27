@@ -2425,6 +2425,17 @@
   "yearSummaryPartial": "Some amounts are missing because no exchange rate was available.",
   "yearSummaryShareFailed": "Couldn't share the image.",
   "yearSummaryRetry": "Try again",
+  "yearSummaryBannerTitle": "Your {year} in travel",
+  "yearSummaryBannerBody": "See your year and share it",
+  "yearSummaryBannerNew": "NEW",
+  "yearSummaryExpensesAdded": "Expenses added",
+  "@yearSummaryBannerTitle": {
+    "placeholders": {
+      "year": {
+        "type": "String"
+      }
+    }
+  },
   "yearSummaryTripsLabel": "{count, plural, =1{trip} other{trips}}",
   "yearSummaryDaysLabel": "{count, plural, =1{day} other{days}}",
   "yearSummaryCountriesLabel": "{count, plural, =1{country} other{countries}}",
@@ -2458,11 +2469,8 @@
     }
   },
   "yearSummaryHappyNewYear": "HAPPY NEW YEAR",
-  "yearSummaryScreenTitle": "A look back at your year",
   "yearSummaryOnlyForYou": "Only for you, not in the image",
-  "yearSummaryShareBody": "Keep the memories. Share your highlights.",
   "yearSummaryShareAction": "Share my year",
-  "yearSummaryDone": "Done",
   "notificationCommentAddedTitle": "New comment on your expense",
   "notificationCommentAddedBody": "{name} commented on \"{note}\".",
   "notificationCommentAddedBodyGeneric": "{name} commented on your expense.",

@@ -10005,6 +10005,30 @@ abstract class AppLocalizations {
   /// **'Try again'**
   String get yearSummaryRetry;
 
+  /// No description provided for @yearSummaryBannerTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your {year} in travel'**
+  String yearSummaryBannerTitle(String year);
+
+  /// No description provided for @yearSummaryBannerBody.
+  ///
+  /// In en, this message translates to:
+  /// **'See your year and share it'**
+  String get yearSummaryBannerBody;
+
+  /// No description provided for @yearSummaryBannerNew.
+  ///
+  /// In en, this message translates to:
+  /// **'NEW'**
+  String get yearSummaryBannerNew;
+
+  /// No description provided for @yearSummaryExpensesAdded.
+  ///
+  /// In en, this message translates to:
+  /// **'Expenses added'**
+  String get yearSummaryExpensesAdded;
+
   /// No description provided for @yearSummaryTripsLabel.
   ///
   /// In en, this message translates to:
@@ -10035,35 +10059,17 @@ abstract class AppLocalizations {
   /// **'HAPPY NEW YEAR'**
   String get yearSummaryHappyNewYear;
 
-  /// No description provided for @yearSummaryScreenTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'A look back at your year'**
-  String get yearSummaryScreenTitle;
-
   /// No description provided for @yearSummaryOnlyForYou.
   ///
   /// In en, this message translates to:
   /// **'Only for you, not in the image'**
   String get yearSummaryOnlyForYou;
 
-  /// No description provided for @yearSummaryShareBody.
-  ///
-  /// In en, this message translates to:
-  /// **'Keep the memories. Share your highlights.'**
-  String get yearSummaryShareBody;
-
   /// No description provided for @yearSummaryShareAction.
   ///
   /// In en, this message translates to:
   /// **'Share my year'**
   String get yearSummaryShareAction;
-
-  /// No description provided for @yearSummaryDone.
-  ///
-  /// In en, this message translates to:
-  /// **'Done'**
-  String get yearSummaryDone;
 
   /// No description provided for @notificationCommentAddedTitle.
   ///

@@ -5459,6 +5459,20 @@ class AppLocalizationsLv extends AppLocalizations {
   String get yearSummaryRetry => 'Mēģināt vēlreiz';
 
   @override
+  String yearSummaryBannerTitle(String year) {
+    return 'Tavs $year ceļojumos';
+  }
+
+  @override
+  String get yearSummaryBannerBody => 'Apskati savu gadu un dalies ar to';
+
+  @override
+  String get yearSummaryBannerNew => 'JAUNS';
+
+  @override
+  String get yearSummaryExpensesAdded => 'Pievienotie izdevumi';
+
+  @override
   String yearSummaryTripsLabel(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
@@ -5510,19 +5524,10 @@ class AppLocalizationsLv extends AppLocalizations {
   String get yearSummaryHappyNewYear => 'LAIMĪGU JAUNO GADU';
 
   @override
-  String get yearSummaryScreenTitle => 'Atskats uz aizvadīto gadu';
-
-  @override
   String get yearSummaryOnlyForYou => 'Tikai tev, attēlā nenonāk';
 
   @override
-  String get yearSummaryShareBody => 'Saglabā atmiņas. Dalies ar spilgtāko.';
-
-  @override
   String get yearSummaryShareAction => 'Dalīties ar savu gadu';
-
-  @override
-  String get yearSummaryDone => 'Gatavs';
 
   @override
   String get notificationCommentAddedTitle => 'Jauns komentārs pie tava izdevuma';

@@ -527,6 +527,14 @@ versijā paliek **angliski** (kā tos sūta serveris); pirms ieslēgšanas apsv�
 lietotāja valodā no Unicode CLDR (lietotnē, bez API izmaiņām; noderētu arī ceļojumu kartei).
 Vēl nav: OFL fonts gadam (tagad Inter).
 
+**Kā tas parādās lietotnē (2026-11-27):** nevis pa visu ekrānu kā Quick Start. Sezonā
+(kad serveris atļauj `year_summary`) Home ekrānā zem kopsummas ir tumša kartīte "JAUNS ·
+Tavs 2026 ceļojumos". Pieskaroties, kopsavilkums izlec virs aptumšota, izplūduša Home
+ekrāna (`showYearSummary`): taisna kartīte, zem tās balts saraksts "Tikai tev" (izdevumi,
+lielākais ceļojums, kategorija, ar ko visvairāk, pievienotie izdevumi, visas valstis un
+pilsētas), poga "Dalīties ar savu gadu", ✕ un pieskāriens blakus aizver. Kopīgo tikai
+kartīti. Profila ieeja atver to pašu logu. Lietotne pati logu neatver.
+
 **Vietu dati (jāizlemj pirms ieslēgšanas):** valstis un pilsētas ir tikai no ceļojuma
 galamērķiem un personīgās kartes; daudziem tās būs tukšas. Ieteikums: ceļojuma beigās
 ieteikt vietu no ceļojuma nosaukuma (lietotājs apstiprina) un parādīt "Kur tu biji?", ja

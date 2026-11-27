@@ -5461,6 +5461,20 @@ class AppLocalizationsCs extends AppLocalizations {
   String get yearSummaryRetry => 'Zkusit znovu';
 
   @override
+  String yearSummaryBannerTitle(String year) {
+    return 'Tvůj rok $year na cestách';
+  }
+
+  @override
+  String get yearSummaryBannerBody => 'Prohlédni si svůj rok a sdílej ho';
+
+  @override
+  String get yearSummaryBannerNew => 'NOVÉ';
+
+  @override
+  String get yearSummaryExpensesAdded => 'Přidané výdaje';
+
+  @override
   String yearSummaryTripsLabel(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
@@ -5512,19 +5526,10 @@ class AppLocalizationsCs extends AppLocalizations {
   String get yearSummaryHappyNewYear => 'ŠŤASTNÝ NOVÝ ROK';
 
   @override
-  String get yearSummaryScreenTitle => 'Ohlédnutí za tvým rokem';
-
-  @override
   String get yearSummaryOnlyForYou => 'Jen pro tebe, na obrázku nebude';
 
   @override
-  String get yearSummaryShareBody => 'Uchovej si vzpomínky. Sdílej to nejlepší.';
-
-  @override
   String get yearSummaryShareAction => 'Sdílet můj rok';
-
-  @override
-  String get yearSummaryDone => 'Hotovo';
 
   @override
   String get notificationCommentAddedTitle => 'Nový komentář k vašemu výdaji';
