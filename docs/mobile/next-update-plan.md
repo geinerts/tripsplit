@@ -519,8 +519,10 @@ valstīm (pēc valstu kodiem, automātiski pietuvināta), skaitļi bez nullēm, 
 nosaukumiem un "+N", logo. Ja valstu nav, kartes vietā ir dekoratīvs globuss ar lidmašīnas
 orbītu. Ekrānā redzams tieši tas pats attēls samazinātā mērogā. Kartes kontūras:
 `assets/maps/world.json` (Natural Earth), lasītājs `lib/core/maps/world_countries.dart`.
-Vēl nav: maršruta līnijas starp pilsētām (vajag koordinātas), valstu nosaukumi lietotāja
-valodā, OFL fonts gadam (tagad Inter). Jāpārrunā: kā attēls izskatās Instagram stāstā.
+Lēmumi 2026-11-27: maršruta līnijas starp pilsētām **nevajag**. Valstu nosaukumi pirmajā
+versijā paliek **angliski** (kā tos sūta serveris); pirms ieslēgšanas apsvērt nosaukumus
+lietotāja valodā no Unicode CLDR (lietotnē, bez API izmaiņām; noderētu arī ceļojumu kartei).
+Vēl nav: OFL fonts gadam (tagad Inter).
 
 **Vietu dati (jāizlemj pirms ieslēgšanas):** valstis un pilsētas ir tikai no ceļojuma
 galamērķiem un personīgās kartes; daudziem tās būs tukšas. Ieteikums: ceļojuma beigās
