@@ -16,6 +16,7 @@ import '../../../../app/theme/app_design.dart';
 import '../../../../core/deeplink/invite_deep_link_controller.dart';
 import '../../../../core/errors/api_exception.dart';
 import '../../../../core/l10n/l10n.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../../../core/l10n/notification_localizer.dart';
 import '../../../../core/monitoring/app_monitoring.dart';
 import '../../../../core/ui/app_bottom_nav_bar.dart';

@@ -281,6 +281,47 @@ void main() {
       expect(withName.fitsTrip({7, 8, 9}), isFalse);
     });
 
+    test('the reason names who is in the way', () {
+      expect(split().tripProblem({7, 8, 9}), isNull);
+      final one = split().tripProblem({7, 8})!;
+      expect(one.problem, QuickSplitTripProblem.notMembers);
+      expect((one.name, one.others), ('Ben', 0));
+      final two = split().tripProblem({7})!;
+      expect((two.name, two.others), ('Anna', 1));
+      final noAccount = split(
+        people: [
+          {
+            'id': 1,
+            'user_id': 7,
+            'name': 'Me',
+            'is_me': true,
+            'is_payer': true,
+            'amount': 15,
+          },
+          {'id': 2, 'name': 'Mum', 'amount': 15},
+        ],
+      ).tripProblem({7})!;
+      expect(noAccount.problem, QuickSplitTripProblem.noAccount);
+      expect(noAccount.name, 'Mum');
+      final alone = split(
+        people: [
+          {
+            'id': 1,
+            'user_id': 7,
+            'name': 'Me',
+            'is_me': true,
+            'is_payer': true,
+            'amount': 15,
+          },
+        ],
+      ).tripProblem({7})!;
+      expect(alone.problem, QuickSplitTripProblem.onlyYou);
+      expect(
+        split(paidByMe: false).tripProblem({7, 8, 9})!.problem,
+        QuickSplitTripProblem.other,
+      );
+    });
+
     test('only the creator who paid can add it', () {
       expect(split(paidByMe: false).fitsTrip({7, 8, 9}), isFalse);
       expect(split(canEdit: false).fitsTrip({7, 8, 9}), isFalse);

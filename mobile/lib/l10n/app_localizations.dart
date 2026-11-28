@@ -10341,11 +10341,41 @@ abstract class AppLocalizations {
   /// **'Add a quick split'**
   String get quickSplitFromTitle;
 
-  /// No description provided for @quickSplitNoneForTrip.
+  /// No description provided for @quickSplitNoneLoaded.
   ///
   /// In en, this message translates to:
-  /// **'No quick split has only this trip\'s people.'**
-  String get quickSplitNoneForTrip;
+  /// **'Couldn\'t load your quick splits. Try again.'**
+  String get quickSplitNoneLoaded;
+
+  /// No description provided for @quickSplitUnfitOnlyYou.
+  ///
+  /// In en, this message translates to:
+  /// **'Only you are in it'**
+  String get quickSplitUnfitOnlyYou;
+
+  /// No description provided for @quickSplitUnfitNoAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} has no SPLYTO account'**
+  String quickSplitUnfitNoAccount(String name);
+
+  /// No description provided for @quickSplitUnfitNotInTrip.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} isn\'t in this trip'**
+  String quickSplitUnfitNotInTrip(String name);
+
+  /// No description provided for @quickSplitUnfitNotInTripMore.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{{name} and 1 more aren\'t in this trip} other{{name} and {count} more aren\'t in this trip}}'**
+  String quickSplitUnfitNotInTripMore(String name, int count);
+
+  /// No description provided for @quickSplitUnfitOther.
+  ///
+  /// In en, this message translates to:
+  /// **'Can\'t be added to this trip'**
+  String get quickSplitUnfitOther;
 
   /// No description provided for @expenseSplitAmountFirst.
   ///

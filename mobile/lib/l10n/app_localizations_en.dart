@@ -5658,7 +5658,34 @@ class AppLocalizationsEn extends AppLocalizations {
   String get quickSplitFromTitle => 'Add a quick split';
 
   @override
-  String get quickSplitNoneForTrip => 'No quick split has only this trip\'s people.';
+  String get quickSplitNoneLoaded => 'Couldn\'t load your quick splits. Try again.';
+
+  @override
+  String get quickSplitUnfitOnlyYou => 'Only you are in it';
+
+  @override
+  String quickSplitUnfitNoAccount(String name) {
+    return '$name has no SPLYTO account';
+  }
+
+  @override
+  String quickSplitUnfitNotInTrip(String name) {
+    return '$name isn\'t in this trip';
+  }
+
+  @override
+  String quickSplitUnfitNotInTripMore(String name, int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$name and $count more aren\'t in this trip',
+      one: '$name and 1 more aren\'t in this trip',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get quickSplitUnfitOther => 'Can\'t be added to this trip';
 
   @override
   String get expenseSplitAmountFirst => 'Enter the amount first, or choose By item.';

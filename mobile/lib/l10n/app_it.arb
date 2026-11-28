@@ -2248,7 +2248,36 @@
   "expenseItemsAddFirst": "Aggiungi prima le voci, poi scegli chi ha preso cosa.",
   "quickSplitFromAction": "Da un Quick split",
   "quickSplitFromTitle": "Aggiungi un Quick split",
-  "quickSplitNoneForTrip": "Nessun Quick split ha solo persone di questo viaggio.",
+  "quickSplitNoneLoaded": "Impossibile caricare le tue divisioni rapide. Riprova.",
+  "quickSplitUnfitOnlyYou": "Ci sei solo tu",
+  "quickSplitUnfitNoAccount": "{name} non ha un account SPLYTO",
+  "quickSplitUnfitNotInTrip": "{name} non è in questo viaggio",
+  "quickSplitUnfitNotInTripMore": "{count, plural, =1{{name} e 1 altro non sono in questo viaggio} other{{name} e altri {count} non sono in questo viaggio}}",
+  "quickSplitUnfitOther": "Non si può aggiungere a questo viaggio",
+  "@quickSplitUnfitNoAccount": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "@quickSplitUnfitNotInTrip": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "@quickSplitUnfitNotInTripMore": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "expenseSplitAmountFirst": "Inserisci prima l’importo o scegli Per voce.",
   "tripExportPdfAfterFinish": "L’esportazione in PDF è disponibile dopo aver concluso il viaggio.",
   "yearSummarySeasonNotice": "Il riepilogo dell’anno precedente è disponibile dal 1º gennaio al 31 marzo.",

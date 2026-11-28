@@ -2248,7 +2248,36 @@
   "expenseItemsAddFirst": "Lisää ensin rivit ja valitse sitten, kuka otti mitäkin.",
   "quickSplitFromAction": "Quick splitistä",
   "quickSplitFromTitle": "Lisää Quick split",
-  "quickSplitNoneForTrip": "Yhdessäkään Quick splitissä ei ole vain tämän matkan ihmisiä.",
+  "quickSplitNoneLoaded": "Pikajakoja ei voitu ladata. Yritä uudelleen.",
+  "quickSplitUnfitOnlyYou": "Siinä olet vain sinä",
+  "quickSplitUnfitNoAccount": "Käyttäjällä {name} ei ole SPLYTO-tiliä",
+  "quickSplitUnfitNotInTrip": "{name} ei ole tällä matkalla",
+  "quickSplitUnfitNotInTripMore": "{count, plural, =1{{name} ja 1 muu eivät ole tällä matkalla} other{{name} ja {count} muuta eivät ole tällä matkalla}}",
+  "quickSplitUnfitOther": "Ei voi lisätä tälle matkalle",
+  "@quickSplitUnfitNoAccount": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "@quickSplitUnfitNotInTrip": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "@quickSplitUnfitNotInTripMore": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "expenseSplitAmountFirst": "Syötä ensin summa tai valitse Riveittäin.",
   "tripExportPdfAfterFinish": "PDF-vienti on käytettävissä, kun olet päättänyt matkan.",
   "yearSummarySeasonNotice": "Edellisen vuoden yhteenveto on saatavilla 1. tammikuuta–31. maaliskuuta.",

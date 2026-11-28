@@ -5677,7 +5677,35 @@ class AppLocalizationsCs extends AppLocalizations {
   String get quickSplitFromTitle => 'Přidat Quick split';
 
   @override
-  String get quickSplitNoneForTrip => 'Žádný Quick split nemá jen lidi z tohoto výletu.';
+  String get quickSplitNoneLoaded => 'Rychlá rozdělení se nepodařilo načíst. Zkus to znovu.';
+
+  @override
+  String get quickSplitUnfitOnlyYou => 'Jsi v něm jen ty';
+
+  @override
+  String quickSplitUnfitNoAccount(String name) {
+    return '$name nemá účet SPLYTO';
+  }
+
+  @override
+  String quickSplitUnfitNotInTrip(String name) {
+    return '$name není v tomto výletu';
+  }
+
+  @override
+  String quickSplitUnfitNotInTripMore(String name, int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$name a $count dalších nejsou v tomto výletu',
+      few: '$name a $count další nejsou v tomto výletu',
+      one: '$name a $count další nejsou v tomto výletu',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get quickSplitUnfitOther => 'Nelze přidat do tohoto výletu';
 
   @override
   String get expenseSplitAmountFirst => 'Nejdřív zadej částku, nebo zvol Podle položek.';

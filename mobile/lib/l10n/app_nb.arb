@@ -2248,7 +2248,36 @@
   "expenseItemsAddFirst": "Legg til varer først, og velg så hvem som hadde hva.",
   "quickSplitFromAction": "Fra et Quick split",
   "quickSplitFromTitle": "Legg til et Quick split",
-  "quickSplitNoneForTrip": "Ingen Quick split har bare personer fra denne reisen.",
+  "quickSplitNoneLoaded": "Kunne ikke laste inn hurtigdelingene dine. Prøv igjen.",
+  "quickSplitUnfitOnlyYou": "Bare du er med",
+  "quickSplitUnfitNoAccount": "{name} har ingen SPLYTO-konto",
+  "quickSplitUnfitNotInTrip": "{name} er ikke med på turen",
+  "quickSplitUnfitNotInTripMore": "{count, plural, =1{{name} og 1 til er ikke med på turen} other{{name} og {count} til er ikke med på turen}}",
+  "quickSplitUnfitOther": "Kan ikke legges til denne turen",
+  "@quickSplitUnfitNoAccount": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "@quickSplitUnfitNotInTrip": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "@quickSplitUnfitNotInTripMore": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "expenseSplitAmountFirst": "Skriv inn beløpet først, eller velg Per vare.",
   "tripExportPdfAfterFinish": "PDF-eksport er tilgjengelig når du har avsluttet reisen.",
   "yearSummarySeasonNotice": "Oppsummeringen av fjoråret er tilgjengelig fra 1. januar til 31. mars.",

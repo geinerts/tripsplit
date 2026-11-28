@@ -240,8 +240,9 @@ extension _MainShellPageQuickSplits on _MainShellPageState {
     return fitting;
   }
 
-  /// "From a quick split" inside a trip: the user's quick splits whose people
-  /// are all in this trip. Null when closed or none fits.
+  /// "From a quick split" inside a trip: the user's quick splits, those whose
+  /// people are all in this trip first; the others greyed out with the reason,
+  /// so nobody wonders why one is missing. Null when closed.
   Future<ExpenseDraft?> _pickQuickSplitForTrip(
     BuildContext formContext,
     Set<int> memberIds,
@@ -265,38 +266,78 @@ extension _MainShellPageQuickSplits on _MainShellPageState {
         widget.authController.currentUser?.id != account) {
       return null;
     }
+    final splits = [for (final split in loaded) ?split];
     final fitting = [
-      for (final split in loaded)
-        if (split != null && split.fitsTrip(memberIds)) split,
+      for (final split in splits)
+        if (split.fitsTrip(memberIds)) split,
     ];
-    if (fitting.isEmpty) {
-      ScaffoldMessenger.maybeOf(
-        formContext,
-      )?.showSnackBar(SnackBar(content: Text(t.quickSplitNoneForTrip)));
-      return null;
-    }
+    final others = [
+      for (final split in splits)
+        if (!split.fitsTrip(memberIds)) split,
+    ];
     final picked = await showAppBottomSheet<QuickSplit>(
       context: formContext,
-      builder: (pickerContext) => AppActionSheet(
-        key: const ValueKey('quick-split-for-trip-sheet'),
-        title: t.quickSplitFromTitle,
-        children: [
-          for (final split in fitting)
-            AppActionSheetTile(
-              key: ValueKey('quick-split-for-trip-${split.id}'),
-              icon: Icons.bolt_rounded,
-              title: quickSplitTitle(pickerContext, split),
-              subtitle:
-                  '${AppFormatters.currency(pickerContext, split.amount, currencyCode: split.currencyCode)} · ${t.homePeople(split.people.length)}',
-              onTap: () => Navigator.of(pickerContext).pop(split),
-            ),
-        ],
-      ),
+      builder: (pickerContext) {
+        String subtitle(QuickSplit split) =>
+            '${AppFormatters.currency(pickerContext, split.amount, currencyCode: split.currencyCode)} · ${t.homePeople(split.people.length)}';
+        return AppActionSheet(
+          key: const ValueKey('quick-split-for-trip-sheet'),
+          title: t.quickSplitFromTitle,
+          children: [
+            if (splits.isEmpty)
+              Padding(
+                key: const ValueKey('quick-split-for-trip-empty'),
+                padding: const EdgeInsets.fromLTRB(20, 4, 20, 16),
+                child: Text(
+                  t.quickSplitNoneLoaded,
+                  style: Theme.of(pickerContext).textTheme.bodyMedium,
+                ),
+              ),
+            for (final split in fitting)
+              AppActionSheetTile(
+                key: ValueKey('quick-split-for-trip-${split.id}'),
+                icon: Icons.bolt_rounded,
+                title: quickSplitTitle(pickerContext, split),
+                subtitle: subtitle(split),
+                onTap: () => Navigator.of(pickerContext).pop(split),
+              ),
+            for (final split in others)
+              // Not tappable; the line under it says why.
+              Opacity(
+                key: ValueKey('quick-split-for-trip-unavailable-${split.id}'),
+                opacity: .5,
+                child: AppActionSheetTile(
+                  icon: Icons.bolt_rounded,
+                  title: quickSplitTitle(pickerContext, split),
+                  subtitle: _quickSplitUnfitReason(t, split, memberIds),
+                ),
+              ),
+          ],
+        );
+      },
     );
     if (picked == null || widget.authController.currentUser?.id != account) {
       return null;
     }
     return _draftFromQuickSplit(picked);
+  }
+
+  /// Why a quick split can't go to this trip, in the words the picker shows.
+  String _quickSplitUnfitReason(
+    AppLocalizations t,
+    QuickSplit split,
+    Set<int> memberIds,
+  ) {
+    final reason = split.tripProblem(memberIds);
+    final name = reason?.name ?? '';
+    return switch (reason?.problem) {
+      QuickSplitTripProblem.onlyYou => t.quickSplitUnfitOnlyYou,
+      QuickSplitTripProblem.noAccount => t.quickSplitUnfitNoAccount(name),
+      QuickSplitTripProblem.notMembers when reason!.others > 0 =>
+        t.quickSplitUnfitNotInTripMore(name, reason.others),
+      QuickSplitTripProblem.notMembers => t.quickSplitUnfitNotInTrip(name),
+      _ => t.quickSplitUnfitOther,
+    };
   }
 
   ExpenseDraft _draftFromQuickSplit(QuickSplit split) {

@@ -5658,7 +5658,34 @@ class AppLocalizationsIt extends AppLocalizations {
   String get quickSplitFromTitle => 'Aggiungi un Quick split';
 
   @override
-  String get quickSplitNoneForTrip => 'Nessun Quick split ha solo persone di questo viaggio.';
+  String get quickSplitNoneLoaded => 'Impossibile caricare le tue divisioni rapide. Riprova.';
+
+  @override
+  String get quickSplitUnfitOnlyYou => 'Ci sei solo tu';
+
+  @override
+  String quickSplitUnfitNoAccount(String name) {
+    return '$name non ha un account SPLYTO';
+  }
+
+  @override
+  String quickSplitUnfitNotInTrip(String name) {
+    return '$name non è in questo viaggio';
+  }
+
+  @override
+  String quickSplitUnfitNotInTripMore(String name, int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$name e altri $count non sono in questo viaggio',
+      one: '$name e 1 altro non sono in questo viaggio',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get quickSplitUnfitOther => 'Non si può aggiungere a questo viaggio';
 
   @override
   String get expenseSplitAmountFirst => 'Inserisci prima l’importo o scegli Per voce.';

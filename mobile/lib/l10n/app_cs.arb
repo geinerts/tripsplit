@@ -2248,7 +2248,36 @@
   "expenseItemsAddFirst": "Nejdřív přidej položky, pak vyber, kdo co měl.",
   "quickSplitFromAction": "Z Quick split",
   "quickSplitFromTitle": "Přidat Quick split",
-  "quickSplitNoneForTrip": "Žádný Quick split nemá jen lidi z tohoto výletu.",
+  "quickSplitNoneLoaded": "Rychlá rozdělení se nepodařilo načíst. Zkus to znovu.",
+  "quickSplitUnfitOnlyYou": "Jsi v něm jen ty",
+  "quickSplitUnfitNoAccount": "{name} nemá účet SPLYTO",
+  "quickSplitUnfitNotInTrip": "{name} není v tomto výletu",
+  "quickSplitUnfitNotInTripMore": "{count, plural, one{{name} a {count} další nejsou v tomto výletu} few{{name} a {count} další nejsou v tomto výletu} other{{name} a {count} dalších nejsou v tomto výletu}}",
+  "quickSplitUnfitOther": "Nelze přidat do tohoto výletu",
+  "@quickSplitUnfitNoAccount": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "@quickSplitUnfitNotInTrip": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "@quickSplitUnfitNotInTripMore": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "expenseSplitAmountFirst": "Nejdřív zadej částku, nebo zvol Podle položek.",
   "tripExportPdfAfterFinish": "Export do PDF je dostupný po ukončení cesty.",
   "yearSummarySeasonNotice": "Souhrn předchozího roku je dostupný od 1. ledna do 31. března.",
