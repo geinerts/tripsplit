@@ -2248,7 +2248,36 @@
   "expenseItemsAddFirst": "Спершу додайте позиції, потім виберіть, хто що брав.",
   "quickSplitFromAction": "З Quick split",
   "quickSplitFromTitle": "Додати Quick split",
-  "quickSplitNoneForTrip": "Немає Quick split лише з людьми з цієї подорожі.",
+  "quickSplitNoneLoaded": "Не вдалося завантажити ваші швидкі розподіли. Спробуйте ще раз.",
+  "quickSplitUnfitOnlyYou": "У ньому лише ви",
+  "quickSplitUnfitNoAccount": "У {name} немає облікового запису SPLYTO",
+  "quickSplitUnfitNotInTrip": "{name} немає в цій поїздці",
+  "quickSplitUnfitNotInTripMore": "{count, plural, one{{name} і ще {count} немає в цій поїздці} few{{name} і ще {count} немає в цій поїздці} many{{name} і ще {count} немає в цій поїздці} other{{name} і ще {count} немає в цій поїздці}}",
+  "quickSplitUnfitOther": "Не можна додати до цієї поїздки",
+  "@quickSplitUnfitNoAccount": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "@quickSplitUnfitNotInTrip": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "@quickSplitUnfitNotInTripMore": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "expenseSplitAmountFirst": "Спершу введіть суму або виберіть «За позиціями».",
   "tripExportPdfAfterFinish": "Експорт у PDF доступний після завершення подорожі.",
   "yearSummarySeasonNotice": "Підсумок попереднього року доступний з 1 січня до 31 березня.",

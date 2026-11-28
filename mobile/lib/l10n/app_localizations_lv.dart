@@ -5675,7 +5675,35 @@ class AppLocalizationsLv extends AppLocalizations {
   String get quickSplitFromTitle => 'Pievienot Quick split';
 
   @override
-  String get quickSplitNoneForTrip => 'Nav neviena Quick split tikai ar šī ceļojuma cilvēkiem.';
+  String get quickSplitNoneLoaded => 'Neizdevās ielādēt tavus quick split. Mēģini vēlreiz.';
+
+  @override
+  String get quickSplitUnfitOnlyYou => 'Tajā esi tikai tu';
+
+  @override
+  String quickSplitUnfitNoAccount(String name) {
+    return '$name nav SPLYTO konta';
+  }
+
+  @override
+  String quickSplitUnfitNotInTrip(String name) {
+    return '$name nav šajā ceļojumā';
+  }
+
+  @override
+  String quickSplitUnfitNotInTripMore(String name, int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$name un vēl $count nav šajā ceļojumā',
+      one: '$name un vēl $count nav šajā ceļojumā',
+      zero: '$name un vēl $count nav šajā ceļojumā',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get quickSplitUnfitOther => 'Nevar pievienot šim ceļojumam';
 
   @override
   String get expenseSplitAmountFirst => 'Vispirms ievadi summu vai izvēlies \"Pa pozīcijām\".';

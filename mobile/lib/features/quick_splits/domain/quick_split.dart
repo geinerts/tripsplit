@@ -1,5 +1,8 @@
 /// One bill split between people without a trip. A record only: no balances
 /// or payments. See docs/api/quick-splits.md.
+/// What keeps a quick split from becoming an expense of a trip.
+enum QuickSplitTripProblem { onlyYou, noAccount, notMembers, other }
+
 class QuickSplit {
   const QuickSplit({
     required this.id,
@@ -76,6 +79,38 @@ class QuickSplit {
       people.every(
         (person) => person.userId != null && memberIds.contains(person.userId),
       );
+
+  /// Why this quick split can't go to a trip with these members, or null when
+  /// it can ([fitsTrip]). The person named is the first one in the way;
+  /// [QuickSplitTripProblem.notMembers] also counts the others.
+  ({QuickSplitTripProblem problem, String? name, int others})? tripProblem(
+    Set<int> memberIds,
+  ) {
+    if (fitsTrip(memberIds)) return null;
+    final others = people.where((person) => !person.isMe).toList();
+    if (others.isEmpty) {
+      return (problem: QuickSplitTripProblem.onlyYou, name: null, others: 0);
+    }
+    final noAccount = others.where((person) => !person.isAccount).toList();
+    if (noAccount.isNotEmpty) {
+      return (
+        problem: QuickSplitTripProblem.noAccount,
+        name: noAccount.first.name,
+        others: noAccount.length - 1,
+      );
+    }
+    final missing = others
+        .where((person) => !memberIds.contains(person.userId))
+        .toList();
+    if (missing.isNotEmpty) {
+      return (
+        problem: QuickSplitTripProblem.notMembers,
+        name: missing.first.name,
+        others: missing.length - 1,
+      );
+    }
+    return (problem: QuickSplitTripProblem.other, name: null, others: 0);
+  }
 
   /// A list row that might fit a trip; [fitsTrip] decides on the full split.
   bool get mayFitATrip => canEdit && paidByMe && addedToTripId == null;

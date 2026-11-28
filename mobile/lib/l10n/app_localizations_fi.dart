@@ -5658,7 +5658,34 @@ class AppLocalizationsFi extends AppLocalizations {
   String get quickSplitFromTitle => 'Lisää Quick split';
 
   @override
-  String get quickSplitNoneForTrip => 'Yhdessäkään Quick splitissä ei ole vain tämän matkan ihmisiä.';
+  String get quickSplitNoneLoaded => 'Pikajakoja ei voitu ladata. Yritä uudelleen.';
+
+  @override
+  String get quickSplitUnfitOnlyYou => 'Siinä olet vain sinä';
+
+  @override
+  String quickSplitUnfitNoAccount(String name) {
+    return 'Käyttäjällä $name ei ole SPLYTO-tiliä';
+  }
+
+  @override
+  String quickSplitUnfitNotInTrip(String name) {
+    return '$name ei ole tällä matkalla';
+  }
+
+  @override
+  String quickSplitUnfitNotInTripMore(String name, int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$name ja $count muuta eivät ole tällä matkalla',
+      one: '$name ja 1 muu eivät ole tällä matkalla',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get quickSplitUnfitOther => 'Ei voi lisätä tälle matkalle';
 
   @override
   String get expenseSplitAmountFirst => 'Syötä ensin summa tai valitse Riveittäin.';

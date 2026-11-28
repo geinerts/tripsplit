@@ -5658,7 +5658,34 @@ class AppLocalizationsNb extends AppLocalizations {
   String get quickSplitFromTitle => 'Legg til et Quick split';
 
   @override
-  String get quickSplitNoneForTrip => 'Ingen Quick split har bare personer fra denne reisen.';
+  String get quickSplitNoneLoaded => 'Kunne ikke laste inn hurtigdelingene dine. Prøv igjen.';
+
+  @override
+  String get quickSplitUnfitOnlyYou => 'Bare du er med';
+
+  @override
+  String quickSplitUnfitNoAccount(String name) {
+    return '$name har ingen SPLYTO-konto';
+  }
+
+  @override
+  String quickSplitUnfitNotInTrip(String name) {
+    return '$name er ikke med på turen';
+  }
+
+  @override
+  String quickSplitUnfitNotInTripMore(String name, int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$name og $count til er ikke med på turen',
+      one: '$name og 1 til er ikke med på turen',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get quickSplitUnfitOther => 'Kan ikke legges til denne turen';
 
   @override
   String get expenseSplitAmountFirst => 'Skriv inn beløpet først, eller velg Per vare.';
