@@ -4,19 +4,18 @@ import '../../core/ui/app_background.dart';
 import '../router/app_router.dart';
 import 'app_design.dart';
 
-/// Unified page transition used across platforms to avoid iOS-style
-/// side-slide overlap where previous screen remains visible underneath.
+/// Each platform's own page transition: on iOS and macOS the page slides in
+/// from the side and can be swiped back from the edge; elsewhere Android's
+/// transition, with predictive back where the system supports it.
+///
+/// Every page is drawn on its own opaque background, because the app's
+/// scaffolds are transparent: without it, the page underneath would show
+/// through the one sliding over it.
 class AppPageTransitionsBuilder extends PageTransitionsBuilder {
   const AppPageTransitionsBuilder();
 
-  static final Animatable<double> _opacityTween = CurveTween(
-    curve: Curves.easeOutCubic,
-  );
-
-  static final Animatable<Offset> _offsetTween = Tween<Offset>(
-    begin: const Offset(0, 0.015),
-    end: Offset.zero,
-  ).chain(CurveTween(curve: Curves.easeOutCubic));
+  static const _cupertino = CupertinoPageTransitionsBuilder();
+  static const _android = PredictiveBackPageTransitionsBuilder();
 
   @override
   Widget buildTransitions<T>(
@@ -29,67 +28,20 @@ class AppPageTransitionsBuilder extends PageTransitionsBuilder {
     final canvas = AppRouter.authFlowRoutes.contains(route.settings.name)
         ? AppDesign.authCanvas
         : null;
-    if (route.fullscreenDialog) {
-      return _OpaquePageTransition(
-        animation: animation,
-        canvas: canvas,
-        child: FadeTransition(
-          opacity: animation.drive(_opacityTween),
-          child: child,
-        ),
-      );
-    }
-
-    return _OpaquePageTransition(
-      animation: animation,
-      canvas: canvas,
-      child: SlideTransition(
-        position: animation.drive(_offsetTween),
-        child: FadeTransition(
-          opacity: animation.drive(_opacityTween),
-          child: child,
-        ),
-      ),
-    );
-  }
-}
-
-class _OpaquePageTransition extends StatelessWidget {
-  const _OpaquePageTransition({
-    required this.animation,
-    required this.child,
-    this.canvas,
-  });
-
-  final Animation<double> animation;
-  final Widget child;
-
-  /// Fixed backdrop colour; null uses the app's page background for the theme.
-  final Color? canvas;
-
-  @override
-  Widget build(BuildContext context) {
-    return AnimatedBuilder(
-      animation: animation,
-      child: child,
-      builder: (context, child) {
-        final isPopping = animation.status == AnimationStatus.reverse;
-        final backgroundOpacity = isPopping
-            ? animation.value.clamp(0.0, 1.0)
-            : 1.0;
-        return Stack(
-          fit: StackFit.expand,
-          children: [
-            Opacity(
-              opacity: backgroundOpacity,
-              child: canvas != null
-                  ? ColoredBox(color: canvas!, child: const SizedBox.expand())
-                  : const AppBackground(force: true, child: SizedBox.expand()),
-            ),
-            child!,
-          ],
-        );
-      },
+    final opaque = canvas != null
+        ? ColoredBox(color: canvas, child: child)
+        : AppBackground(force: true, child: child);
+    final platform = Theme.of(context).platform;
+    final builder =
+        platform == TargetPlatform.iOS || platform == TargetPlatform.macOS
+        ? _cupertino
+        : _android;
+    return builder.buildTransitions<T>(
+      route,
+      context,
+      animation,
+      secondaryAnimation,
+      opaque,
     );
   }
 }
