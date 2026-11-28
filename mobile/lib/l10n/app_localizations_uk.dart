@@ -1880,6 +1880,32 @@ class AppLocalizationsUk extends AppLocalizations {
   String get quickSplitShareFailed => 'Не вдалося поділитися.';
 
   @override
+  String get quickSplitShareLinkTitle => 'Поділитися посиланням';
+
+  @override
+  String get quickSplitShareLinkBody => 'Будь-хто з посиланням побачить цей рахунок: хто платив і частку кожного. Застосунок не потрібен. Посилання діє 90 днів.';
+
+  @override
+  String get quickSplitShareIncludeReceipt => 'Додати фото чека';
+
+  @override
+  String get quickSplitShareLinkAction => 'Поділитися посиланням';
+
+  @override
+  String quickSplitSharedUntil(String date) {
+    return 'Доступно за посиланням до $date';
+  }
+
+  @override
+  String get quickSplitStopSharing => 'Закрити доступ';
+
+  @override
+  String get quickSplitStopSharingDone => 'Посилання більше не працює.';
+
+  @override
+  String get quickSplitStopSharingFailed => 'Не вдалося закрити доступ.';
+
+  @override
   String quickSplitPaidBy(String name) {
     return 'платив(-ла) $name';
   }

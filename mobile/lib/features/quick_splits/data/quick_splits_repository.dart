@@ -15,6 +15,12 @@ abstract interface class QuickSplitsRepository {
     required int tripId,
     required int expenseId,
   });
+
+  /// Returns the link that anyone can open, making it when there is none.
+  Future<QuickSplitShare> share(int id, {required bool showReceipt});
+
+  /// Stops the link working at once.
+  Future<void> stopSharing(int id);
 }
 
 /// Talks to the quick split actions; nothing is cached on the device.
@@ -82,5 +88,23 @@ class ApiQuickSplitsRepository implements QuickSplitsRepository {
       'trip_id': tripId,
       'expense_id': expenseId,
     });
+  }
+
+  @override
+  Future<QuickSplitShare> share(int id, {required bool showReceipt}) async {
+    final response = await _call('share_quick_split', {
+      'id': id,
+      'show_receipt': showReceipt,
+    });
+    final share = QuickSplitShare.tryParse(response['share']);
+    if (share == null) {
+      throw const FormatException('Invalid share link.');
+    }
+    return share;
+  }
+
+  @override
+  Future<void> stopSharing(int id) async {
+    await _call('revoke_quick_split_share', {'id': id});
   }
 }

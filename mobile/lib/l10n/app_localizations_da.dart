@@ -1866,6 +1866,32 @@ class AppLocalizationsDa extends AppLocalizations {
   String get quickSplitShareFailed => 'Kunne ikke dele.';
 
   @override
+  String get quickSplitShareLinkTitle => 'Del et link';
+
+  @override
+  String get quickSplitShareLinkBody => 'Alle med linket kan se regningen: hvem der betalte og hver persons del. Appen er ikke nødvendig. Linket virker i 90 dage.';
+
+  @override
+  String get quickSplitShareIncludeReceipt => 'Medtag foto af kvitteringen';
+
+  @override
+  String get quickSplitShareLinkAction => 'Del link';
+
+  @override
+  String quickSplitSharedUntil(String date) {
+    return 'Delt via link indtil $date';
+  }
+
+  @override
+  String get quickSplitStopSharing => 'Stop deling';
+
+  @override
+  String get quickSplitStopSharingDone => 'Linket virker ikke længere.';
+
+  @override
+  String get quickSplitStopSharingFailed => 'Kunne ikke stoppe delingen.';
+
+  @override
   String quickSplitPaidBy(String name) {
     return 'betalt af $name';
   }

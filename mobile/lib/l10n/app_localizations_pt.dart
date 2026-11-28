@@ -1866,6 +1866,32 @@ class AppLocalizationsPt extends AppLocalizations {
   String get quickSplitShareFailed => 'Não foi possível partilhar.';
 
   @override
+  String get quickSplitShareLinkTitle => 'Partilhar uma ligação';
+
+  @override
+  String get quickSplitShareLinkBody => 'Quem tiver a ligação vê esta conta: quem pagou e a parte de cada pessoa. Não precisa da app. A ligação funciona durante 90 dias.';
+
+  @override
+  String get quickSplitShareIncludeReceipt => 'Incluir a foto do recibo';
+
+  @override
+  String get quickSplitShareLinkAction => 'Partilhar ligação';
+
+  @override
+  String quickSplitSharedUntil(String date) {
+    return 'Partilhado por ligação até $date';
+  }
+
+  @override
+  String get quickSplitStopSharing => 'Parar de partilhar';
+
+  @override
+  String get quickSplitStopSharingDone => 'A ligação já não funciona.';
+
+  @override
+  String get quickSplitStopSharingFailed => 'Não foi possível parar de partilhar.';
+
+  @override
   String quickSplitPaidBy(String name) {
     return 'pago por $name';
   }

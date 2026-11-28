@@ -107,7 +107,8 @@ moved check).
 - Share on a quick split: calls `share_quick_split` and shares `"{title} · {total}\n{url}"`
   through the system share sheet. With a receipt, a switch "Include the receipt photo"
   (off by default) first. Offline or on error: the current plain text, as now.
-- The creator sees "Shared link · Stop sharing" in the quick split's menu.
+- Under Share, the creator sees "Shared by link until {date} · Stop sharing" while a link
+  works. People in the quick split who didn't create it share the plain text, as before.
 - New texts in all 16 languages.
 
 ## Privacy and policy

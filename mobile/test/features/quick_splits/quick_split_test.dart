@@ -48,6 +48,17 @@ class _Repository implements QuickSplitsRepository {
   @override
   Future<QuickSplit> update(int id, QuickSplitInput input) async =>
       _split(id, input.date);
+
+  @override
+  Future<QuickSplitShare> share(int id, {required bool showReceipt}) async =>
+      QuickSplitShare(
+        url: Uri.parse('https://splyto.eu/split?code=abc'),
+        expiresAt: null,
+        showReceipt: showReceipt,
+      );
+
+  @override
+  Future<void> stopSharing(int id) async {}
 }
 
 void main() {

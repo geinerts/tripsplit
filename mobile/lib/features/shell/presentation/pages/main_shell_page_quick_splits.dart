@@ -105,6 +105,22 @@ extension _MainShellPageQuickSplits on _MainShellPageState {
       context,
       split: full,
       canAddToTrip: fitting.isNotEmpty,
+      shareLink: full.canEdit
+          ? ({required showReceipt}) async {
+              if (widget.authController.currentUser?.id != account) {
+                throw StateError('Account changed.');
+              }
+              return controller.share(full.id, showReceipt: showReceipt);
+            }
+          : null,
+      stopSharing: full.canEdit
+          ? () async {
+              if (widget.authController.currentUser?.id != account) {
+                throw StateError('Account changed.');
+              }
+              await controller.stopSharing(full.id);
+            }
+          : null,
       receiptAction: hasReceipt
           ? ReceiptOpenAction(
               key: ValueKey('quick-receipt-$account-${full.id}'),

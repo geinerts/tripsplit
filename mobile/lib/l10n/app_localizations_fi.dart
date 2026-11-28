@@ -1866,6 +1866,32 @@ class AppLocalizationsFi extends AppLocalizations {
   String get quickSplitShareFailed => 'Jakaminen epäonnistui.';
 
   @override
+  String get quickSplitShareLinkTitle => 'Jaa linkki';
+
+  @override
+  String get quickSplitShareLinkBody => 'Kuka tahansa linkin saanut näkee laskun: kuka maksoi ja jokaisen osuuden. Sovellusta ei tarvita. Linkki toimii 90 päivää.';
+
+  @override
+  String get quickSplitShareIncludeReceipt => 'Liitä kuitin kuva';
+
+  @override
+  String get quickSplitShareLinkAction => 'Jaa linkki';
+
+  @override
+  String quickSplitSharedUntil(String date) {
+    return 'Jaettu linkillä $date asti';
+  }
+
+  @override
+  String get quickSplitStopSharing => 'Lopeta jakaminen';
+
+  @override
+  String get quickSplitStopSharingDone => 'Linkki ei enää toimi.';
+
+  @override
+  String get quickSplitStopSharingFailed => 'Jakamista ei voitu lopettaa.';
+
+  @override
   String quickSplitPaidBy(String name) {
     return 'maksoi $name';
   }
