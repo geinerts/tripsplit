@@ -89,17 +89,17 @@ final class PremiumGrantTest extends TestCase
 
     public function test_feature_list_decides_each_feature_and_refuses_unlisted_ones(): void
     {
+        // The year summary left Premium on 2026-11-28; it is free behind a feature flag.
         self::assertSame([
             'trip_export' => ['tier' => 'premium', 'scope' => 'trip'],
-            'year_summary' => ['tier' => 'premium', 'scope' => 'account'],
         ], premium_feature_catalog());
         $free = premium_access_for_user($this->pdo, 8, $this->now, ['enabled' => false]);
-        self::assertSame(['trip_export' => false, 'year_summary' => false], $free['features']);
+        self::assertSame(['trip_export' => false], $free['features']);
         self::assertFalse(premium_feature_allowed($free, 'trip_export'));
         $this->mutate($this->body());
         $premium = premium_access_for_user($this->pdo, 7, $this->now, ['enabled' => false]);
         self::assertTrue(premium_feature_allowed($premium, 'trip_export'));
-        self::assertFalse(premium_feature_allowed($premium, 'year_summary'), 'The September profile hides the seasonal summary');
+        self::assertFalse(premium_feature_allowed($premium, 'year_summary'), 'Premium no longer lists the year summary');
         self::assertFalse(premium_feature_allowed($premium, 'unlisted'));
         self::assertFalse(premium_feature_allowed(['features' => ['trip_export' => 'yes']], 'trip_export'));
     }
@@ -124,7 +124,7 @@ final class PremiumGrantTest extends TestCase
         self::assertSame('free', premium_access_for_user($this->pdo, 8, $this->now, ['enabled' => false, 'until' => ''])['plan']);
     }
 
-    public function test_year_summary_season_boundaries_apply_to_launch_and_personal_premium(): void
+    public function test_year_summary_season_boundaries(): void
     {
         foreach ([
             '2026-12-31T23:59:59Z' => null,
@@ -135,13 +135,10 @@ final class PremiumGrantTest extends TestCase
         ] as $stamp => $year) {
             $now = strtotime($stamp);
             self::assertSame($year, year_summary_season_year($now));
+            // Premium no longer gates it, in or out of the season.
             $launch = premium_access_for_user($this->pdo, 8, $now, ['enabled' => true, 'until' => '']);
-            $personal = premium_access_payload(7, 'premium', '2029-01-01 00:00:00', $now);
-            foreach ([$launch, $personal] as $access) {
-                self::assertSame($year !== null, premium_feature_allowed($access, 'year_summary'), $stamp);
-                self::assertTrue(premium_feature_allowed($access, 'trip_export'));
-            }
-            self::assertFalse(premium_features_for_plan('free', $now)['year_summary']);
+            self::assertFalse(premium_feature_allowed($launch, 'year_summary'), $stamp);
+            self::assertArrayNotHasKey('year_summary', premium_features_for_plan('premium', $now));
         }
     }
 

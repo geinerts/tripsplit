@@ -99,6 +99,25 @@ switch ($scenario) {
         $out['payload_keys'] = array_keys(feature_flags_for_user($pdo, 1));
         $out['unknown_key'] = feature_enabled_for_user($pdo, 1, 'not_a_flag');
         break;
+    case 'year_summary':
+        // Its season (January–March) applies, except to accounts with a grant.
+        $outside = strtotime('2026-11-28T12:00:00Z');
+        $inside = strtotime('2027-01-15T12:00:00Z');
+        $pdo->exec("INSERT INTO trip_feature_flags (flag_key, mode) VALUES ('year_summary', 'everyone')");
+        $pdo->exec("INSERT INTO trip_user_features (user_id, flag_key) VALUES (1, 'year_summary')");
+        $at = static fn(int $now): array => [
+            1 => feature_flags_for_user($pdo, 1, $now)['year_summary'],
+            2 => feature_flags_for_user($pdo, 2, $now)['year_summary'],
+        ];
+        $out['everyone_outside'] = $at($outside);
+        $out['everyone_inside'] = $at($inside);
+        $pdo->exec("UPDATE trip_feature_flags SET mode = 'allowlist' WHERE flag_key = 'year_summary'");
+        $out['allowlist_outside'] = $at($outside);
+        $out['allowlist_inside'] = $at($inside);
+        $pdo->exec("UPDATE trip_feature_flags SET mode = 'off' WHERE flag_key = 'year_summary'");
+        $out['off_inside'] = $at($inside);
+        $out['receipt_untouched'] = feature_flags_for_user($pdo, 1, $outside)['receipt_ai'];
+        break;
     case 'missing_tables':
         $out['flags'] = feature_flags_for_user($pdo, 1);
         $out['list'] = call('admin_panel_features_action')['status'];

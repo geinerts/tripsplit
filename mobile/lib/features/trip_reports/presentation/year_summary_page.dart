@@ -23,12 +23,6 @@ import '../domain/year_summary.dart';
 part 'year_summary_card.dart';
 part 'year_summary_story.dart';
 
-/// Whether the app offers the year summary. Off until the owner decides to
-/// launch it; the server's season and Premium rules still apply once it is on.
-const bool yearSummaryOfferedInApp = bool.fromEnvironment(
-  'YEAR_SUMMARY_IN_APP',
-);
-
 /// Opens the year summary over the current screen: the card pops up on a
 /// dimmed, blurred background, with details below it that stay private.
 Future<void> showYearSummary(

@@ -1,7 +1,6 @@
 /// Feature names from the server's Premium feature list.
 abstract final class PremiumFeatures {
   static const tripExport = 'trip_export';
-  static const yearSummary = 'year_summary';
 }
 
 /// Display-only server projection. Never persisted or used to authorize actions.

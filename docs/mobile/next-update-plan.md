@@ -488,11 +488,12 @@ Teksti visās 16 valodās (ARB, `flutter gen-l10n`).
 
 ## I. Gada kopsavilkums Quick Start stilā (vēlāk; izvēlēts 2026-11-22)
 
-**Statuss (2026-11-27):** jaunais ekrāns uzbūvēts (viens logs), vecais izdzēsts. Lietotnē tas **ir
-paslēpts**: ieeju profilā rāda tikai, ja `yearSummaryOfferedInApp` ir ieslēgts
-(`--dart-define=YEAR_SUMMARY_IN_APP=true`, noklusējumā izslēgts). 2026. gada sezonā
-(janvāris–marts) to neatver. Kā un kad ieslēgt (lietotnes versija vai servera karogs
-`docs/api/feature-flags.md`), jāizlemj pirms palaišanas; servera karogs būtu API izmaiņa.
+**Statuss (2026-11-28):** jaunais kopsavilkums uzbūvēts, vecais izdzēsts. Īpašnieka lēmums:
+**bez maksas visiem** un ieslēdzams ar **servera karogu `year_summary`** (off / allowlist /
+everyone admin panelī), nevis ar lietotnes būves slēdzi. Karogs ievēro sezonu (janvāris–
+marts); konti ar piešķīrumu (testētāji) to redz arī ārpus sezonas ar tekošo gadu. Sākumā
+karogs ir `off`. Līgums: [trip-reports.md](../api/trip-reports.md),
+[feature-flags.md](../api/feature-flags.md).
 
 Ekrānuzņēmumi ar demonstrācijas datiem: `flutter test test/features/trip_reports/trip_reports_test.dart
 --dart-define=YEAR_SUMMARY_PREVIEWS=true` raksta `output/design/year-summary/` ekrānu (`app-*`), kopīgoto attēlu (`shared-*`) un to sarakstē (`chat-*`).

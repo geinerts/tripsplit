@@ -28,14 +28,26 @@ final class FeatureFlagsTest extends TestCase
         self::assertSame(['1' => false, '2' => false, '3' => false, '4' => false, '5' => false], $r['off']);
         self::assertSame(['1' => true, '2' => false, '3' => false, '4' => false, '5' => false], $r['allowlist']);
         self::assertSame(['1' => true, '2' => true, '3' => false, '4' => false, '5' => false], $r['everyone']);
-        self::assertSame(['receipt_ai'], $r['payload_keys']);
+        self::assertSame(['receipt_ai', 'year_summary'], $r['payload_keys']);
         self::assertFalse($r['unknown_key']);
+    }
+
+    public function test_year_summary_keeps_its_season_except_for_granted_testers(): void
+    {
+        $r = $this->scenario('year_summary');
+        // 1 has a grant (tester), 2 has none.
+        self::assertSame(['1' => true, '2' => false], $r['everyone_outside']);
+        self::assertSame(['1' => true, '2' => true], $r['everyone_inside']);
+        self::assertSame(['1' => true, '2' => false], $r['allowlist_outside']);
+        self::assertSame(['1' => true, '2' => false], $r['allowlist_inside']);
+        self::assertSame(['1' => false, '2' => false], $r['off_inside']);
+        self::assertFalse($r['receipt_untouched']);
     }
 
     public function test_missing_tables_mean_off(): void
     {
         $r = $this->scenario('missing_tables');
-        self::assertSame(['receipt_ai' => false], $r['flags']);
+        self::assertSame(['receipt_ai' => false, 'year_summary' => false], $r['flags']);
         self::assertSame(503, $r['list']);
     }
 
@@ -71,7 +83,10 @@ final class FeatureFlagsTest extends TestCase
         self::assertSame('allowlist', $r['list']['flags'][0]['mode']);
         self::assertSame([1], array_column($r['list']['grants'], 'user_id'));
         self::assertSame('owner', $r['list']['grants'][0]['granted_by']);
-        self::assertSame([['key' => 'receipt_ai', 'label' => 'AI receipt reading', 'granted' => true, 'effective' => true]], $r['detail']);
+        self::assertSame([
+            ['key' => 'receipt_ai', 'label' => 'AI receipt reading', 'granted' => true, 'effective' => true],
+            ['key' => 'year_summary', 'label' => 'Year summary', 'granted' => false, 'effective' => false],
+        ], $r['detail']);
         self::assertSame(['ok' => true, 'enabled' => false, 'effective' => false], $r['revoke']['payload']);
         self::assertSame(['1' => false, '2' => false, '3' => false, '4' => false, '5' => false], $r['effective_after_revoke']);
         self::assertSame(['feature.user_grant', 'feature.user_revoke'], $r['audit']);

@@ -7,25 +7,22 @@ extension _MainShellPageNavigation on _MainShellPageState {
     unawaited(showYearSummary(context, repository));
   }
 
-  /// The Home card for the year summary, while the app offers it and the
-  /// server's season and Premium rules allow it.
-  Widget? _yearSummaryBannerOrNull(BuildContext context) {
-    if (!yearSummaryOfferedInApp || widget.tripReportsRepository == null) {
-      return null;
-    }
-    final access = widget.authController.currentUser?.premiumAccess;
-    if (access?.allows(PremiumFeatures.yearSummary) != true) return null;
-    return YearSummaryHomeBanner(
-      year: DateTime.now().year - 1,
-      onOpen: _openYearSummary,
-    );
-  }
-
-  WidgetBuilder? get _yearSummaryBanner =>
-      !yearSummaryOfferedInApp || widget.tripReportsRepository == null
+  /// The Home card for the year summary, while the server's `year_summary`
+  /// flag offers it (it already applies the season).
+  WidgetBuilder? get _yearSummaryBanner => widget.tripReportsRepository == null
       ? null
-      : (context) =>
-            _yearSummaryBannerOrNull(context) ?? const SizedBox.shrink();
+      : (context) => widget.authController.currentUser?.yearSummary == true
+            ? YearSummaryHomeBanner(
+                year: _yearSummaryYear,
+                onOpen: _openYearSummary,
+              )
+            : const SizedBox.shrink();
+
+  /// The season's year in January–March; a tester outside it sees this year.
+  int get _yearSummaryYear {
+    final now = DateTime.now().toUtc();
+    return now.month <= 3 ? now.year - 1 : now.year;
+  }
 
   Future<void> _openTravelMap({int? tripId}) async {
     final repository = widget.travelPlacesRepository;
