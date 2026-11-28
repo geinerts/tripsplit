@@ -1,0 +1,48 @@
+/* Shared quick split page (/split). Builds on the share page styles in splyto_share_page_text.php. */
+.split-page { align-items: flex-start; }
+.split-page .content { text-align: left; padding: 8px 4px 24px; }
+
+.bill { margin: 4px 0 18px; padding: 22px 20px; border-radius: 22px; background: #0B1B3A; color: #FFFFFF; box-shadow: 0 14px 34px rgba(11, 27, 58, 0.22); }
+.bill-date { margin: 0 0 4px; color: #BFEFEA; font-size: 14px; font-weight: 600; }
+.bill-title { margin: 0 0 14px; color: #FFFFFF; font-size: 26px; line-height: 1.15; font-weight: 800; letter-spacing: -0.4px; overflow-wrap: anywhere; }
+.bill-total { margin: 0; display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+.bill-total .label { color: #C9D6E8; font-size: 15px; }
+.bill-total strong { font-size: 30px; font-weight: 800; letter-spacing: -0.5px; font-variant-numeric: tabular-nums; }
+.bill-payer { margin: 6px 0 0; color: #C9D6E8; font-size: 14px; }
+
+.switcher { display: flex; gap: 8px; margin: 0 -4px 14px; padding: 2px 4px 6px; overflow-x: auto; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+.switcher::-webkit-scrollbar { display: none; }
+.pill { flex: 0 0 auto; padding: 9px 16px; border-radius: 999px; background: rgba(255, 255, 255, 0.78); border: 1px solid #DCE7E4; color: #0B1B3A; font-size: 15px; font-weight: 600; text-decoration: none; white-space: nowrap; }
+.pill.on { background: #0B1B3A; border-color: #0B1B3A; color: #FFFFFF; }
+.pill:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+
+.panel { display: block; margin-bottom: 14px; padding: 16px 18px; border-radius: 18px; background: #FFFFFF; box-shadow: 0 6px 20px rgba(11, 27, 58, 0.08); color: #0B1B3A; }
+.panel h2 { margin: 0 0 10px; color: #5F6B76; font-size: 13px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; }
+.rows { list-style: none; margin: 0; padding: 0; }
+.rows li { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-top: 1px solid #EEF2F1; }
+.rows li:first-child { border-top: 0; padding-top: 2px; }
+.rows .name { flex: 1; min-width: 0; font-size: 16px; font-weight: 600; overflow-wrap: anywhere; }
+.rows .amount, .person-total .amount { font-variant-numeric: tabular-nums; font-weight: 700; white-space: nowrap; }
+.items .name { font-weight: 500; }
+.avatar { flex: 0 0 auto; display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: 50%; background: #BFEFEA; color: #0B1B3A; font-size: 14px; font-weight: 800; }
+.badge { margin-left: 6px; padding: 2px 8px; border-radius: 999px; background: #E4F4EC; color: #1E6143; font-size: 12px; font-style: normal; font-weight: 700; vertical-align: 2px; }
+.who { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 4px; }
+.who i { display: inline-flex; align-items: center; justify-content: center; min-width: 24px; height: 24px; padding: 0 5px; border-radius: 12px; background: #EFF9F3; color: #263654; font-size: 11px; font-style: normal; font-weight: 700; }
+.share { display: block; margin-top: 2px; color: #5F6B76; font-size: 13px; font-weight: 500; }
+
+.person-total { display: flex; align-items: center; gap: 12px; }
+.person-total .name { flex: 1; min-width: 0; font-size: 17px; font-weight: 700; overflow-wrap: anywhere; }
+.person-total .amount { font-size: 24px; }
+
+.receipt-row { display: flex; justify-content: space-between; align-items: center; font-weight: 600; text-decoration: none; }
+.receipt-row .view { color: #0098AD; }
+.viewer { display: none; position: fixed; inset: 0; z-index: 10; flex-direction: column; align-items: center; padding: 16px; background: rgba(11, 27, 58, 0.94); overflow-y: auto; }
+.viewer:target { display: flex; }
+.viewer img { display: block; max-width: 100%; height: auto; border-radius: 12px; background: #FFFFFF; }
+.viewer-close { align-self: flex-end; margin-bottom: 12px; padding: 8px 14px; border-radius: 999px; background: #FFFFFF; color: #0B1B3A; font-weight: 700; text-decoration: none; }
+
+.cta { margin-top: 26px; text-align: center; }
+.cta p { margin-bottom: 14px; color: #263654; font-size: 16px; font-weight: 600; }
+.cta .btn + .btn { margin-top: 10px; }
+.cta .btn-secondary { background: transparent; border-color: #0B1B3A; color: #0B1B3A; }
+.split-page h1.alone { margin-top: 12px; text-align: center; }

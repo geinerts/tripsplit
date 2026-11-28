@@ -1172,3 +1172,74 @@ function share_render_friend_qr_card(string $friendUrl, array $friendMeta = [])
     share_draw_logo($image, $rightCenterX - (int) ($logoWidth / 2), 352, $logoWidth, true);
     return $image;
 }
+
+/**
+ * Preview card for a shared quick split, in the Quick Start colours. No words that need a
+ * language: title, total, date and up to three people with their part. Everything that must
+ * stay readable sits in the middle 630 pixels, which WhatsApp's small card keeps.
+ *
+ * @param array{title:string,total:string,date:string,people:array<int,array{name:string,amount:string}>} $meta
+ */
+function share_render_quick_split_card(array $meta)
+{
+    $image = share_create_canvas();
+    share_fill_gradient($image, '#BFEFEA', '#FFF8EC');
+
+    // Ribbons at both sides, outside the central square.
+    imagesetthickness($image, 26);
+    $ribbons = [['#008576', -40, 120, 230, -60], ['#00B8CF', -60, 300, 250, 40], ['#E51B88', -40, 520, 220, 330],
+        ['#008576', 960, 690, 1250, 430], ['#00B8CF', 950, 520, 1260, 250], ['#E51B88', 990, 330, 1260, 100]];
+    foreach ($ribbons as [$hex, $x1, $y1, $x2, $y2]) {
+        imageline($image, $x1, $y1, $x2, $y2, share_hex_color($image, $hex, 30));
+    }
+    imagesetthickness($image, 1);
+
+    $ink = share_hex_color($image, '#0B1B3A');
+    $muted = share_hex_color($image, '#4A5763');
+    $center = 600;
+    $safe = 560;
+    $centered = static function (string $text, int $size, int $y, int $color, bool $bold) use ($image, $center): void {
+        share_draw_text($image, $text, $size, $center - (int) (share_text_width($text, $size, $bold) / 2), $y, $color, $bold);
+    };
+    $fit = static function (string $text, int $size, bool $bold) use ($safe): string {
+        if (share_text_width($text, $size, $bold) <= $safe) {
+            return $text;
+        }
+        while (mb_strlen($text) > 1 && share_text_width($text . '...', $size, $bold) > $safe) {
+            $text = rtrim(mb_substr($text, 0, -1));
+        }
+        return $text . '...';
+    };
+
+    share_draw_logo($image, $center - 105, 54, 210, false);
+    $centered($fit($meta['title'], 40, true), 40, 228, $ink, true);
+    $centered($fit($meta['total'], 72, true), 72, 320, $ink, true);
+    if ($meta['date'] !== '') {
+        $centered($fit($meta['date'], 24, false), 24, 366, $muted, false);
+    }
+
+    $people = array_slice($meta['people'], 0, 3);
+    $more = count($meta['people']) - count($people);
+    if ($people !== []) {
+        $rowHeight = 46;
+        $top = 404;
+        $bottom = $top + count($people) * $rowHeight + ($more > 0 ? 34 : 0) + 18;
+        share_draw_rounded_rect($image, $center - 290, $top, $center + 290, min(616, $bottom), 22, share_hex_color($image, '#FFFFFF', 16));
+        $y = $top + 40;
+        foreach ($people as $person) {
+            $amount = $person['amount'];
+            $amountWidth = share_text_width($amount, 26, true);
+            $name = $person['name'];
+            while (mb_strlen($name) > 1 && share_text_width($name, 26, false) > 500 - $amountWidth - 24) {
+                $name = rtrim(mb_substr($name, 0, -1));
+            }
+            share_draw_text($image, $name, 26, $center - 260, $y, $ink, false);
+            share_draw_text($image, $amount, 26, $center + 260 - $amountWidth, $y, $ink, true);
+            $y += $rowHeight;
+        }
+        if ($more > 0) {
+            $centered('+' . $more, 22, $y - 8, $muted, true);
+        }
+    }
+    return $image;
+}

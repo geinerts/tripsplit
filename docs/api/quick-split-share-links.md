@@ -1,6 +1,7 @@
 # Quick split share links
 
-Status: **proposal, waiting for the owner's approval** (2026-11-28). Nothing here is built.
+Status: approved by the owner on 2026-11-28 (phase 1). Needs the migration below before the
+server is deployed.
 Mockups: `output/design/quick-split-share/` (`chat-quick-start.png`, `page-app-style.png`,
 `page-items.png`, `items-switcher.png`, `receipt-view.png`, `og-quick-start.png`).
 
@@ -33,7 +34,7 @@ link per quick split; sharing again returns the same link.
 Returns the active link, creating it when there is none:
 
 ```json
-{"ok": true, "share": {"url": "https://splyto.eu/s/Kq3vT8mW1pZx7RbN2cYd4A",
+{"ok": true, "share": {"url": "https://splyto.eu/split?code=Kq3vT8mW1pZx7RbN2cYd4A",
   "expires_at": "2027-02-26T12:00:00Z", "show_receipt": false}}
 ```
 
@@ -53,7 +54,9 @@ Returns the active link, creating it when there is none:
 For the creator only, adds `"share": {"url", "expires_at", "show_receipt"}` or `null`. Others
 get no `share` field. Older apps ignore it.
 
-## Public page: `GET https://splyto.eu/s/{token}`
+## Public page: `GET https://splyto.eu/split?code={token}`
+
+Served like `/invite` (`split.php` at the site root), so no Nginx change is needed.
 
 - Optional `?p={person id}` only chooses which person the switcher shows first ("You"). It
   grants nothing: every part is visible under "Everyone" anyway.
@@ -63,33 +66,41 @@ get no `share` field. Older apps ignore it.
 - Names are the account's current nickname or the name saved with the quick split. **No
   avatars, emails, user ids or profile links**; people are shown with initials.
 - Receipt: a "Receipt · View" row only when `show_receipt` is true; the photo opens full
-  screen and is served by `GET /s/{token}/receipt`, which checks the link on every request.
-- "Get the app" with App Store / Google Play links (by device, like `/invite`), and "Open in
-  SPLYTO" for people who have the app.
+  screen from a short-lived signed address (`api/receipt-media.php`, as in the app), made
+  only when the page loads with a valid link.
+- "Get the app" with App Store and Google Play links. No "Open in SPLYTO": the app has no
+  screen for a link like this yet, and `/split` is not an app link, so it always opens in the
+  browser. The page needs no JavaScript (the person switcher is plain links, the receipt
+  opens with `#receipt`).
 - Language from `Accept-Language`, all 16 app languages, like the invite page.
 - Not found, revoked, expired, deleted, or added to a trip: one neutral page "This bill is no
   longer shared" with no details and the same status (404), so a token can't be probed.
 - Headers like the invite page: `noindex, nofollow`, `Cache-Control: no-store`,
   `Referrer-Policy: no-referrer`, the site CSP (no inline styles, no third-party scripts).
-- Rate limit per IP on the page, receipt and image (new limit `quick_split_share_view`).
+- Rate limit per IP on the page and image: `quick_split_share_view`, 120 per 10 minutes. The
+  receipt uses the existing signed media address and its own checks.
 
 ### Preview image: `GET /share-image.php?type=quick_split&code={token}`
 
-1200 × 630 JPEG in the Quick Start colours (mint to cream, ribbons, ink text), with the title,
-date, payer, total and up to 4 people with their amounts, and the SPLYTO logo; the main text
-stays in the central square that small WhatsApp cards show. Invalid links get the generic
-card. Open Graph: title `Matiss shared a bill: €35.09`, description `See your share`.
+1200 × 630 JPEG in the Quick Start colours (mint to cream, ribbons, ink text), with the
+SPLYTO logo, title, total, date and up to 3 people with their amounts (`+N` for more); no
+other words, so it needs no language. The main text stays in the central square that small
+WhatsApp cards show. Sent with `Cache-Control: no-store`. Invalid links get the generic card.
+Open Graph (in the page's language): title `Matiss shared a bill: €35.09`, description
+`See your share`.
 
 ## Storage
 
 Migration `sql/migrations/2026-11-28-quick-split-shares.sql` (runs before the server update):
 
-`trip_quick_split_shares`: `id`, `quick_split_id` (FK, cascade on delete), `token_hash`
-(SHA-256 of the token, unique; the token itself is never stored), `show_receipt`,
-`created_by`, `created_at`, `expires_at`, `revoked_at`.
+`trip_quick_split_shares`: `id`, `quick_split_id` (FK, cascade on delete), `token_salt`
+(random), `token_hash` (SHA-256 of the token, unique), `show_receipt`, `created_by`,
+`created_at`, `expires_at`, `revoked_at`.
 
-The token is 16 random bytes in base62 (22 characters). Deleting the quick split, deleting
-the creator's account, or moving it to a trip ends the link (cascade or the moved check).
+The token is 22 URL-safe characters (16 bytes), made from `token_salt` with a server key, so
+the same link can be shown again but the database alone can't rebuild one. Deleting the quick
+split, deleting the creator's account, or moving it to a trip ends the link (cascade or the
+moved check).
 
 ## App
 

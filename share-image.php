@@ -34,4 +34,42 @@ if ($type === 'trip' || $type === 'invite') {
     share_output_image(share_render_trip_card($tripName, $imagePath), 0, $format);
 }
 
+if ($type === 'quick_split') {
+    require_once __DIR__ . '/api/lib/web/splyto_share_page_text.php';
+    require_once __DIR__ . '/api/lib/web/splyto_split_page_text.php';
+    require_once __DIR__ . '/api/lib/actions/quick_splits_actions.php';
+    $bill = null;
+    try {
+        $pdo = db();
+        if (rate_limit_try(
+            $pdo,
+            'quick_split_share_view',
+            client_ip_address(),
+            QUICK_SPLIT_SHARE_VIEW_IP_MAX,
+            QUICK_SPLIT_SHARE_VIEW_WINDOW_SEC
+        )) {
+            $resolved = quick_split_share_resolve($pdo, share_param(['code']));
+            $bill = $resolved !== null ? quick_split_share_page_data($pdo, $resolved) : null;
+        }
+    } catch (Throwable $error) {
+        error_log('Quick split share image failed.');
+    }
+    if ($bill === null) {
+        share_output_image(share_render_fallback_card('Splyto', 'Split bills with friends.'), 60, 'jpeg');
+    }
+    $language = 'en';
+    $money = static fn (int $cents): string => splyto_split_money($cents, $bill['currency_code'], $language);
+    $people = array_map(
+        static fn (array $person): array => ['name' => $person['name'], 'amount' => $money($person['amount_cents'])],
+        $bill['people']
+    );
+    // Not cached: the link can be stopped at any time, and the card shows names.
+    share_output_image(share_render_quick_split_card([
+        'title' => $bill['note'] !== '' ? $bill['note'] : splyto_split_text($language, 'title_fallback'),
+        'total' => $money($bill['amount_cents']),
+        'date' => splyto_split_date($bill['date'], $language),
+        'people' => $people,
+    ]), 0, 'jpeg');
+}
+
 share_output_png(share_render_fallback_card('Splyto', 'Open the link in the app.'), 60);

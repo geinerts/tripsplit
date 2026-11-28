@@ -60,6 +60,8 @@ function api_action_handlers(): array
         'list_quick_splits' => 'list_quick_splits_action',
         'get_quick_split' => 'get_quick_split_action',
         'move_quick_split_to_trip' => 'move_quick_split_to_trip_action',
+        'share_quick_split' => 'share_quick_split_action',
+        'revoke_quick_split_share' => 'revoke_quick_split_share_action',
         'rename_trip_guest' => 'rename_trip_guest_action',
         'remove_trip_member' => 'remove_trip_member_action',
         'leave_trip' => 'leave_trip_action',
