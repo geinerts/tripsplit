@@ -115,20 +115,20 @@ void main() {
     await tester.tap(find.text('open'));
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 16));
-    // First frames of the transition: the opaque backdrop behind the fading
-    // auth page (the top route) must already be the dark auth canvas.
-    final pageStack = find
-        .ancestor(of: find.text('Reset password'), matching: find.byType(Stack))
-        .last;
-    final backdrop = tester.widget<ColoredBox>(
-      find
-          .descendant(
-            of: find.descendant(of: pageStack, matching: find.byType(Opacity)),
-            matching: find.byType(ColoredBox),
-          )
-          .first,
-    );
-    expect(backdrop.color, AppDesign.authCanvas);
+    // First frames of the transition: the page's own opaque backdrop (the
+    // nearest coloured box around it) must already be the dark auth canvas.
+    Color? nearest;
+    tester.element(find.text('Reset password')).visitAncestorElements((
+      element,
+    ) {
+      final widget = element.widget;
+      if (widget is ColoredBox) {
+        nearest = widget.color;
+        return false;
+      }
+      return true;
+    });
+    expect(nearest, AppDesign.authCanvas);
     await tester.pumpAndSettle();
   });
 }
