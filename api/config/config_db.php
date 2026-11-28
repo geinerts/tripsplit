@@ -45,6 +45,7 @@ function table_name(string $key): string
         'quick_split_people' => DB_TABLE_PREFIX . 'quick_split_people',
         'quick_split_items' => DB_TABLE_PREFIX . 'quick_split_items',
         'quick_split_item_people' => DB_TABLE_PREFIX . 'quick_split_item_people',
+        'quick_split_shares' => DB_TABLE_PREFIX . 'quick_split_shares',
         'feature_flags' => DB_TABLE_PREFIX . 'feature_flags',
         'user_features' => DB_TABLE_PREFIX . 'user_features',
         'ai_scans' => DB_TABLE_PREFIX . 'ai_scans',

@@ -171,9 +171,15 @@ They don't call the new actions and don't show the tab. A `quick_split_added` no
 appears in their inbox with the English text from the server, and tapping it does nothing
 because it has no trip. Trips, expenses, balances and every existing response are unchanged.
 
+## Share links
+
+The creator can share a link that anyone can open in a browser (`share_quick_split`,
+`revoke_quick_split_share`, and `share` in `get_quick_split`). See
+[quick-split-share-links.md](quick-split-share-links.md).
+
 ## Account deletion
 
-Deleting the creator's account deletes their quick splits. Deleting another person's account
+Deleting the creator's account deletes their quick splits and their share links. Deleting another person's account
 keeps the quick split and shows the name saved with it.
 
 ## Migration

@@ -1866,6 +1866,32 @@ class AppLocalizationsNl extends AppLocalizations {
   String get quickSplitShareFailed => 'Delen mislukt.';
 
   @override
+  String get quickSplitShareLinkTitle => 'Een link delen';
+
+  @override
+  String get quickSplitShareLinkBody => 'Iedereen met de link ziet deze rekening: wie betaalde en ieders deel. De app is niet nodig. De link werkt 90 dagen.';
+
+  @override
+  String get quickSplitShareIncludeReceipt => 'Foto van de bon toevoegen';
+
+  @override
+  String get quickSplitShareLinkAction => 'Link delen';
+
+  @override
+  String quickSplitSharedUntil(String date) {
+    return 'Gedeeld via link tot $date';
+  }
+
+  @override
+  String get quickSplitStopSharing => 'Stoppen met delen';
+
+  @override
+  String get quickSplitStopSharingDone => 'De link werkt niet meer.';
+
+  @override
+  String get quickSplitStopSharingFailed => 'Kon niet stoppen met delen.';
+
+  @override
   String quickSplitPaidBy(String name) {
     return 'betaald door $name';
   }

@@ -69,6 +69,11 @@ class QuickSplitsController extends ChangeNotifier {
 
   Future<QuickSplit> get(int id) => repository.get(id);
 
+  Future<QuickSplitShare> share(int id, {required bool showReceipt}) =>
+      repository.share(id, showReceipt: showReceipt);
+
+  Future<void> stopSharing(int id) => repository.stopSharing(id);
+
   /// A fresh, authorized link to the receipt photo, loaded on every open;
   /// only an https link on the API host is accepted, as for trip receipts.
   Future<Uri?> loadReceiptUri(int id, {bool thumbnail = false}) async {

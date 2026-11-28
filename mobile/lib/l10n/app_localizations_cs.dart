@@ -1873,6 +1873,32 @@ class AppLocalizationsCs extends AppLocalizations {
   String get quickSplitShareFailed => 'Sdílení se nepovedlo.';
 
   @override
+  String get quickSplitShareLinkTitle => 'Sdílet odkaz';
+
+  @override
+  String get quickSplitShareLinkBody => 'Každý s odkazem uvidí tento účet: kdo platil a podíl každého. Aplikace není potřeba. Odkaz platí 90 dní.';
+
+  @override
+  String get quickSplitShareIncludeReceipt => 'Přiložit fotku účtenky';
+
+  @override
+  String get quickSplitShareLinkAction => 'Sdílet odkaz';
+
+  @override
+  String quickSplitSharedUntil(String date) {
+    return 'Sdíleno odkazem do $date';
+  }
+
+  @override
+  String get quickSplitStopSharing => 'Přestat sdílet';
+
+  @override
+  String get quickSplitStopSharingDone => 'Odkaz už nefunguje.';
+
+  @override
+  String get quickSplitStopSharingFailed => 'Sdílení se nepodařilo ukončit.';
+
+  @override
   String quickSplitPaidBy(String name) {
     return 'platil(a) $name';
   }

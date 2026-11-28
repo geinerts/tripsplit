@@ -1873,6 +1873,32 @@ class AppLocalizationsLv extends AppLocalizations {
   String get quickSplitShareFailed => 'Neizdevās dalīties.';
 
   @override
+  String get quickSplitShareLinkTitle => 'Dalīties ar saiti';
+
+  @override
+  String get quickSplitShareLinkBody => 'Ikviens ar saiti redzēs šo rēķinu: kurš samaksāja un cik maksā katrs. Lietotne nav vajadzīga. Saite darbojas 90 dienas.';
+
+  @override
+  String get quickSplitShareIncludeReceipt => 'Pievienot čeka foto';
+
+  @override
+  String get quickSplitShareLinkAction => 'Dalīties ar saiti';
+
+  @override
+  String quickSplitSharedUntil(String date) {
+    return 'Kopīgots ar saiti līdz $date';
+  }
+
+  @override
+  String get quickSplitStopSharing => 'Pārtraukt kopīgošanu';
+
+  @override
+  String get quickSplitStopSharingDone => 'Saite vairs nedarbojas.';
+
+  @override
+  String get quickSplitStopSharingFailed => 'Neizdevās pārtraukt kopīgošanu.';
+
+  @override
   String quickSplitPaidBy(String name) {
     return 'maksāja $name';
   }

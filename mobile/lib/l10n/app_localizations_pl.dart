@@ -1880,6 +1880,32 @@ class AppLocalizationsPl extends AppLocalizations {
   String get quickSplitShareFailed => 'Nie udało się udostępnić.';
 
   @override
+  String get quickSplitShareLinkTitle => 'Udostępnij link';
+
+  @override
+  String get quickSplitShareLinkBody => 'Każdy z linkiem zobaczy ten rachunek: kto zapłacił i część każdej osoby. Aplikacja nie jest potrzebna. Link działa 90 dni.';
+
+  @override
+  String get quickSplitShareIncludeReceipt => 'Dołącz zdjęcie paragonu';
+
+  @override
+  String get quickSplitShareLinkAction => 'Udostępnij link';
+
+  @override
+  String quickSplitSharedUntil(String date) {
+    return 'Udostępniono linkiem do $date';
+  }
+
+  @override
+  String get quickSplitStopSharing => 'Przestań udostępniać';
+
+  @override
+  String get quickSplitStopSharingDone => 'Link już nie działa.';
+
+  @override
+  String get quickSplitStopSharingFailed => 'Nie udało się przestać udostępniać.';
+
+  @override
   String quickSplitPaidBy(String name) {
     return 'zapłacił(a) $name';
   }

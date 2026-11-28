@@ -3357,6 +3357,54 @@ abstract class AppLocalizations {
   /// **'Couldn\'t share.'**
   String get quickSplitShareFailed;
 
+  /// No description provided for @quickSplitShareLinkTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Share a link'**
+  String get quickSplitShareLinkTitle;
+
+  /// No description provided for @quickSplitShareLinkBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Anyone with the link can see this bill: who paid and each person\'s part. They don\'t need the app. The link works for 90 days.'**
+  String get quickSplitShareLinkBody;
+
+  /// No description provided for @quickSplitShareIncludeReceipt.
+  ///
+  /// In en, this message translates to:
+  /// **'Include the receipt photo'**
+  String get quickSplitShareIncludeReceipt;
+
+  /// No description provided for @quickSplitShareLinkAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Share link'**
+  String get quickSplitShareLinkAction;
+
+  /// No description provided for @quickSplitSharedUntil.
+  ///
+  /// In en, this message translates to:
+  /// **'Shared by link until {date}'**
+  String quickSplitSharedUntil(String date);
+
+  /// No description provided for @quickSplitStopSharing.
+  ///
+  /// In en, this message translates to:
+  /// **'Stop sharing'**
+  String get quickSplitStopSharing;
+
+  /// No description provided for @quickSplitStopSharingDone.
+  ///
+  /// In en, this message translates to:
+  /// **'The link no longer works.'**
+  String get quickSplitStopSharingDone;
+
+  /// No description provided for @quickSplitStopSharingFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t stop sharing.'**
+  String get quickSplitStopSharingFailed;
+
   /// No description provided for @quickSplitPaidBy.
   ///
   /// In en, this message translates to:

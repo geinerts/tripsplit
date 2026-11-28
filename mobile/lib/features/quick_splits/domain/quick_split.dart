@@ -28,6 +28,7 @@ class QuickSplit {
     this.receiptUrl,
     this.receiptThumbUrl,
     this.addedToTripId,
+    this.share,
   });
 
   final int id;
@@ -61,6 +62,9 @@ class QuickSplit {
   final String? receiptUrl;
   final String? receiptThumbUrl;
   final int? addedToTripId;
+
+  /// The creator's active share link; null when not shared or for others.
+  final QuickSplitShare? share;
 
   bool get isFull => people.isNotEmpty;
 
@@ -163,6 +167,38 @@ class QuickSplit {
       receiptUrl: _nullableString(json['receipt_url']),
       receiptThumbUrl: _nullableString(json['receipt_thumb_url']),
       addedToTripId: added is Map ? _int(added['trip_id']) : null,
+      share: QuickSplitShare.tryParse(json['share']),
+    );
+  }
+}
+
+/// A link anyone can open in a browser to see this quick split.
+class QuickSplitShare {
+  const QuickSplitShare({
+    required this.url,
+    required this.expiresAt,
+    this.showReceipt = false,
+  });
+
+  final Uri url;
+  final DateTime? expiresAt;
+  final bool showReceipt;
+
+  /// Only `https://splyto.eu/split` links are accepted.
+  static QuickSplitShare? tryParse(Object? raw) {
+    if (raw is! Map) return null;
+    final url = Uri.tryParse(_string(raw['url']));
+    if (url == null ||
+        url.scheme != 'https' ||
+        url.host != 'splyto.eu' ||
+        url.path != '/split' ||
+        (url.queryParameters['code'] ?? '').isEmpty) {
+      return null;
+    }
+    return QuickSplitShare(
+      url: url,
+      expiresAt: DateTime.tryParse(_string(raw['expires_at']))?.toUtc(),
+      showReceipt: raw['show_receipt'] == true,
     );
   }
 }

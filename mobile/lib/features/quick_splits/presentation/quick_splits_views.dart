@@ -221,14 +221,22 @@ Future<QuickSplitSheetAction?> showQuickSplitSheet(
   required QuickSplit split,
   Widget? receiptAction,
   bool canAddToTrip = false,
+  QuickSplitShareLink? shareLink,
+  Future<void> Function()? stopSharing,
 }) => showAppBottomSheet<QuickSplitSheetAction>(
   context: context,
   builder: (sheetContext) => QuickSplitSheet(
     split: split,
     receiptAction: receiptAction,
     canAddToTrip: canAddToTrip,
+    shareLink: shareLink,
+    stopSharing: stopSharing,
   ),
 );
+
+/// Makes (or returns) the quick split's public link.
+typedef QuickSplitShareLink =
+    Future<QuickSplitShare> Function({required bool showReceipt});
 
 class QuickSplitSheet extends StatelessWidget {
   const QuickSplitSheet({
@@ -236,10 +244,18 @@ class QuickSplitSheet extends StatelessWidget {
     required this.split,
     this.receiptAction,
     this.canAddToTrip = false,
+    this.shareLink,
+    this.stopSharing,
   });
 
   /// Shown only when an active trip has every person of this quick split.
   final bool canAddToTrip;
+
+  /// For the creator: share a link anyone can open. Others share plain text.
+  final QuickSplitShareLink? shareLink;
+
+  /// For the creator: stop the link working.
+  final Future<void> Function()? stopSharing;
 
   final QuickSplit split;
 
@@ -417,7 +433,7 @@ class QuickSplitSheet extends StatelessWidget {
     return lines.join('\n');
   }
 
-  Future<void> _share(BuildContext context) async {
+  Future<void> _share(BuildContext context, {String? text}) async {
     final box = context.findRenderObject() as RenderBox?;
     final origin = box != null && box.hasSize
         ? box.localToGlobal(Offset.zero) & box.size
@@ -425,7 +441,7 @@ class QuickSplitSheet extends StatelessWidget {
     try {
       await SharePlus.instance.share(
         ShareParams(
-          text: _shareText(context),
+          text: text ?? _shareText(context),
           subject: quickSplitTitle(context, split),
           sharePositionOrigin: origin,
         ),
@@ -554,11 +570,11 @@ class QuickSplitSheet extends StatelessWidget {
             ],
             const Divider(height: 1),
             const SizedBox(height: 8),
-            TextButton.icon(
-              key: const ValueKey('quick-split-share'),
-              onPressed: () => _share(context),
-              icon: const Icon(Icons.ios_share_rounded),
-              label: Text(t.quickSplitShareResult),
+            _QuickSplitShareSection(
+              split: split,
+              shareLink: split.canEdit ? shareLink : null,
+              stopSharing: split.canEdit ? stopSharing : null,
+              shareText: (text) => _share(context, text: text),
             ),
             if (split.canEdit && canAddToTrip) ...[
               const Divider(height: 1),
@@ -579,6 +595,202 @@ class QuickSplitSheet extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+class _QuickSplitShareSection extends StatefulWidget {
+  const _QuickSplitShareSection({
+    required this.split,
+    required this.shareLink,
+    required this.stopSharing,
+    required this.shareText,
+  });
+
+  final QuickSplit split;
+  final QuickSplitShareLink? shareLink;
+  final Future<void> Function()? stopSharing;
+
+  /// Opens the system share sheet; null text shares the plain-text summary.
+  final Future<void> Function(String? text) shareText;
+
+  @override
+  State<_QuickSplitShareSection> createState() =>
+      _QuickSplitShareSectionState();
+}
+
+class _QuickSplitShareSectionState extends State<_QuickSplitShareSection> {
+  late QuickSplitShare? _link = widget.split.share;
+  bool _busy = false;
+
+  bool get _hasReceipt =>
+      widget.split.hasReceipt || widget.split.receiptUrl != null;
+
+  Future<void> _onShare() async {
+    final shareLink = widget.shareLink;
+    if (shareLink == null) {
+      await widget.shareText(null);
+      return;
+    }
+    var showReceipt = false;
+    if (_hasReceipt) {
+      final choice = await _askAboutReceipt();
+      if (choice == null || !mounted) return;
+      showReceipt = choice;
+    }
+    setState(() => _busy = true);
+    QuickSplitShare? link;
+    try {
+      link = await shareLink(showReceipt: showReceipt);
+    } catch (_) {
+      // Offline or refused: share the plain text, as before links existed.
+      link = null;
+    }
+    if (!mounted) return;
+    setState(() {
+      _busy = false;
+      if (link != null) _link = link;
+    });
+    if (link == null) {
+      await widget.shareText(null);
+      return;
+    }
+    final split = widget.split;
+    final total = _money(context, split.amount, split.currencyCode);
+    await widget.shareText(
+      '${quickSplitTitle(context, split)} · $total\n${link.url}',
+    );
+  }
+
+  Future<bool?> _askAboutReceipt() {
+    var include = _link?.showReceipt ?? false;
+    return showAppBottomSheet<bool>(
+      context: context,
+      builder: (sheetContext) {
+        final t = sheetContext.l10n;
+        final theme = Theme.of(sheetContext);
+        return StatefulBuilder(
+          builder: (context, setSheetState) => SafeArea(
+            top: false,
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(20, 0, 20, 16),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Text(
+                    t.quickSplitShareLinkTitle,
+                    style: theme.textTheme.titleLarge,
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    t.quickSplitShareLinkBody,
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      color: AppDesign.mutedColor(context),
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  SwitchListTile.adaptive(
+                    key: const ValueKey('quick-split-share-receipt'),
+                    contentPadding: EdgeInsets.zero,
+                    title: Text(t.quickSplitShareIncludeReceipt),
+                    value: include,
+                    onChanged: (value) => setSheetState(() => include = value),
+                  ),
+                  const SizedBox(height: 8),
+                  FilledButton.icon(
+                    key: const ValueKey('quick-split-share-link'),
+                    onPressed: () => Navigator.of(sheetContext).pop(include),
+                    icon: const Icon(Icons.link_rounded),
+                    label: Text(t.quickSplitShareLinkAction),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> _onStop() async {
+    final stop = widget.stopSharing;
+    if (stop == null) return;
+    setState(() => _busy = true);
+    var ok = true;
+    try {
+      await stop();
+    } catch (_) {
+      ok = false;
+    }
+    if (!mounted) return;
+    setState(() {
+      _busy = false;
+      if (ok) _link = null;
+    });
+    final t = context.l10n;
+    ScaffoldMessenger.maybeOf(context)?.showSnackBar(
+      SnackBar(
+        content: Text(
+          ok ? t.quickSplitStopSharingDone : t.quickSplitStopSharingFailed,
+        ),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final t = context.l10n;
+    final theme = Theme.of(context);
+    final link = _link;
+    final expires = link?.expiresAt;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        TextButton.icon(
+          key: const ValueKey('quick-split-share'),
+          onPressed: _busy ? null : _onShare,
+          icon: _busy
+              ? const SizedBox.square(
+                  dimension: 18,
+                  child: CircularProgressIndicator(strokeWidth: 2),
+                )
+              : const Icon(Icons.ios_share_rounded),
+          label: Text(t.quickSplitShareResult),
+        ),
+        if (link != null && widget.stopSharing != null)
+          Row(
+            key: const ValueKey('quick-split-shared-link'),
+            children: [
+              Icon(
+                Icons.link_rounded,
+                size: 18,
+                color: AppDesign.mutedColor(context),
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                  expires == null
+                      ? t.quickSplitShareLinkAction
+                      : t.quickSplitSharedUntil(
+                          AppFormatters.shortDayMonth(
+                            context,
+                            expires.toLocal(),
+                          ),
+                        ),
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: AppDesign.mutedColor(context),
+                  ),
+                ),
+              ),
+              TextButton(
+                key: const ValueKey('quick-split-stop-sharing'),
+                onPressed: _busy ? null : _onStop,
+                child: Text(t.quickSplitStopSharing),
+              ),
+            ],
+          ),
+      ],
     );
   }
 }

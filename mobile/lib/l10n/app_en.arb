@@ -985,6 +985,19 @@
     }
   },
   "quickSplitShareFailed": "Couldn't share.",
+  "quickSplitShareLinkTitle": "Share a link",
+  "quickSplitShareLinkBody": "Anyone with the link can see this bill: who paid and each person's part. They don't need the app. The link works for 90 days.",
+  "quickSplitShareIncludeReceipt": "Include the receipt photo",
+  "quickSplitShareLinkAction": "Share link",
+  "quickSplitSharedUntil": "Shared by link until {date}",
+  "@quickSplitSharedUntil": {
+    "placeholders": {
+      "date": {"type": "String"}
+    }
+  },
+  "quickSplitStopSharing": "Stop sharing",
+  "quickSplitStopSharingDone": "The link no longer works.",
+  "quickSplitStopSharingFailed": "Couldn't stop sharing.",
   "quickSplitPaidBy": "paid by {name}",
   "@quickSplitPaidBy": {
     "placeholders": {

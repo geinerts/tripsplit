@@ -5,6 +5,7 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/../helpers/helper_expense_subcategory.php';
 require_once __DIR__ . '/../helpers/helper_receipt_ownership.php';
+require_once __DIR__ . '/../helpers/helper_quick_split_share.php';
 require_once __DIR__ . '/../helpers/helper_trip_guests.php';
 
 const QUICK_SPLIT_MAX_PEOPLE = 50;
@@ -508,6 +509,10 @@ function quick_split_detail(PDO $pdo, array $row, int $meId): array
     $out['receipt_path'] = $out['can_edit'] && $receiptPath !== '' ? $receiptPath : null;
     $out['receipt_url'] = $receiptPath !== '' ? receipt_public_url($receiptPath) : null;
     $out['receipt_thumb_url'] = $receiptPath !== '' ? receipt_thumb_public_url($receiptPath) : null;
+    if ((int) $row['created_by'] === $meId) {
+        $share = $row['moved_at'] === null ? quick_split_share_active($pdo, $id) : null;
+        $out['share'] = $share !== null ? quick_split_share_payload($share) : null;
+    }
     $out['added_to_trip'] = $row['moved_at'] !== null
         ? ['trip_id' => (int) ($row['moved_trip_id'] ?? 0), 'expense_id' => (int) ($row['moved_expense_id'] ?? 0)]
         : null;
@@ -658,6 +663,7 @@ function delete_quick_split_action(): void
     try {
         $row = quick_split_require_editable($pdo, $id, $meId);
         quick_split_delete_children($pdo, $id);
+        quick_split_share_delete_for($pdo, $id);
         $pdo->prepare('DELETE FROM ' . table_name('quick_splits') . ' WHERE id = :id')->execute(['id' => $id]);
         $pdo->commit();
     } catch (Throwable $error) {
@@ -759,6 +765,13 @@ function move_quick_split_to_trip_action(): void
              SET moved_trip_id = :trip, moved_expense_id = :expense, moved_at = CURRENT_TIMESTAMP
              WHERE id = :id'
         )->execute(['trip' => $tripId, 'expense' => $expenseId, 'id' => $id]);
+        if (quick_split_shares_available($pdo)) {
+            // The bill now lives in the trip; its public link ends.
+            $pdo->prepare(
+                'UPDATE ' . table_name('quick_split_shares') . '
+                 SET revoked_at = :now WHERE quick_split_id = :id AND revoked_at IS NULL'
+            )->execute(['now' => quick_split_share_now(), 'id' => $id]);
+        }
         $pdo->commit();
     } catch (Throwable $error) {
         if ($pdo->inTransaction()) {
@@ -786,6 +799,7 @@ function delete_user_quick_splits(PDO $pdo, int $userId): array
     $receipts = [];
     foreach ($stmt->fetchAll() as $row) {
         quick_split_delete_children($pdo, (int) $row['id']);
+        quick_split_share_delete_for($pdo, (int) $row['id']);
         $path = trim((string) ($row['receipt_path'] ?? ''));
         // After "Add to a trip" the photo belongs to the trip expense.
         if ($path !== '' && $row['moved_at'] === null) {
@@ -794,4 +808,75 @@ function delete_user_quick_splits(PDO $pdo, int $userId): array
     }
     $pdo->prepare('DELETE FROM ' . table_name('quick_splits') . ' WHERE created_by = :id')->execute(['id' => $userId]);
     return $receipts;
+}
+
+function quick_split_share_require_owner(PDO $pdo, int $quickSplitId, int $meId): array
+{
+    if (!quick_split_shares_available($pdo)) {
+        json_out(['ok' => false, 'error' => 'Share links are not available yet.'], 409);
+    }
+    $row = quick_split_find_visible($pdo, $quickSplitId, $meId, true);
+    if ($row === null) {
+        json_out(['ok' => false, 'error' => 'Quick split not found.'], 404);
+    }
+    if ((int) $row['created_by'] !== $meId) {
+        json_out(['ok' => false, 'error' => 'Only the creator can share this quick split.'], 403);
+    }
+    if ($row['moved_at'] !== null) {
+        json_out(['ok' => false, 'error' => 'This quick split was added to a trip.'], 409);
+    }
+    return $row;
+}
+
+function share_quick_split_action(): void
+{
+    [$pdo, $me, $body] = quick_split_request(true);
+    $meId = (int) $me['id'];
+    $id = (int) ($body['id'] ?? 0);
+
+    $pdo->beginTransaction();
+    try {
+        $row = quick_split_share_require_owner($pdo, $id, $meId);
+        $showReceipt = ($body['show_receipt'] ?? false) === true
+            && trim((string) ($row['receipt_path'] ?? '')) !== '';
+        $share = quick_split_share_active($pdo, $id, true);
+        if ($share === null) {
+            $share = quick_split_share_create($pdo, $id, $meId, $showReceipt);
+        } elseif (((int) $share['show_receipt'] === 1) !== $showReceipt) {
+            $pdo->prepare(
+                'UPDATE ' . table_name('quick_split_shares') . ' SET show_receipt = :show WHERE id = :id'
+            )->execute(['show' => $showReceipt ? 1 : 0, 'id' => (int) $share['id']]);
+            $share['show_receipt'] = $showReceipt ? 1 : 0;
+        }
+        $pdo->commit();
+    } catch (Throwable $error) {
+        if ($pdo->inTransaction()) {
+            $pdo->rollBack();
+        }
+        throw $error;
+    }
+    json_out(['ok' => true, 'share' => quick_split_share_payload($share)]);
+}
+
+function revoke_quick_split_share_action(): void
+{
+    [$pdo, $me, $body] = quick_split_request(true);
+    $meId = (int) $me['id'];
+    $id = (int) ($body['id'] ?? 0);
+
+    $pdo->beginTransaction();
+    try {
+        quick_split_share_require_owner($pdo, $id, $meId);
+        $pdo->prepare(
+            'UPDATE ' . table_name('quick_split_shares') . '
+             SET revoked_at = :now WHERE quick_split_id = :id AND revoked_at IS NULL'
+        )->execute(['now' => quick_split_share_now(), 'id' => $id]);
+        $pdo->commit();
+    } catch (Throwable $error) {
+        if ($pdo->inTransaction()) {
+            $pdo->rollBack();
+        }
+        throw $error;
+    }
+    json_out(['ok' => true]);
 }
