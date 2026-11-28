@@ -6,7 +6,7 @@ deployed. There is no purchase yet: an administrator grants it for testing.
 A one-off Premium for a single trip. It covers every current member of that trip, including
 people who join later. Someone who leaves loses it. It has no end date and can be revoked.
 Deleting the trip deletes it. It unlocks only features that belong to a trip. Account-wide
-features, such as the year summary, still need the person's own Premium.
+features still need the person's own Premium.
 
 ## Feature list
 
@@ -15,7 +15,6 @@ Each feature in `premium_feature_catalog()` has a `scope`:
 | Feature | Tier | Scope |
 | --- | --- | --- |
 | `trip_export` | premium | trip |
-| `year_summary` | premium | account |
 
 A trip feature is allowed when the account's own Premium allows it (including Premium for
 everyone), or the trip has an active trip Premium. `premium_access.features` keeps meaning
@@ -39,9 +38,8 @@ missing, only the account's own Premium counts. Older apps ignore the field. App
 `premium_required`. Other request and response fields don't change.
 
 Trip Premium does not bypass the report availability rules: PDF requires status
-`settling` or `archived`; CSV remains available for an active trip. The account-wide
-year summary is seasonal (January–March for the previous year), including when
-Premium is open to everyone. See [trip reports](trip-reports.md).
+`settling` or `archived`; CSV remains available for an active trip. The year summary is
+no longer Premium (2026-11-28); see [trip reports](trip-reports.md).
 
 ## Administration
 

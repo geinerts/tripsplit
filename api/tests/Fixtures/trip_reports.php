@@ -24,6 +24,13 @@ if (!function_exists('load_user_notification_preferences')) {
     }
 }
 require_once __DIR__ . '/../../lib/actions/trip_reports_actions.php';
+// The feature flag check reads the account status like production does.
+if (!function_exists('users_account_status_select_sql')) {
+    function users_account_status_select_sql(PDO $pdo, string $alias = ''): string { return 'account_status, '; }
+}
+if (!function_exists('user_account_status')) {
+    function user_account_status(array $row): string { return (string) ($row['account_status'] ?? 'active'); }
+}
 
 $report_now = strtotime('2026-01-15T12:00:00Z');
 function test_travel_year_summary_action(): void {
@@ -68,6 +75,10 @@ foreach ([
     'CREATE TABLE trip_premium_grants (id INTEGER PRIMARY KEY AUTOINCREMENT, user_id INT, source VARCHAR(20),
         starts_at DATETIME, ends_at DATETIME, revoked_at DATETIME NULL)',
     'CREATE TABLE trip_feature_usage_counts (usage_month TEXT, feature TEXT, use_count INTEGER, PRIMARY KEY (usage_month, feature))',
+    // Feature flags (the year summary is behind one). Created up front: the
+    // helper remembers whether the tables exist.
+    "CREATE TABLE trip_feature_flags (flag_key TEXT PRIMARY KEY, mode TEXT NOT NULL DEFAULT 'off', updated_at TEXT DEFAULT CURRENT_TIMESTAMP, updated_by_admin_id INT NULL)",
+    'CREATE TABLE trip_user_features (user_id INT NOT NULL, flag_key TEXT NOT NULL, granted_at TEXT DEFAULT CURRENT_TIMESTAMP, granted_by_admin_id INT NULL, PRIMARY KEY (user_id, flag_key))',
     'CREATE TABLE trip_travel_places (id INTEGER PRIMARY KEY AUTOINCREMENT, user_id INT, city VARCHAR(120), country VARCHAR(120),
         country_code VARCHAR(2), visited_on DATE)',
 ] as $sql) {
@@ -233,9 +244,13 @@ $pdo->exec('INSERT INTO trip_expenses(id,trip_id,paid_by,amount,currency_code,so
 $pdo->exec('INSERT INTO trip_expense_participants(expense_id,user_id,owed_cents) VALUES (200,4,10000),(210,4,10000),(220,4,5000)');
 $pdo->exec('INSERT INTO trip_travel_places(user_id,city,country,country_code,visited_on) VALUES
     (4,"Tallinn","Estonia","EE","2025-02-02"),(4,"Vilnius","Lithuania","LT","2024-02-02"),(7,"Tokyo","Japan","JP","2025-02-02")');
+// Free since 2026-11-28, behind the year_summary feature flag.
+$pdo->exec("INSERT INTO trip_feature_flags (flag_key, mode) VALUES ('year_summary', 'allowlist')");
 $_GET = ['year' => '2025'];
 $yearDenied = invitation_call('test_travel_year_summary_action', 8);
-invitation_expect($yearDenied['status'] === 403 && $yearDenied['body']['code'] === 'premium_required', 'Year summary requires Premium');
+invitation_expect($yearDenied['status'] === 403 && $yearDenied['body']['code'] === 'feature_disabled', 'Without the flag the summary is refused');
+$pdo->exec("UPDATE trip_feature_flags SET mode = 'everyone' WHERE flag_key = 'year_summary'");
+invitation_expect(invitation_call('test_travel_year_summary_action', 8)['status'] === 200, 'With the flag on, Premium is not needed');
 $year = invitation_call('test_travel_year_summary_action', 4)['body']['summary'];
 invitation_expect($year['trip_count'] === 3, 'Only finished trips of the account count');
 invitation_expect($year['days_away'] === 13, 'Overlapping days count once');
@@ -284,6 +299,19 @@ foreach ([
         invitation_expect($seasonResponse['body']['summary']['available_years'] === [2026], 'Boundary response has only that season year');
     }
 }
+
+// A tester with a grant sees the current year outside the season; others don't.
+$report_now = strtotime('2026-11-28T12:00:00Z');
+$pdo->exec("INSERT INTO trip_user_features (user_id, flag_key) VALUES (4, 'year_summary')");
+$_GET = [];
+$tester = invitation_call('test_travel_year_summary_action', 4);
+invitation_expect($tester['status'] === 200 && $tester['body']['summary']['year'] === 2026, 'A tester gets the current year outside the season');
+invitation_expect($tester['body']['summary']['available_years'] === [2026], 'Only that year is offered to the tester');
+$outsider = invitation_call('test_travel_year_summary_action', 8);
+invitation_expect($outsider['status'] === 403 && $outsider['body']['code'] === 'year_summary_unavailable', 'Others still wait for the season');
+$pdo->exec("UPDATE trip_feature_flags SET mode = 'off' WHERE flag_key = 'year_summary'");
+invitation_expect(invitation_call('test_travel_year_summary_action', 4)['status'] === 403, 'Off stops the tester too');
+$pdo->exec("UPDATE trip_feature_flags SET mode = 'everyone' WHERE flag_key = 'year_summary'");
 $report_now = strtotime('2026-01-15T12:00:00Z');
 
 // Without the migration, finishing a trip still works and nothing is queued.
@@ -295,6 +323,7 @@ $usage = $pdo->query('SELECT feature, SUM(use_count) AS n FROM trip_feature_usag
 invitation_expect(($usage['trip_export_pdf'] ?? 0) > 0 && ($usage['trip_export_csv'] ?? 0) > 0, 'Successful exports are counted by format');
 invitation_expect(($usage['year_summary_view'] ?? 0) > 0, 'Year summary is counted');
 $before = array_sum($usage);
+$pdo->exec("UPDATE trip_feature_flags SET mode = 'off' WHERE flag_key = 'year_summary'");
 invitation_call('test_travel_year_summary_action', 8);
 invitation_call('trip_export_action', 8);
 invitation_expect((int) $pdo->query('SELECT SUM(use_count) FROM trip_feature_usage_counts')->fetchColumn() === (int) $before, 'Rejected requests are not counted');

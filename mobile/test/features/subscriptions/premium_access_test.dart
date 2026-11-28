@@ -88,14 +88,13 @@ void main() {
       premiumFixture()..addAll({
         'source': 'launch',
         'expires_at': null,
-        'features': {'trip_export': true, 'year_summary': true},
+        'features': {'trip_export': true},
       }),
       accountId: 7,
     )!;
     expect(launch.source, 'launch');
     expect(launch.expiresAt, isNull);
     expect(launch.allows(PremiumFeatures.tripExport), isTrue);
-    expect(launch.allows(PremiumFeatures.yearSummary), isTrue);
     expect(launch.showsPlanStatus, isFalse);
     expect(
       PremiumAccess.fromMap(premiumFixture(), accountId: 7)!.showsPlanStatus,
@@ -119,11 +118,11 @@ void main() {
         'plan': 'free',
         'source': null,
         'expires_at': null,
-        'features': {'trip_export': true, 'year_summary': false, 'x': 'yes'},
+        'features': {'trip_export': true, 'old_feature': false, 'x': 'yes'},
       });
     final access = PremiumAccess.fromMap(free, accountId: 7)!;
     expect(access.allows(PremiumFeatures.tripExport), isTrue);
-    expect(access.allows(PremiumFeatures.yearSummary), isFalse);
+    expect(access.allows('old_feature'), isFalse);
     expect(access.allows('x'), isFalse);
     expect(access.allows('unlisted'), isFalse);
     // Without a feature list the app falls back to the plan and expiry.

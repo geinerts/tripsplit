@@ -1,8 +1,9 @@
 # Feature flags
 
 Approved by the owner on 2026-11-20. Server-side switches for features that are rolled out
-step by step. The first and only flag is `receipt_ai` (AI receipt reading, see
-`docs/mobile/quick-split-ai-plan.md`). The app only uses the flag to decide what to show;
+step by step. Flags: `receipt_ai` (AI receipt reading, see
+`docs/mobile/quick-split-ai-plan.md`) and `year_summary` (the year in travel card, added
+2026-11-28, see [trip-reports.md](trip-reports.md)). The app only uses the flag to decide what to show;
 the server checks it again on every request of the feature, before any cost.
 
 ## Model
@@ -27,8 +28,11 @@ Missing tables or a failed read count as "off" (fail closed).
 `me` (and every response that carries the `me` payload) gains one field:
 
 ```json
-"features": { "receipt_ai": false }
+"features": { "receipt_ai": false, "year_summary": false }
 ```
+
+`year_summary` is also limited to its season (January–March): outside it the value is
+`false`, except for accounts with a grant, so testers can check it at any time.
 
 All catalog keys are always present as booleans. Older apps ignore the field. The value may be
 up to 60 seconds old; the feature's own request re-checks the flag without caching, so `off`
@@ -58,7 +62,8 @@ data:
 - `trip_user_features (user_id, flag_key, granted_at, granted_by_admin_id)`, primary key
   `(user_id, flag_key)`, deleted with the user.
 
-`receipt_ai` starts as `off` with no grants.
+`receipt_ai` and `year_summary` start as `off` with no grants (a flag without a row is
+`off`, so no migration is needed for a new key).
 
 ## Removing a flag
 

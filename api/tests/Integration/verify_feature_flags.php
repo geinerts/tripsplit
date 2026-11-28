@@ -25,7 +25,7 @@ $pdo->exec($migration); // must be safe to run twice
 check($pdo->query("SELECT mode FROM trip_feature_flags WHERE flag_key = 'receipt_ai'")->fetchColumn() === 'off',
     'receipt_ai must start off');
 check((int) $pdo->query('SELECT COUNT(*) FROM trip_user_features')->fetchColumn() === 0, 'no grants at start');
-check(feature_flags_for_user($pdo, 1) === ['receipt_ai' => false], 'off means nobody');
+check(feature_flags_for_user($pdo, 1) === ['receipt_ai' => false, 'year_summary' => false], 'off means nobody');
 
 $pdo->exec("INSERT INTO trip_user_features (user_id, flag_key) VALUES (1, 'receipt_ai'), (2, 'receipt_ai')");
 $pdo->exec("UPDATE trip_feature_flags SET mode = 'allowlist'");

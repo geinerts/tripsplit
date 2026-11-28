@@ -13,6 +13,7 @@ import 'package:tripsplit/core/errors/api_exception.dart';
 import 'package:tripsplit/core/maps/world_countries.dart';
 import 'package:tripsplit/core/network/api_client.dart';
 import 'package:tripsplit/core/network/http_method.dart';
+import 'package:tripsplit/features/auth/data/models/auth_user_model.dart';
 import 'package:tripsplit/features/auth/data/models/notification_preferences_model.dart';
 import 'package:tripsplit/features/auth/domain/entities/notification_preferences.dart';
 import 'package:tripsplit/features/subscriptions/domain/entities/premium_access.dart';
@@ -200,6 +201,36 @@ void main() {
       expect(repository.requests, [null]);
     },
   );
+
+  test('year_summary comes from the account features', () {
+    Map<String, dynamic> user(Object? features) => {
+      'id': 7,
+      'nickname': 'Ann',
+      'features': features,
+    };
+    expect(
+      AuthUserModel.fromLegacyMap(user({'year_summary': true})).yearSummary,
+      isTrue,
+    );
+    expect(
+      AuthUserModel.fromLegacyMap(user({'year_summary': 'yes'})).yearSummary,
+      isFalse,
+    );
+    expect(AuthUserModel.fromLegacyMap(user(null)).yearSummary, isFalse);
+    // Premium no longer decides it.
+    expect(
+      AuthUserModel.fromLegacyMap({
+        ...user({'receipt_ai': true}),
+        'premium_access': {
+          'features': {'year_summary': true},
+        },
+      }).yearSummary,
+      isFalse,
+    );
+    final switched = AuthUserModel.fromLegacyMap(user({'year_summary': true}));
+    expect(switched.copyWith(id: 8).yearSummary, isFalse);
+    expect(switched.copyWith(nickname: 'Anna').yearSummary, isTrue);
+  });
 
   test('summary parses all fields and tolerates nulls', () {
     final full = YearSummary.fromMap(_summaryMap());
@@ -570,10 +601,6 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.byKey(const ValueKey('year-summary-story')), findsOneWidget);
     expect(repository.requests, [null, null]);
-  });
-
-  test('the year summary stays hidden in the app by default', () {
-    expect(yearSummaryOfferedInApp, isFalse);
   });
 
   for (final locale in ['uk', 'lv', 'de']) {

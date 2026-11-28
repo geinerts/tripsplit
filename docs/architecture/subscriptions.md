@@ -17,7 +17,7 @@ person. Nobody pays to see their own data.
 | Free | Premium |
 | --- | --- |
 | Trips and solo trips, invites and QR, friends, people without the app | Detailed PDF/CSV export (`trip_export`) |
-| Expenses, categories, comments, reactions, mentions, activity | Year summary (`year_summary`) |
+| Expenses, categories, comments, reactions, mentions, activity, year summary (since 2026-11-28, behind the `year_summary` feature flag) | |
 | Every split mode, including adjustments and itemized splits | |
 | 120 currencies with automatic rates, receipt photos | |
 | Payment requests, settlements, reminders, balances, debt simplification | |
@@ -26,9 +26,10 @@ person. Nobody pays to see their own data.
 
 Availability rules approved on 2026-11-22 apply to all plans, including launch access:
 PDF export is offered only after the trip is finished (`settling` or `archived`);
-CSV export remains available during a trip. The year summary is offered only from
-1 January through 31 March (UTC), for the previous calendar year. Outside that season,
-the server projects `features.year_summary: false` and rejects direct summary requests.
+CSV export remains available during a trip. The year summary is free (owner decision,
+2026-11-28) and is offered only from 1 January through 31 March (UTC), for the previous
+calendar year, when the `year_summary` feature flag allows it; see
+[trip-reports.md](../api/trip-reports.md).
 See [trip reports](../api/trip-reports.md).
 
 AI receipt reading is implemented with its own feature flag, account quotas and global

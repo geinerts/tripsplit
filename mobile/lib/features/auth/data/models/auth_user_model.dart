@@ -32,6 +32,7 @@ class AuthUserModel extends AuthUser {
     super.avatarThumbUrl,
     super.premiumAccess,
     super.receiptAi,
+    super.yearSummary,
   });
 
   factory AuthUserModel.fromLegacyMap(Map<String, dynamic> map) {
@@ -71,6 +72,7 @@ class AuthUserModel extends AuthUser {
         accountId: id,
       ),
       receiptAi: (map['features'] as Map?)?['receipt_ai'] == true,
+      yearSummary: (map['features'] as Map?)?['year_summary'] == true,
       firstName: (firstName == null || firstName.isEmpty) ? null : firstName,
       lastName: (lastName == null || lastName.isEmpty) ? null : lastName,
       displayName: (displayName != null && displayName.isNotEmpty)

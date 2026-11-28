@@ -7,6 +7,7 @@ require_once __DIR__ . '/../helpers/helper_trip_report_delivery.php';
 require_once __DIR__ . '/../helpers/helper_year_summary.php';
 require_once __DIR__ . '/../helpers/helper_year_summary_season.php';
 require_once __DIR__ . '/../helpers/helper_feature_usage.php';
+require_once __DIR__ . '/../helpers/helper_feature_flags.php';
 
 function require_premium_feature(PDO $pdo, array $me, string $feature, ?int $tripId = null, ?int $now = null): void
 {
@@ -79,11 +80,16 @@ function travel_year_summary_action(?int $now = null): void
     $me = get_me();
     $pdo = db();
     $seasonYear = year_summary_season_year($now);
-    if ($seasonYear === null) {
-        json_out(['ok' => false, 'code' => 'year_summary_unavailable',
-            'error' => 'Your year summary is available from January through March.'], 403);
+    // Free since 2026-11-28, behind the year_summary feature flag. The flag already
+    // applies the season; a granted tester also gets it outside, for the current year.
+    if (!feature_enabled_for_user($pdo, (int) $me['id'], 'year_summary', $now)) {
+        if ($seasonYear === null) {
+            json_out(['ok' => false, 'code' => 'year_summary_unavailable',
+                'error' => 'Your year summary is available from January through March.'], 403);
+        }
+        json_out(['ok' => false, 'code' => 'feature_disabled', 'error' => 'This feature is not available.'], 403);
     }
-    require_premium_feature($pdo, $me, 'year_summary', null, $now);
+    $seasonYear ??= (int) gmdate('Y', $now);
 
     $rawYear = $_GET['year'] ?? null;
     $year = $rawYear === null ? $seasonYear : filter_var($rawYear, FILTER_VALIDATE_INT);

@@ -1,6 +1,8 @@
 <?php
 declare(strict_types=1);
 
+require_once __DIR__ . '/helper_year_summary_season.php';
+
 // Feature flags: a global mode per flag plus per-account grants.
 // Contract: docs/api/feature-flags.md. Everything fails closed: a missing
 // table or a failed read means the feature is off.
@@ -12,6 +14,11 @@ function feature_flag_catalog(): array
         'receipt_ai' => [
             'label' => 'AI receipt reading',
             'description' => 'Reads receipt photos with AI in Quick split. Test phase: allowlist only.',
+        ],
+        'year_summary' => [
+            'label' => 'Year summary',
+            'description' => 'The year in travel card on Home, January to March. '
+                . 'Granted accounts also see it outside that season, for testing.',
         ],
     ];
 }
@@ -98,8 +105,12 @@ function feature_user_grants(PDO $pdo, int $userId): array
     }
 }
 
-/** Map of every catalog key to whether this account has the feature now. */
-function feature_flags_for_user(PDO $pdo, int $userId): array
+/**
+ * Map of every catalog key to whether this account has the feature now.
+ * `year_summary` also needs its season (January–March) unless the account has
+ * a grant, so testers can check it at any time.
+ */
+function feature_flags_for_user(PDO $pdo, int $userId, ?int $now = null): array
 {
     $result = array_fill_keys(array_keys(feature_flag_catalog()), false);
     $modes = feature_flag_modes_read($pdo);
@@ -113,6 +124,10 @@ function feature_flags_for_user(PDO $pdo, int $userId): array
     foreach ($modes as $key => $mode) {
         $result[$key] = $mode === 'everyone' || ($mode === 'allowlist' && in_array($key, $grants, true));
     }
+    if ($result['year_summary'] && year_summary_season_year($now) === null
+        && !in_array('year_summary', $grants ?: feature_user_grants($pdo, $userId), true)) {
+        $result['year_summary'] = false;
+    }
     return $result;
 }
 
@@ -120,12 +135,12 @@ function feature_flags_for_user(PDO $pdo, int $userId): array
  * The check a feature's own request makes before doing any work or spending
  * money. Always reads the database (no cache), so "off" applies at once.
  */
-function feature_enabled_for_user(PDO $pdo, int $userId, string $key): bool
+function feature_enabled_for_user(PDO $pdo, int $userId, string $key, ?int $now = null): bool
 {
     if (!feature_flag_key_is_known($key)) {
         return false;
     }
-    return feature_flags_for_user($pdo, $userId)[$key] ?? false;
+    return feature_flags_for_user($pdo, $userId, $now)[$key] ?? false;
 }
 
 /** Removes an account's grants; part of account deletion. */

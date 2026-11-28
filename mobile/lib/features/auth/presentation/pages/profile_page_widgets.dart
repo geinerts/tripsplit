@@ -145,8 +145,7 @@ extension _ProfilePageWidgets on _ProfilePageState {
           divider(),
         ],
         if (widget.onYearSummaryRequested != null &&
-            _user?.premiumAccess?.allows(PremiumFeatures.yearSummary) ==
-                true) ...[
+            _user?.yearSummary == true) ...[
           _buildProfileSectionTile(
             context: context,
             title: t.yearSummaryTitle,

@@ -85,16 +85,26 @@ share column per person. Decimals use `.` and follow the currency's display deci
 Text cells starting with `=`, `+`, `-`, `@`, tab or carriage return get a leading `'`, so a
 spreadsheet can't run them as formulas.
 
-## Year summary (Premium)
+## Year summary (free, behind a feature flag)
 
-Available only from 1 January 00:00 UTC through 31 March 23:59:59 UTC, for the
-previous calendar year (owner decision, 2026-11-22). For example, January–March 2027
-shows 2026. Outside this season, `premium_access.features.year_summary` is `false`,
-so the profile entry is hidden, and the endpoint returns HTTP 403 with code
-`year_summary_unavailable`. Premium and the launch switch do not bypass the season.
+Changed on 2026-11-28 (owner approval): the year summary is free for every account and is
+switched on with the server feature flag `year_summary` (see
+[feature-flags.md](feature-flags.md)). It is no longer a Premium feature, so
+`premium_access.features` no longer carries `year_summary`; older apps then hide their old
+entry.
 
-`GET travel_year_summary` defaults to the previous year. The optional `year` must
-equal that year; other years return HTTP 400 `Invalid year.`. The existing
+Available from 1 January 00:00 UTC through 31 March 23:59:59 UTC, for the previous
+calendar year (owner decision, 2026-11-22). For example, January–March 2027 shows 2026.
+
+- `me.features.year_summary` is `true` when the flag gives the account the feature and it is
+  the season. An account with a grant for `year_summary` (testers) also gets it outside the
+  season, with the current calendar year so far.
+- `GET travel_year_summary` returns HTTP 403 with code `year_summary_unavailable` outside
+  the season for accounts without a grant, and HTTP 403 with code `feature_disabled` when
+  the flag does not give the account the feature.
+
+`GET travel_year_summary` defaults to the season's year (for a tester outside the season,
+the current year). The optional `year` must equal that year; other years return HTTP 400 `Invalid year.`. The existing
 `available_years` field contains only that season's year, so there is no selector
 for unfinished/current or older years. No response fields are added.
 

@@ -59,7 +59,7 @@ function premium_feature_catalog(): array
 {
     return [
         'trip_export' => ['tier' => 'premium', 'scope' => 'trip'],
-        'year_summary' => ['tier' => 'premium', 'scope' => 'account'],
+        // The year summary is free since 2026-11-28 and behind the year_summary feature flag.
     ];
 }
 
@@ -69,9 +69,6 @@ function premium_features_for_plan(string $plan, ?int $now = null): array
     $features = [];
     foreach (premium_feature_catalog() as $feature => $definition) {
         $features[$feature] = $definition['tier'] === 'free' || $plan === 'premium';
-    }
-    if (year_summary_season_year($now) === null) {
-        $features['year_summary'] = false;
     }
     return $features;
 }

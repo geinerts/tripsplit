@@ -29,6 +29,7 @@ class AuthUser {
     this.avatarThumbUrl,
     this.premiumAccess,
     this.receiptAi = false,
+    this.yearSummary = false,
   });
 
   final int id;
@@ -67,6 +68,10 @@ class AuthUser {
   /// offer AI receipt reading. The server checks again on every scan.
   final bool receiptAi;
 
+  /// `features.year_summary` from `me` (docs/api/trip-reports.md): whether to
+  /// offer the year summary now. The server applies the flag and the season.
+  final bool yearSummary;
+
   AuthUser copyWith({
     int? id,
     String? firstName,
@@ -100,6 +105,7 @@ class AuthUser {
       id: id ?? this.id,
       premiumAccess: id == null || id == this.id ? premiumAccess : null,
       receiptAi: (id == null || id == this.id) && receiptAi,
+      yearSummary: (id == null || id == this.id) && yearSummary,
       firstName: firstName ?? this.firstName,
       lastName: lastName ?? this.lastName,
       displayName: displayName ?? this.displayName,
